@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 28, 2024 at 09:40 PM
+-- Generation Time: Jul 29, 2024 at 02:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -56,7 +56,7 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doc_id`, `date`, `time`, `diagn
 (19, 4, 'padi.ayertey', '2024-03-21', '09:00:55', NULL, 'Consultation', NULL, NULL, 'fdgh', 'yes', 'fgvb', NULL, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', NULL, ''),
 (20, 4, 'padi.ayertey', '2024-03-21', '09:00:55', NULL, 'In-Patient', '2024-07-17 20:39:48', NULL, 'fdgh', 'yes', 'fgvb', NULL, 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', NULL, 'testing testing 456'),
 (25, 5, 'padi.ayertey', '2024-06-25', '20:00:00', 'Pregnancy', 'In-Patient', '2024-06-25 19:56:54', '2024-07-17 18:30:33', 'Labour', 'yes', 'regular', '', NULL, NULL, ''),
-(34, 3, 'padi.ayertey', '2024-07-24', '17:45:00', '', 'In-Patient', '2024-07-22 19:53:24', NULL, 'Stable', 'yes', 'regular', '', 'Testing', NULL, NULL);
+(34, 3, 'padi.ayertey', '2024-07-24', '17:45:00', '', 'In-Patient', '2024-07-22 19:53:24', NULL, 'Stable', 'yes', 'regular', '', 'Input from site test', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -331,6 +331,29 @@ INSERT INTO `medstock` (`apt_id`, `med_id`, `quantity`, `stock_id`, `t_date`, `d
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `notes`
+--
+
+CREATE TABLE `notes` (
+  `notes_id` int(11) NOT NULL,
+  `apt_id` int(11) NOT NULL,
+  `notes` mediumtext NOT NULL,
+  `date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notes`
+--
+
+INSERT INTO `notes` (`notes_id`, `apt_id`, `notes`, `date`) VALUES
+(1, 34, 'Testing that its working', '2024-07-28 22:16:24'),
+(2, 34, 'Second Value', '2024-07-28 22:16:24'),
+(4, 34, 'Prior test value', '2024-07-27 20:18:29'),
+(5, 34, 'Input from site test', '2024-07-28 23:35:55');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `patient`
 --
 
@@ -449,7 +472,8 @@ INSERT INTO `patients_labs` (`p_lab_id`, `date`, `apt_id`, `lab_id`, `lab_result
 (6, '2024-06-24 13:04:39', 17, 1, NULL, NULL),
 (7, '2024-07-01 00:58:44', 19, 1, NULL, NULL),
 (8, '2024-07-01 02:17:23', 19, 2, NULL, NULL),
-(9, '2024-07-18 17:23:23', 20, 1, NULL, NULL);
+(9, '2024-07-18 17:23:23', 20, 1, NULL, NULL),
+(10, '2024-07-28 23:14:54', 34, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -504,7 +528,8 @@ INSERT INTO `patients_meds` (`p_med_id`, `apt_id`, `med_id`, `per_dose`, `per_da
 (10, 17, 3, 2, 1, 2, 0, '2024-06-22 16:33:03', '2024-06-24 20:06:38'),
 (12, 17, 32, 3, 2, 3, 3, '2024-06-24 14:51:56', NULL),
 (14, 20, 7, 3, 2, 3, 0, '2024-07-01 06:11:45', NULL),
-(15, 20, 7, 3, 2, 3, 0, '2024-07-01 06:11:45', NULL);
+(15, 20, 7, 3, 2, 3, 0, '2024-07-01 06:11:45', NULL),
+(16, 34, 1, 3, 2, 1, 0, '2024-07-28 23:16:20', NULL);
 
 -- --------------------------------------------------------
 
@@ -772,6 +797,13 @@ ALTER TABLE `medstock`
   ADD KEY `apt_id` (`apt_id`);
 
 --
+-- Indexes for table `notes`
+--
+ALTER TABLE `notes`
+  ADD PRIMARY KEY (`notes_id`),
+  ADD KEY `apt_id` (`apt_id`);
+
+--
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
@@ -930,6 +962,12 @@ ALTER TABLE `medstock`
   MODIFY `stock_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `notes`
+--
+ALTER TABLE `notes`
+  MODIFY `notes_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
@@ -951,7 +989,7 @@ ALTER TABLE `patients_cons`
 -- AUTO_INCREMENT for table `patients_labs`
 --
 ALTER TABLE `patients_labs`
-  MODIFY `p_lab_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `p_lab_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `patients_meals`
@@ -963,7 +1001,7 @@ ALTER TABLE `patients_meals`
 -- AUTO_INCREMENT for table `patients_meds`
 --
 ALTER TABLE `patients_meds`
-  MODIFY `p_med_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `p_med_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `patients_proc`
@@ -1036,6 +1074,12 @@ ALTER TABLE `fluid_intake`
 ALTER TABLE `medstock`
   ADD CONSTRAINT `medstock_ibfk_1` FOREIGN KEY (`med_id`) REFERENCES `medication` (`med_id`),
   ADD CONSTRAINT `medstock_ibfk_2` FOREIGN KEY (`apt_id`) REFERENCES `appointments` (`id`);
+
+--
+-- Constraints for table `notes`
+--
+ALTER TABLE `notes`
+  ADD CONSTRAINT `notes_ibfk_1` FOREIGN KEY (`apt_id`) REFERENCES `appointments` (`id`);
 
 --
 -- Constraints for table `patients_beds`

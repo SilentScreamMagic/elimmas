@@ -26,7 +26,7 @@
  
     if (isset($_POST["meds"])){
         $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,num_months,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",".$_POST["num_months"].",now())";
+        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",'".$_POST["num_months"]."',now())";
         $result = $conn->query($sql);
         $ids = ["","","defaultOpen","","",""];
     }
@@ -38,7 +38,7 @@
         $ids = ["","","","defaultOpen","",""];
     }
     if (isset($_POST["notes"])){
-       $sql = "UPDATE `appointments` SET `notes`='".$_POST['notes']."' WHERE id = ".$_SESSION['apt_id'];
+       $sql = "INSERT INTO `notes`( `apt_id`, `notes`, `date`) VALUES ($_SESSION[apt_id],'$_POST[notes]',now())";
         $result = $conn->query($sql);
         
         $ids = ["","","","","defaultOpen",""];
@@ -172,6 +172,18 @@
             font-size: 0.9em;
             color: #666;
             margin-bottom: 5px;
+        }
+        .expandable {
+            overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: block;
+    transition: all 0.3s ease;
+        }
+        .expanded {
+            white-space: normal;
+            max-height: none;
         }
     </style>
 </head>
@@ -338,17 +350,16 @@
     <div class ="contain">
         <!-- Content for rooms tab -->
     <div>
+        <button  onclick="toggleTransparency('nur_notes')">Nurse's Notes</button>
+        <button onclick="toggleTransparency('doc_notes')">Doctor's Notes</button>
         <h3>Notes</h3>
     <form action= "" method="post">
-        <?php
-        $sql = "SELECT `notes` FROM `appointments` WHERE id =".$_SESSION["apt_id"];
-        $result = $conn->query($sql);
-        $notes = $result->fetch_assoc();?>
-        <textarea name="notes" cols="70" rows="10"><?php echo $notes["notes"];?></textarea>
+        <textarea name="notes" cols="70" rows="10"></textarea>
         <input type="submit" value="Submit"><br><br>
     </form>
     </div>     
-    <div class="scrollable-container">
+    
+    <div id="nur_notes" style="visibility: hidden;" class="scrollable-container">
             <h1>Nurses's Notes</h1>
             <?php
             $sql = "SELECT date,nur_notes FROM `appointments` WHERE patient_id = ".$_SESSION["apt_id"]." order by date;";
@@ -364,14 +375,19 @@
            
             ?>
     </div>
-    <div class="scrollable-container">
+    
+    <div id="doc_notes" style="visibility: hidden;" class="scrollable-container">
             <h1>Doctor's Notes</h1>
             <?php
-            $sql = "SELECT date,notes FROM `appointments` WHERE patient_id = $pat_id order by date;";
+            $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br><br>') notes FROM `notes`
+                inner join appointments on notes.apt_id = appointments.id
+                where appointments.patient_id =$pat_id
+                GROUP by cast(notes.date as date)
+                order by notes.date;;";
             $result = $conn->query($sql);
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
-                echo '<div class="text-box">';
+                echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
             echo '<div class="date">' . $row["date"] . '</div>';
             echo $row["notes"];
             echo '</div>';
@@ -408,6 +424,17 @@ function openOption() {
         document.getElementById("refill").style.visibility = "visible"
     }
 }
+function toggleTransparency(input) {
+    if(document.getElementById(input).style.visibility == "visible"){
+        document.getElementById(input).style.visibility = "hidden";
+    }else{
+        document.getElementById(input).style.visibility = "visible"
+    }
+}
+    function toggleExpand() {
+        var div = document.getElementById('expandableDiv');
+        div.classList.toggle('expanded');
+    }
 </script>
 </body>
 </html>
