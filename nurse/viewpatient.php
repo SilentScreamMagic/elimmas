@@ -125,6 +125,8 @@
     <button class="tablinks" onclick="openTab(event, 'vitals')"  <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Vitals</button>
     <button class="tablinks" onclick="openTab(event, 'meds')"  <?php if('defaultOpen'==$ids[3]) echo 'id ="'.$ids[3].'"';?>>Procedural Medications</button>
     <button class="tablinks" onclick="openTab(event, 'fluid')"  <?php if('defaultOpen'==$ids[6]) echo 'id ="'.$ids[6].'"';?>>Fluids</button>
+    <button class="tablinks" onclick=<?php echo "window.open('pregprogress.php?id=$_SESSION[apt_id]','_blank')";?>>Pregnancy Progress</button>
+    
 </div>
 
 <div id="notes" class="tabcontent">
@@ -342,7 +344,7 @@
         <label for="o_amount">Amount</label>
         <input type="number" name="o_amount" id = "o_amount" required>
         <label for="iv_type">IV Type</label>
-        <input type="type" name="iv_type" id = "iv_type" required>
+        <input type="text" name="iv_type" id = "iv_type" required>
         <label for="iv_amount">amount</label>
         <input type="number" name="iv_amount" id = "iv_amount" required>
 
