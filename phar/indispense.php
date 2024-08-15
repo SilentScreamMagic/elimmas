@@ -2,6 +2,7 @@
 include "../conn.php";
 include "../nav.php";
 include "../table.html";
+include "../searchbar2.php";
 if(isset($_POST["med_id"])){
     $sql = "insert into medstock(med_id, quantity,t_date,dispense_to) 
     values(".$_POST["med_id"].",-".$_POST["med_count"].",now(),'".$_POST["to"]."')";
@@ -13,8 +14,8 @@ FROM medication
 LEFT JOIN medstock ON medstock.med_id = medication.med_id
 GROUP BY med_id;";
 $result = $conn->query($sql);
-
-echo "<table><tr><th>ID Number</th><th>Medication</th><th>Stock Quantity</th><th></th></tr>";
+echo "<input type='text' id='tableFilterInput' class='dropdown-input' placeholder='Filter by column value...'>";
+echo "<table id='filterTable'><tr><th>ID Number</th><th>Medication</th><th>Stock Quantity</th><th></th></tr>";
 
 if ($result){ 
     if ($result->num_rows > 0) {

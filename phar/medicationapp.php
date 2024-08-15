@@ -8,7 +8,8 @@
         $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name"FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
         where id = '.$_SESSION["id"];
         $result = $conn->query($sql)->fetch_assoc();
-        $pname = $result["Patient Name"];
+        $_SESSION["pname"] = $result["Patient Name"];
+        
     }
     if(isset($_POST["med_id"])){
         $sql = "insert into medstock(med_id, quantity,apt_id,t_date) 
@@ -20,23 +21,42 @@
 <html>
     <body>
     
-    <h1><?php echo $pname?></h1>
+    <h1><?php echo $_SESSION["pname"]?></h1>
     <h3>Medications</h3>
     <?php 
-        $sql = "SELECT pm.med_id, pm.apt_id, pm.date,
-    m.med_name ,pm.per_dose,pm.per_day,sum(pm.num_days) 'num_days',sum(pm.num_months) 'num_months',
-    sum(meds_requested.requested) AS 'Meds Requested',-1*COALESCE(meds_provided.provided, 0) AS 'Meds Provided',
-    (sum(meds_requested.requested) + COALESCE(meds_provided.provided, 0)) AS 'Difference' FROM  patients_meds pm
-JOIN medication m ON m.med_id = pm.med_id 
-JOIN appointments a ON a.id = pm.apt_id
-JOIN patient p ON p.pat_id = a.patient_id
-LEFT JOIN (SELECT med_id, apt_id,per_dose * per_day * num_days AS requested FROM patients_meds 
-GROUP BY med_id, apt_id) AS meds_requested ON pm.med_id = meds_requested.med_id AND pm.apt_id = meds_requested.apt_id
-LEFT JOIN (SELECT med_id, apt_id, sum(quantity) AS provided FROM medstock 
-GROUP BY med_id, apt_id ) AS meds_provided ON pm.med_id = meds_provided.med_id AND pm.apt_id = meds_provided.apt_id
-WHERE pm.time_ad IS NULL and pm.apt_id=".$_SESSION["id"]."
-GROUP BY med_id, apt_id
-ORDER BY pm.date;";
+        $sql = "SELECT *
+FROM (
+    SELECT pm.med_id, pm.apt_id,pm.date,m.med_name,pm.per_dose,pm.per_day,
+        SUM(pm.num_days) AS 'num_days',
+        SUM(pm.num_months) AS 'num_months',
+        SUM(meds_requested.requested) AS 'Meds Requested',
+        -1 * COALESCE(meds_provided.provided, 0) AS 'Meds Provided',
+        (SUM(meds_requested.requested) + COALESCE(meds_provided.provided, 0)) AS 'Difference' 
+    FROM  
+        patients_meds pm
+    JOIN 
+        medication m ON m.med_id = pm.med_id 
+    JOIN 
+        appointments a ON a.id = pm.apt_id
+    JOIN 
+        patient p ON p.pat_id = a.patient_id
+    LEFT JOIN 
+        (SELECT med_id, apt_id, per_dose * per_day * num_days AS requested FROM patients_meds 
+         GROUP BY med_id, apt_id) AS meds_requested 
+        ON pm.med_id = meds_requested.med_id AND pm.apt_id = meds_requested.apt_id
+    LEFT JOIN 
+        (SELECT med_id, apt_id, SUM(quantity) AS provided FROM medstock 
+         GROUP BY med_id, apt_id ) AS meds_provided 
+        ON pm.med_id = meds_provided.med_id AND pm.apt_id = meds_provided.apt_id
+    WHERE 
+        pm.time_ad IS NULL AND pm.apt_id = 17
+    GROUP BY 
+        med_id, apt_id
+) AS subquery
+WHERE 
+    Difference != 0
+ORDER BY 
+    date;";
         $result = $conn->query($sql);
         echo "<table><tr><th>Date</th><th>Medication</th><th>Per Dose</th><th>Per Day</th><th>Number of Days</th><th>Quantity</th><th>Refill for(Months)</th><th>Meds Requested</th><th>Meds Provided</th><th>Remainder</th><th>Dispense</th><th></th></tr>";
         if ($result->num_rows > 0) {

@@ -298,7 +298,7 @@
         $sql = "SELECT date,vitals.vital_name,measure FROM `patients_vits` 
         join vitals on vitals.vit_id = patients_vits.vit_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
         $result = $conn->query($sql); 
-        echo "<table><tr><th>Date</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Diastolic Blood Pressure</th><th>Systolic Blood Pressure</th><th>Oxygen Saturation</th></tr>";
+        echo "<table><tr><th>Date</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Diastolic Blood Pressure</th><th>Oxygen Saturation</th><th>Systolic Blood Pressure</th></tr>";
         if ($result->num_rows > 0) {
             if ($result->num_rows > 0) {
                 $rowCounter = 0;
