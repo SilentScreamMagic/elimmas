@@ -116,6 +116,19 @@
 <html>
 
 <body>
+    <script> 
+        function toggleTransparency(input) {
+            if(document.getElementById(input).style.visibility == "visible"){
+                document.getElementById(input).style.visibility = "hidden";
+            }else{
+                document.getElementById(input).style.visibility = "visible"
+            }
+        }
+        function toggleExpand() {
+            var div = document.getElementById('expandableDiv');
+            div.classList.toggle('expanded');
+        }
+    </script>
 <h1><?php echo $pname?></h1>
 <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'notes')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Notes</button>
@@ -131,6 +144,8 @@
 
 <div id="notes" class="tabcontent">
     <h3>Notes</h3>
+    <button  onclick="toggleTransparency('nur_notes')">Nurse's Notes</button>
+    <button onclick="toggleTransparency('doc_notes')">Doctor's Notes</button>
     <form action= "" method="post">
         <?php
         $sql = "SELECT `nur_notes` FROM `appointments` WHERE id =".$_SESSION["apt_id"];
@@ -139,6 +154,42 @@
         <textarea name="nur_notes" cols="70" rows="10"><?php echo $notes["nur_notes"];?></textarea>
         <input type="submit" value="Submit"><br><br>
     </form>
+    <div id="doc_notes" style="visibility: hidden;" class="scrollable-container">
+            <h1>Doctor's Notes</h1>
+            <?php
+            $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br><br>') notes FROM `notes`
+                inner join appointments on notes.apt_id = appointments.id
+                where appointments.id =$_SESSION[apt_id]
+                GROUP by cast(notes.date as date)
+                order by notes.date;;";
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
+            echo '<div class="date">' . $row["date"] . '</div>';
+            echo $row["notes"];
+            echo '</div>';
+                }
+            }
+           
+            ?>
+    </div>
+    <div id="nur_notes" style="visibility: hidden;" class="scrollable-container">
+            <h1>Nurses's Notes</h1>
+            <?php
+            $sql = "SELECT date,nur_notes FROM `appointments` WHERE patient_id = ".$_SESSION["apt_id"]." order by date;";
+            $result = $conn->query($sql);
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                echo '<div class="text-box">';
+            echo '<div class="date">' . $row["date"] . '</div>';
+            echo $row["nur_notes"];
+            echo '</div>';
+                }
+            }
+           
+            ?>
+    </div>
 </div>   
 
 <div id="rooms" class="tabcontent">
@@ -477,6 +528,8 @@
         </tbody>
     </table>
 </div>
+
+
 </body>
 </html>
 <?php

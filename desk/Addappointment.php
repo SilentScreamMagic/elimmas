@@ -171,8 +171,8 @@ button:hover {
             </div>
 
             <div class="form-group">
-                <label for="medication_prescribed">Medication Prescribed:</label>
-                <textarea id="medication_prescribed" name="medication_prescribed" rows="4" cols="50"></textarea>
+                <label for="medical_history">Medical History</label>
+                <textarea id="medical_history" name="medical_history" rows="4" cols="50"></textarea>
             </div>
         
             <button class="form-button" type="submit" value="Submit">Submit</button>

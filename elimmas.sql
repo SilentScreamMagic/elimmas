@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 29, 2024 at 02:07 AM
+-- Generation Time: Aug 15, 2024 at 06:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -56,7 +56,8 @@ INSERT INTO `appointments` (`id`, `patient_id`, `doc_id`, `date`, `time`, `diagn
 (19, 4, 'padi.ayertey', '2024-03-21', '09:00:55', NULL, 'Consultation', NULL, NULL, 'fdgh', 'yes', 'fgvb', NULL, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', NULL, ''),
 (20, 4, 'padi.ayertey', '2024-03-21', '09:00:55', NULL, 'In-Patient', '2024-07-17 20:39:48', NULL, 'fdgh', 'yes', 'fgvb', NULL, 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?', NULL, 'testing testing 456'),
 (25, 5, 'padi.ayertey', '2024-06-25', '20:00:00', 'Pregnancy', 'In-Patient', '2024-06-25 19:56:54', '2024-07-17 18:30:33', 'Labour', 'yes', 'regular', '', NULL, NULL, ''),
-(34, 3, 'padi.ayertey', '2024-07-24', '17:45:00', '', 'In-Patient', '2024-07-22 19:53:24', NULL, 'Stable', 'yes', 'regular', '', 'Input from site test', NULL, NULL);
+(34, 3, 'padi.ayertey', '2024-07-24', '17:45:00', '', 'In-Patient', '2024-07-22 19:53:24', NULL, 'Stable', 'yes', 'regular', '', 'Input from site test', NULL, NULL),
+(35, 6, 'padi.ayertey', '2024-08-06', '07:53:00', 'Elective C/S', 'In-Patient', '2024-08-07 16:49:34', NULL, 'Stable', 'yes', 'regular', '', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -78,7 +79,7 @@ INSERT INTO `beds` (`bed_id`, `room_id`, `status`) VALUES
 (1, 1, 'occupied'),
 (2, 1, 'occupied'),
 (3, 1, 'clean'),
-(4, 2, 'clean'),
+(4, 2, 'occupied'),
 (5, 2, 'clean'),
 (6, 3, 'clean'),
 (7, 3, 'clean'),
@@ -326,7 +327,10 @@ INSERT INTO `medstock` (`apt_id`, `med_id`, `quantity`, `stock_id`, `t_date`, `d
 (NULL, 3, -10, 9, '2024-07-24 10:40:40', 'Theatre'),
 (NULL, 3, -10, 10, '2024-07-24 10:40:59', 'Nurses'),
 (NULL, 3, -10, 11, '2024-07-24 10:41:22', 'Nurses'),
-(NULL, 7, -10, 12, '2024-07-24 10:41:51', 'Nurses');
+(NULL, 7, -10, 12, '2024-07-24 10:41:51', 'Nurses'),
+(NULL, 1, -50, 13, '2024-08-15 15:53:46', 'Theatre'),
+(17, 3, -1, 14, '2024-08-15 16:08:04', NULL),
+(17, 32, -18, 15, '2024-08-15 16:21:16', NULL);
 
 -- --------------------------------------------------------
 
@@ -390,7 +394,8 @@ INSERT INTO `patient` (`FName`, `LName`, `DOB`, `gender`, `financial_type`, `cas
 ('Sarah', 'Ala', '2012-03-05', 'Male', 'Insurance', 'Headache', 2, NULL, NULL, 'Single', '67 Lashibi Lane', '0234221124', 'nasm@gmail.com', NULL, NULL, NULL, '2024-06-05', NULL, NULL, NULL, NULL),
 ('Bryan Tetteh Emahi', 'Ayertey', '2024-06-12', 'Female', 'Insurance', 'Prostate Exam', 3, 'Bryan Tetteh Emahi', 'Ayertey', 'Single', 'P.O. Box SK 1605', '0531691557', 'm@b', '0531691557', 'hm@b', '', '2024-06-12', '2024-06-12', 0, '', ''),
 ('Elkan', 'Ayertey', '2024-03-01', 'Male', 'Insurance', 'Ear Check Up', 4, '', '', 'Single', 'Local', '0531691557', 't@b', '', '', '', '2024-06-01', '2024-06-01', 0, '', ''),
-('Maame', 'Ntim', '2024-02-06', 'Female', 'Insurance', 'asdscsc', 5, 'Bryan Tetteh Emahi', 'Ayertey', 'Single', 'njvdfsam', '0531691545', 'm@b', '', '', 'adsfdg', '2024-06-25', '2024-06-11', 0, '', '');
+('Maame', 'Ntim', '2024-02-06', 'Female', 'Insurance', 'asdscsc', 5, 'Bryan Tetteh Emahi', 'Ayertey', 'Single', 'njvdfsam', '0531691545', 'm@b', '', '', 'adsfdg', '2024-06-25', '2024-06-11', 0, '', ''),
+('Faustina', 'Achampong', '1979-11-11', 'Female', 'Insurance', 'Elective C/S', 6, 'Richard', 'Boateng', 'Married', 'sdfghujkl', '0244964476', 'm@b', '', '', '', '2024-08-07', '0000-00-00', 0, '', 'Green');
 
 -- --------------------------------------------------------
 
@@ -421,7 +426,9 @@ INSERT INTO `patients_beds` (`assign_id`, `bed_id`, `apt_id`, `end_date`, `start
 (13, 2, 25, '2024-07-10 23:07:11', '2024-06-25 20:11:45'),
 (16, 3, 25, '2024-07-17 18:31:59', '2024-07-10 23:07:11'),
 (17, 1, 20, NULL, '2024-07-19 12:51:22'),
-(20, 2, 34, NULL, '2024-07-22 19:52:46');
+(20, 2, 34, NULL, '2024-07-22 19:52:46'),
+(22, 3, 35, NULL, '2024-08-07 16:49:34'),
+(23, 4, 35, NULL, '2024-08-07 16:50:43');
 
 -- --------------------------------------------------------
 
@@ -604,7 +611,63 @@ INSERT INTO `patients_vits` (`p_vit_id`, `date`, `apt_id`, `vit_id`, `measure`) 
 (63, '2024-07-24 17:03:52', 20, 3, 45),
 (64, '2024-07-24 17:03:52', 20, 4, 25),
 (65, '2024-07-24 17:03:52', 20, 6, 98),
-(66, '2024-07-24 17:03:52', 20, 5, 10);
+(66, '2024-07-24 17:03:52', 20, 5, 10),
+(67, '2024-08-07 16:58:13', 35, 1, 36.4),
+(68, '2024-08-07 16:58:13', 35, 2, 88),
+(69, '2024-08-07 16:58:13', 35, 3, 17),
+(70, '2024-08-07 16:58:13', 35, 4, 77),
+(71, '2024-08-07 16:58:13', 35, 6, 97),
+(72, '2024-08-07 16:58:13', 35, 5, 126);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `patient_prog`
+--
+
+CREATE TABLE `patient_prog` (
+  `p_prog_id` int(11) NOT NULL,
+  `prog_id` int(11) NOT NULL,
+  `apt_id` int(11) NOT NULL,
+  `measure` varchar(50) NOT NULL,
+  `date` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `patient_prog`
+--
+
+INSERT INTO `patient_prog` (`p_prog_id`, `prog_id`, `apt_id`, `measure`, `date`) VALUES
+(2, 1, 34, '10', '2024-07-31 01:13:04');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `preg_progress`
+--
+
+CREATE TABLE `preg_progress` (
+  `prog_id` int(11) NOT NULL,
+  `prog_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `preg_progress`
+--
+
+INSERT INTO `preg_progress` (`prog_id`, `prog_name`) VALUES
+(1, 'Cervix'),
+(2, 'Descent of Head'),
+(3, 'Amniotic Fluid'),
+(4, 'Contractions Per 10 mini'),
+(6, 'Descent of Head'),
+(7, 'Oxytocin'),
+(8, 'Contractions Per 10 mini'),
+(9, 'Fetal Heart Rate'),
+(10, 'Body Temperature'),
+(11, 'Protein'),
+(12, 'Acetone'),
+(13, 'Volume');
 
 -- --------------------------------------------------------
 
@@ -874,6 +937,20 @@ ALTER TABLE `patients_vits`
   ADD KEY `vit_id` (`vit_id`);
 
 --
+-- Indexes for table `patient_prog`
+--
+ALTER TABLE `patient_prog`
+  ADD PRIMARY KEY (`p_prog_id`),
+  ADD KEY `prog_id` (`prog_id`),
+  ADD KEY `apt_id` (`apt_id`);
+
+--
+-- Indexes for table `preg_progress`
+--
+ALTER TABLE `preg_progress`
+  ADD PRIMARY KEY (`prog_id`);
+
+--
 -- Indexes for table `procedures`
 --
 ALTER TABLE `procedures`
@@ -911,7 +988,7 @@ ALTER TABLE `vitals`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `beds`
@@ -959,7 +1036,7 @@ ALTER TABLE `medication`
 -- AUTO_INCREMENT for table `medstock`
 --
 ALTER TABLE `medstock`
-  MODIFY `stock_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `stock_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `notes`
@@ -971,13 +1048,13 @@ ALTER TABLE `notes`
 -- AUTO_INCREMENT for table `patient`
 --
 ALTER TABLE `patient`
-  MODIFY `pat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `pat_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `patients_beds`
 --
 ALTER TABLE `patients_beds`
-  MODIFY `assign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `assign_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `patients_cons`
@@ -1019,7 +1096,19 @@ ALTER TABLE `patients_procmeds`
 -- AUTO_INCREMENT for table `patients_vits`
 --
 ALTER TABLE `patients_vits`
-  MODIFY `p_vit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `p_vit_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+
+--
+-- AUTO_INCREMENT for table `patient_prog`
+--
+ALTER TABLE `patient_prog`
+  MODIFY `p_prog_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `preg_progress`
+--
+ALTER TABLE `preg_progress`
+  MODIFY `prog_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `procedures`
@@ -1136,6 +1225,13 @@ ALTER TABLE `patients_procmeds`
 ALTER TABLE `patients_vits`
   ADD CONSTRAINT `patients_vits_ibfk_1` FOREIGN KEY (`apt_id`) REFERENCES `appointments` (`id`),
   ADD CONSTRAINT `patients_vits_ibfk_2` FOREIGN KEY (`vit_id`) REFERENCES `vitals` (`vit_id`);
+
+--
+-- Constraints for table `patient_prog`
+--
+ALTER TABLE `patient_prog`
+  ADD CONSTRAINT `patient_prog_ibfk_1` FOREIGN KEY (`prog_id`) REFERENCES `preg_progress` (`prog_id`),
+  ADD CONSTRAINT `patient_prog_ibfk_2` FOREIGN KEY (`apt_id`) REFERENCES `appointments` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
