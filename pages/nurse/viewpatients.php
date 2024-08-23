@@ -1,6 +1,6 @@
 <?php
 include "../conn.php";
-include "../nav.php";
+include "../searchbar2.php";
 //include "../table.html";
 
 if(isset($_POST['id'])){
@@ -36,7 +36,6 @@ $result = $conn->query($sql);
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Corona Admin</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="../../assets/vendors/css/vendor.bundle.base.css">
@@ -51,11 +50,13 @@ $result = $conn->query($sql);
     <link rel="shortcut icon" href="../../assets/images/favicon.png" />
   </head>
   <body>
+  <div class="container-scroller">
+    <?php include "../nav.php";?>
   <div class="main-panel">
-          <div class="content-wrapper">
+        <div class="content-wrapper">
             
             
-            
+        
             <div class="row">
               <div class="col-sm-4 grid-margin">
                 <div class="card">
@@ -119,7 +120,8 @@ $result = $conn->query($sql);
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Order Status</h4>
+                    <h4 class="card-title">Current Patients</h4>
+                    
                     <div class="table-responsive">
                     
                         <table class ='table'>

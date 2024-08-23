@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows == 1) {
        
         $row = $result->fetch_assoc();
-        $_SESSION['user'] = [$username,$row["user_type"]];
+        $_SESSION['user'] = [$username,$row["user_type"],$row["Name"]];
         if($row["user_type"]=="Doctor"){
             header("Location: ./doc/docapps.php");
         }

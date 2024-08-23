@@ -1,13 +1,5 @@
 <?php
-include "../conn.php";
-//include "../nav.php";
-//include "../table.html";
-include "../searchbar2.php";
-$sql = "SELECT patient.pat_id, patient.registration_date 'date',concat(Fname,' ',LName) 'Patient Name' FROM patient 
- order by `Patient Name` ;";
-$result = $conn->query($sql);
-?>
-<!DOCTYPE html>
+$table = "<!DOCTYPE html>
 <html lang='en'>
   <head>
     <!-- Required meta tags -->
@@ -38,34 +30,15 @@ $result = $conn->query($sql);
                   <div class='card-body'>
                     <h4 class='card-title'>Current Patients</h4>
                     <div class='table-responsive'>
-                        <input type='text' id='tableFilterInput' class='form-control dropdown-input' placeholder='Filter by column value...'>
-                        <table id='filterTable' class ='table'>
+                    
+                        <table class ='table'>
                         <thead>
                             <tr>
-                                <th>Registration Date</th><th>Patient Name</th><th></th>
+                                %s
                             </tr>
                         </thead>
                         <tbody>
-                        <?php
-                            if ($result){ 
-                                if ($result->num_rows > 0) {
-                                    while($row = $result->fetch_assoc()) {
-                                        echo "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td>
-                                    <td> 
-                                    <div style ='display: inline-block;'>
-                                        <form action='patapthistory.php' method='post'>
-                                            <input type='hidden' name='id' value=".$row['pat_id'].">
-                                            <input style='width: 30px; height: 30px;' type='submit' value='&#128065;'>
-                                        </form>
-                                    </div>
-                                    </td>
-                                    
-                                    </tr>";
-                                    }
-                                } 
-                            }
-                            $conn->close();
-                        ?>
+                        %s
                         </tbody>
                         </table>
                     </div>
@@ -84,4 +57,4 @@ $result = $conn->query($sql);
             </div>
           </footer>
           <!-- partial -->
-        </div>
+        </div>";
