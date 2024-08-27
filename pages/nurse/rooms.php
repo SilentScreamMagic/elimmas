@@ -1,7 +1,7 @@
 <?php
  include "../conn.php";
- include "../nav.php";
- include "../table.html";
+ //include "../nav.php";
+ //include "../table.html";
 if(isset($_POST["bed_id"])){
     if(isset($_POST["new_bed"])&&$_POST["new_bed"]!=''){
         
@@ -79,7 +79,7 @@ if(isset($_POST["bed_id"])){
 
 .bed {
     display: block;
-    width: 150px;
+    width: auto;
     height: 50px;
     background-color: lightblue;
     margin: 5px;
@@ -113,10 +113,37 @@ if(isset($_POST["bed_id"])){
     <title>Rooms and Beds</title>
 </head>
 <body>
-    <div class="container">
-    <h1>Rooms and Beds</h1>
-    <div class="rooms">
-    <?php
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <!-- plugins:css -->
+    <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
+    <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel='stylesheet' href='../../assets/css/style.css'>
+    <!-- End layout styles -->
+    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+  </head>
+  <body>
+  <div class='container-scroller'>
+  
+    <?php include '../nav.php';?>
+  <div class='main-panel'>
+        <div class='content-wrapper'>
+            <div class='row '>
+              <div class='col-12 grid-margin'>
+                <div class='card'>
+                  <div class='card-body'>
+                    <h4 class='card-title'>Current Patients</h4>
+                    <?php
     $count = 0;
     for ($i=1; $i < sizeof($bedsArray)+1; $i++) { 
         echo '<div class="room">';
@@ -160,8 +187,23 @@ if(isset($_POST["bed_id"])){
         echo '</div>'; // Close beds div
         echo '</div>'; // Close room div
     }?>
-        </div> <!-- Close rooms div -->
-    </div> <!-- Close container div -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class='footer'>
+            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
+              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
+              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+     <!-- Close container div -->
 <script>
 function openOption(id) {
     let bed = "transferBed" +id;

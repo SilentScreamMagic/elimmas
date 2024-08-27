@@ -34,7 +34,6 @@
                     showRow = true
                 }else{
                     var cellValue = cells[1].textContent || cells[1].innerText;
-                    console.log(cellValue);
                     if (cellValue.toUpperCase().indexOf(filter) > -1) {
                         showRow = true;
                     }

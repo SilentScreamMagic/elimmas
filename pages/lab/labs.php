@@ -1,7 +1,7 @@
 <?php
 include "../conn.php";
-include "../nav.php";
-include "../table.html";
+//include "../nav.php";
+//include "../table.html";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $targetDir = "../uploads/";
     $targetFile = $targetDir . basename($_FILES["fileToUpload"]["name"]);
@@ -40,19 +40,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html>
 <body>
-
-<h2>Upload File</h2>
-<div id="lab_id">
-    <?php 
-    $sql = "SELECT patients_labs.p_lab_id,patients_labs.date, appointments.patient_id, CONCAT(patient.FName, ' ', patient.LName) AS 'Patient Name', labs.lab_name,patients_labs.type, patients_labs.lab_results, patients_labs.lab_date FROM patients_labs 
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <!-- plugins:css -->
+    <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
+    <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel='stylesheet' href='../../assets/css/style.css'>
+    <!-- End layout styles -->
+    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+  </head>
+  <body>
+  <div class='container-scroller'>
+  
+    <?php include '../nav.php';?>
+  <div class='main-panel'>
+        <div class='content-wrapper'>
+            <div class='row '>
+              <div class='col-12 grid-margin'>
+                <div class='card'>
+                  <div class='card-body'>
+                    <h4 class='card-title'>Lab Requests</h4>
+                    <?php 
+    $sql = "SELECT patients_labs.p_lab_id,patients_labs.date, appointments.patient_id, CONCAT(patient.FName, ' ', patient.LName) AS 'Patient Name', labs.lab_name, patients_labs.lab_results, patients_labs.lab_date FROM patients_labs 
 INNER JOIN appointments ON patients_labs.apt_id = appointments.id 
 INNER JOIN patient ON patient.pat_id = appointments.patient_id 
 INNER JOIN labs ON patients_labs.lab_id = labs.lab_id;";
-    $result = $conn->query($sql);
-   echo "<div class='container'><div class='table-wrapper'><table><thead><tr><th>Date</th><th>Patient Name</th><th>Type</th><th>Results</th></tr>";
+    $result = $conn->query($sql);?>
+                    <div class='table-responsive'>
+                    
+                        <table class ='table'>
+                        <thead>
+                            <tr>
+                                <th>Date</th><th>Patient Name</th><th>Lab Name</th><th>Results</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-            $string = "<tbody><tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["type"]."</td>";
+            $string = "<tbody><tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["lab_name"]."</td>";
             if (is_null($row["lab_results"])) {
                 $string =$string ."
                 <td><form action='labs.php' method='post' enctype='multipart/form-data'>
@@ -68,8 +104,30 @@ INNER JOIN labs ON patients_labs.lab_id = labs.lab_id;";
         }
         
     }
-    echo "</tbody></table></div></div>";
     ?>
+                        </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class='footer'>
+            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
+              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
+              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+<h2>Upload File</h2>
+<div id="lab_id">
+   
+   
 </div>
 
 </body>

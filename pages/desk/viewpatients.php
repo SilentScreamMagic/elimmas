@@ -36,7 +36,7 @@ $result = $conn->query($sql);
                   <div class="card-body">
                     <h4 class="card-title">All Patients</h4>
                     <div class="table-responsive">
-                      <input type="text" id='tableFilterInput' class="form-control dropdown-input" placeholder="Search products">
+                      <input type="text" id='tableFilterInput' class="form-control dropdown-input" placeholder="Search Patients">
                 
                         <table id='filterTable' class ='table'>
                         <thead>

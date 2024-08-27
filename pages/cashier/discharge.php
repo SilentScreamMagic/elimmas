@@ -1,6 +1,6 @@
 <?php
 include "../conn.php";
-require_once '../packages/dompdf/vendor/autoload.php';
+require_once '../../packages/dompdf/vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
@@ -308,7 +308,7 @@ $dompdf->render();
 
 $pdf = $dompdf->output();
 
-$fname = "../files/$pname bill.pdf";
+$fname = "../../files/$pname bill.pdf";
 file_put_contents($fname, $pdf);
 
 header("Location: $fname");

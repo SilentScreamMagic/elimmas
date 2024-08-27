@@ -1,6 +1,6 @@
 <?php
 include "../conn.php";
-require_once '../packages/dompdf/vendor/autoload.php';
+require_once '../../packages/dompdf/vendor/autoload.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
@@ -205,7 +205,7 @@ $dompdf->render();
 
 $pdf = $dompdf->output();
 
-$fname = "../files/$patient_name discharge notes.pdf";
+$fname = "../../files/$patient_name discharge notes.pdf";
 file_put_contents($fname, $pdf);
 
 header("Location: $fname");

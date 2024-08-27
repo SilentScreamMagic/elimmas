@@ -1,25 +1,62 @@
 <?php
 require_once "../conn.php";
-include "../nav.php";
-include "../table.html";
-$date = date("Y-m-d");
+//include "../nav.php";
+//include "../table.html";
+
 
 
 ?>
 
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <!-- plugins:css -->
+    <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
+    <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel='stylesheet' href='../../assets/css/style.css'>
+    <!-- End layout styles -->
+    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+  </head>
+  <body>
+  <div class='container-scroller'>
+  
+    <?php include '../nav.php';?>
+  <div class='main-panel'>
+        <div class='content-wrapper'>
+            <div class='row '>
+              <div class='col-12 grid-margin'>
+                <div class='card'>
+                  <div class='card-body'>
+                    <h4 class='card-title'>Medication Requests</h4>
+                    <?php
+                    $date = date("Y-m-d");
+                        $sql = "SELECT apt_id,concat(Fname,' ',LName) 'Patient Name',COUNT(DISTINCT med_id)'Requests Pending' FROM `patients_meds` 
+                        inner join appointments on patients_meds.apt_id = appointments.id
+                        INNER join patient on appointments.patient_id =patient.pat_id
+                        where patients_meds.time_ad is null
+                        GROUP by apt_id;";
+                        $result = $conn->query($sql);
+                        ?>
+                    <div class='table-responsive'>
+                    
+                        <table class ='table'>
+                        <thead>
+                            <tr>
+                            <th>Patient Name</th><th>Medication Requests Pending</th><th>Requests</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
 
-<?php
-
-$sql = "SELECT apt_id,concat(Fname,' ',LName) 'Patient Name',COUNT(DISTINCT med_id)'Requests Pending' FROM `patients_meds` 
-inner join appointments on patients_meds.apt_id = appointments.id
-INNER join patient on appointments.patient_id =patient.pat_id
-where patients_meds.time_ad is null
-GROUP by apt_id;";
-
-$result = $conn->query($sql);
-
-echo "<div class='container'> <div class='table-wrapper'><thead>";
-echo "<table><tr><th>Patient Name</th><th>Medication Requests Pending</th><th>Requests</th></tr></thead>";
  
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
@@ -32,9 +69,29 @@ echo "<table><tr><th>Patient Name</th><th>Medication Requests Pending</th><th>Re
            echo $string;
         }
 
-            
+       
         }
-        echo "</tbody></table></div></di>";
     $conn->close();
 ?>
+                        </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class='footer'>
+            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
+              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
+              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+
+
 

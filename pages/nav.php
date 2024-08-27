@@ -2,7 +2,6 @@
   session_start();
   $nav=[];
   if(isset($_SESSION["user"])){
-
     if ($_SESSION["user"][1]=="Doctor") {
     $nav =[["../doc/docapps.php","Appointments"],
           ["../doc/docpatients.php","Patients"]];
@@ -60,6 +59,7 @@
       }
   }
   }else{
+    echo "Test";
     header("Location: ../index.php");
   }
   
