@@ -128,7 +128,7 @@ $result = $conn->query($sql);
 
                                 
                                 $conn->close();
-?>
+                            ?>
                         </tbody>
                         </table>
                     </div>
@@ -150,6 +150,35 @@ $result = $conn->query($sql);
         </div>
     </body>
 </html>
-
+<script>
+    document.getElementById('create').innerHTML +=`<li class='nav-item dropdown d-none d-lg-block'>
+                <a class='nav-link btn btn-success create-new-button' id='createbuttonDropdown' data-toggle='dropdown' aria-expanded='false' href='#'>+ Create ...</a>
+                <div class='dropdown-menu dropdown-menu-right navbar-dropdown preview-list' aria-labelledby='createbuttonDropdown'>
+                  <h6 class='p-3 mb-0'>Projects</h6>
+                  <div class='dropdown-divider'></div>
+                  <a class='dropdown-item preview-item' href ="./addpatient.html">
+                    <div class='preview-thumbnail'>
+                      <div class='preview-icon bg-dark rounded-circle'>
+                        <i class='mdi mdi-file-outline text-primary'></i>
+                      </div>
+                    </div>
+                    <div class='preview-item-content'>
+                      <p class='preview-subject ellipsis mb-1'>Add Patient</p>
+                    </div>
+                  </a>
+                  <div class='dropdown-divider'></div>
+                  <a class='dropdown-item preview-item' href ="./Addappointment.php">
+                    <div class='preview-thumbnail'>
+                      <div class='preview-icon bg-dark rounded-circle'>
+                        <i class='mdi mdi-web text-info'></i>
+                      </div>
+                    </div>
+                    <div class='preview-item-content'>
+                      <p class='preview-subject ellipsis mb-1'>Add Appointment</p>
+                    </div>
+                  </a>
+                </div>
+              </li>`;
+</script>
 
 
