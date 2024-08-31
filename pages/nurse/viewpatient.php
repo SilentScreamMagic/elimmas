@@ -1,4 +1,4 @@
-<?php
+<th?php
     
 ?>
 <!DOCTYPE html>
@@ -106,6 +106,11 @@
         $result = $conn->query($sql);
         $ids = ["","","","","","","defaultOpen"];
     }
+    if (isset($_POST["deltable"])){
+        $sql = "UPDATE $_POST[deltable] SET `deleted`=1 WHERE $_POST[idtype] = $_POST[delid]";
+        $result = $conn->query($sql);
+    
+     } 
     $sql = "SELECT b.bed_id, r.* FROM beds b JOIN rooms r ON b.room_id = r.room_id WHERE b.status = 'clean';";
     $result = $conn->query($sql);
     $wards = [];
@@ -138,8 +143,9 @@
            $meds[$row["med_id"]] = $row["med_name"];
         }
     }
-    //<button class="tablinks" onclick="openTab(event, 'rooms')" <?php if('defaultOpen'==$ids[0]) echo 'id ="'.$ids[0].'"';?>>Wards</button>
-    ?>
+   
+   //* <button class="tablinks" onclick="openTab(event, 'rooms')" <?php if('defaultOpen'==$ids[0]) echo 'id ="'.$ids[0].'"';>Wards</button>
+   ?>
   <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
   
   <div class='main-panel'>
@@ -185,7 +191,7 @@
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
-                                $sql = "SELECT patients_beds.start_date,beds.bed_id ,rooms.room_id,rooms.capacity,patients_beds.start_date,patients_beds.end_date FROM `patients_beds` 
+                                $sql = "SELECT assign_id,patients_beds.start_date,beds.bed_id ,rooms.room_id,rooms.capacity,patients_beds.start_date,patients_beds.end_date FROM `patients_beds` 
                                 JOIN beds on beds.bed_id = patients_beds.bed_id 
                                 join rooms on rooms.room_id = beds.room_id where apt_id = ".$_SESSION["apt_id"]." order by start_date;";
 
@@ -196,14 +202,19 @@
                                     <table class ='table'>
                                     <thead>
                                         <tr>
-                                        <th>Date</th><th>Room No.</th><th>Bed No.</th><th>Start Date</th><th>End Date</th>
+                                        <th></th><th>Date</th><th>Room No.</th><th>Bed No.</th><th>Start Date</th><th>End Date</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                             if ($result->num_rows > 0) {
                                                 while($row = $result->fetch_assoc()) {
-                                                    echo "<tr><td>".$row["start_date"]."</td><td>".$row["room_id"]."</td><td>".$row["bed_id"]."</td><td>".$row["start_date"]."</td><td>".$row["end_date"]."</td></tr>";
+                                                    echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['assign_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_bds'>
+                                                <input type='hidden' name='idtype' value= 'assign_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td><td>".$row["start_date"]."</td><td>".$row["room_id"]."</td><td>".$row["bed_id"]."</td><td>".$row["start_date"]."</td><td>".$row["end_date"]."</td></tr>";
                                                 }
                                                 
                                             }
@@ -235,22 +246,27 @@
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
-                                $sql = "SELECT date,consumables.con_name,consumables.type,consumables.price,patients_cons.count FROM `patients_cons` 
-                                join consumables on consumables.con_id = patients_cons.con_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
+                                $sql = "SELECT p_cons_id,date,consumables.con_name,consumables.type,consumables.price,patients_cons.count FROM `patients_cons` 
+                                join consumables on consumables.con_id = patients_cons.con_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
                                 $result = $conn->query($sql);?>
                                 <div class='table-responsive'>
                                 
                                     <table class ='table'>
                                         <thead>
                                             <tr>
-                                                <th>Date</th><th>Type</th><th>Consumables Name</th><th>Count</th>
+                                                <th></th><th>Date</th><th>Type</th><th>Consumables Name</th><th>Count</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
                                             if ($result->num_rows > 0) {
                                                 while($row = $result->fetch_assoc()) {
-                                                    echo "<tr><td>".$row["date"]."</td><td>".$row["type"]."</td><td>".$row["con_name"]."</td><td>".$row["count"]."</td></tr>";
+                                                    echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['p_cons_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_cons'>
+                                                <input type='hidden' name='idtype' value= 'p_cons_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td><td>".$row["date"]."</td><td>".$row["type"]."</td><td>".$row["con_name"]."</td><td>".$row["count"]."</td></tr>";
                                                 }
                                                 
                                             }
@@ -276,24 +292,29 @@
                             <input type="submit" value="Submit"><br><br>
                         </form>
                         <?php 
-                            $sql = "SELECT date,meals.meal_name,meals.price FROM `patients_meals` 
-                            join meals on meals.meal_id = patients_meals.meal_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
+                            $sql = "SELECT p_meal_id,date,meals.meal_name,meals.price FROM `patients_meals` 
+                            join meals on meals.meal_id = patients_meals.meal_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
                             $result = $conn->query($sql);?>
                             <div class='table-responsive'>
                     
                                 <table class ='table'>
                                     <thead>
                                         <tr>
-                                        <th>Date</th><th>Meals Name</th>
+                                        <th></th><th>Date</th><th>Meals Name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                     <?php
                                     if ($result->num_rows > 0) {
                                         while($row = $result->fetch_assoc()) {
-                                            echo "<tr><td>".$row["date"]."</td><td>".$row["meal_name"]."</td></tr>";
+                                            echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['p_meal_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_meals'>
+                                                <input type='hidden' name='idtype' value= 'p_meal_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td><td>".$row["date"]."</td><td>".$row["meal_name"]."</td></tr>";
                                         }
-                                        
+             
                                     }
                                 ?>
                                     </tbody>
@@ -324,22 +345,27 @@
                         </form>
                         
                         <?php 
-                            $sql = "SELECT patients_procmeds.date,medication.med_name,medication.price,patients_procmeds.quantity FROM `patients_procmeds` 
-                            join medication on medication.med_id = patients_procmeds.med_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
+                            $sql = "SELECT p_ppmeds_id,patients_procmeds.date,medication.med_name,medication.price,patients_procmeds.quantity FROM `patients_procmeds` 
+                            join medication on medication.med_id = patients_procmeds.med_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
                             $result = $conn->query($sql);
                             ?>
                             <div class='table-responsive'>
                                 <table class ='table'>
                                 <thead>
                                     <tr>
-                                        <th>Date</th><th>Medication Name</th><th>Quantity</th>
+                                        <th></th><th>Date</th><th>Medication Name</th><th>Quantity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                             if ($result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
-                                    echo "<tr><td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["quantity"]."</td></tr>";
+                                    echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['p_ppmeds_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_procmeds'>
+                                                <input type='hidden' name='idtype' value= 'p_ppmeds_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td><td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["quantity"]."</td></tr>";
                                 }   
                             }
                         ?>
@@ -368,8 +394,8 @@
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
-                                $sql = "SELECT date,vitals.vital_name,measure FROM `patients_vits` 
-                                join vitals on vitals.vit_id = patients_vits.vit_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
+                                $sql = "SELECT p_vit_id,date,vitals.vital_name,measure FROM `patients_vits` 
+                                join vitals on vitals.vit_id = patients_vits.vit_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
                                 $result = $conn->query($sql); 
                                 ?>
                                 <div class='table-responsive'>
