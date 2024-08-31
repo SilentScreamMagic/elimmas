@@ -3,6 +3,7 @@
      //include "../nav.php";
      //include "../table.html";
     include "../tabs.html";
+    include "../accordian.php";
     if(isset($_POST["meal_id"])){
         $sql= "update patients_meals set served =now() where p_meal_id =".$_POST["meal_id"];
         $result = $conn->query($sql);
@@ -66,31 +67,49 @@
                         $result = $conn->query($sql);
                         ?>
                         <div class='table-responsive'>
-                            <table class ='table'>
-                            <thead>
-                                <tr>
-                                <th>Date</th><th>Patient Name</th><th>Ward</th><th>Meal</th><th>Served</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <?php
-                
-                        if ($result->num_rows > 0) {
-                            while($row = $result->fetch_assoc()) {
-                                $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td> Ward: ".$row["room_id"]." Bed ".$row["bed_id"]."</td><td>".$row["meal_name"]."</td>
-                                <td><form action='' method='post'>
-                                <input type='hidden' name='meal_id' value=".$row['p_meal_id'].">
-                                <input type='submit' value='Served!'>
-                            </form></td></tr>";
-                            echo $string;
-                            }
-                            
-                        }
-                      
-                    ?>
-                            </tbody>
-                            </table>
-                        </div>
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Patient Name</th>
+                <th>Ward</th>
+                <th>Meal</th>
+                <th>Served</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $meals = [];
+            if ($result->num_rows > 0) {
+                while($row = $result->fetch_assoc()) {
+                    $meals[$row["Patient Name"]][] = [$row['p_meal_id'], $row["date"], $row["room_id"], $row["bed_id"], $row["meal_name"]];
+                }
+            }
+
+            foreach ($meals as $name => $meal) {
+                echo "<tr>
+                        <td colspan='5'><button class='accordion' onclick='openAcc(`panel_$name`)'>".$name."</button></td>
+                      </tr>
+                      <tr id='panel_$name' class='panel' style='display: none;'>";
+                foreach ($meal as $key => $dets) {
+                    $string = "<td>".$dets[1]."</td>
+                               <td> Ward: ".$dets[2]." Bed: ".$dets[3]."</td>
+                               <td>".$dets[4]."</td>
+                               <td>
+                                   <form action='' method='post'>
+                                       <input type='hidden' name='meal_id' value=".$dets[0].">
+                                       <input type='submit' value='Served!'>
+                                   </form>
+                               </td>";
+                    echo $string;
+                }
+                echo "</tr>";
+            }
+            ?>
+        </tbody>
+    </table>
+</div>
+                 
                         
                     </div>
                     <div id="meals-completed" class="tabcontent">

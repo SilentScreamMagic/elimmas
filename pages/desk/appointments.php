@@ -1,41 +1,4 @@
 
-<?php
-require_once "../conn.php";
-//include "../nav.php";
-//include "../table.html";
-$date = date("Y-m-d");
-
-if (isset($_POST["appt_date"])){
-    $date = date("Y-m-d",strtotime($_POST["appt_date"]));
-}
-if (isset($_POST['id'])){
-    $date = $_POST["cdate"];
-    $sql = "update appointments set check_in = now() where id =".$_POST["id"];
-    $result = $conn->query($sql);
-    if(isset($_POST["bed"])){
-        $sql = "INSERT INTO `patients_beds` ( `bed_id`, `apt_id`, `start_date`) 
-                VALUES ( $_POST[bed],$_POST[id], now())";
-        $conn->query($sql);
-        $sql = "update beds set status = 'occupied' where bed_id = $_POST[bed]";
-    }
-}
-$sql = "SELECT room_id, bed_id,status FROM `beds` 
-    where status = 'clean'
-    order by beds.bed_id;";
- $result = $conn->query($sql);
- if ($result->num_rows > 0) {
-    $rooms = array();
-    while ($row = $result->fetch_assoc()) {
-        $rooms[$row["room_id"]][] = $row["bed_id"];
-    }
-}
-$sql = "SELECT pr.pat_id ,appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',appointments.date,appointments.time,appointments.type, appointments.check_in
-FROM patient pr 
-join appointments on pr.pat_id = appointments.patient_id
-where appointments.date = '$date' ;";
-
-$result = $conn->query($sql);
-?>
     <!DOCTYPE html>
 <html lang='en'>
   <head>
@@ -58,7 +21,42 @@ $result = $conn->query($sql);
   <body>
   <div class='container-scroller'>
   
-    <?php include '../nav.php';?>
+    <?php include '../nav.php';
+    require_once "../conn.php";
+    //include "../nav.php";
+    //include "../table.html";
+    $date = date("Y-m-d");
+    
+    if (isset($_POST["appt_date"])){
+        $date = date("Y-m-d",strtotime($_POST["appt_date"]));
+    }
+    if (isset($_POST['id'])){
+        $date = $_POST["cdate"];
+        $sql = "update appointments set check_in = now() where id =".$_POST["id"];
+        $result = $conn->query($sql);
+        if(isset($_POST["bed"])){
+            $sql = "INSERT INTO `patients_beds` ( `bed_id`, `apt_id`, `start_date`,created_by) 
+                    VALUES ( $_POST[bed],$_POST[id], now(),'".$_SESSION["user"][0]."')";
+            $conn->query($sql);
+            $sql = "update beds set status = 'occupied' where bed_id = $_POST[bed]";
+        }
+    }
+    $sql = "SELECT room_id, bed_id,status FROM `beds` 
+        where status = 'clean'
+        order by beds.bed_id;";
+     $result = $conn->query($sql);
+     if ($result->num_rows > 0) {
+        $rooms = array();
+        while ($row = $result->fetch_assoc()) {
+            $rooms[$row["room_id"]][] = $row["bed_id"];
+        }
+    }
+    $sql = "SELECT pr.pat_id ,appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',appointments.date,appointments.time,appointments.type, appointments.check_in
+    FROM patient pr 
+    join appointments on pr.pat_id = appointments.patient_id
+    where appointments.date = '$date' and check_out is null;";
+    
+    $result = $conn->query($sql);?>
     
     
   <div class='main-panel'>
@@ -73,7 +71,7 @@ $result = $conn->query($sql);
     <input type="submit" value="Submit"><br><br>
     </form>
                   <div class='card-body'>
-                    <h4 class='card-title'>Current Patients</h4>
+                    <h4 class='card-title'>Appointments</h4>
                     <div class='table-responsive'>
                     
                         <table class ='table'>
@@ -152,7 +150,7 @@ $result = $conn->query($sql);
 </html>
 <script>
     document.getElementById('create').innerHTML +=`<li class='nav-item dropdown d-none d-lg-block'>
-                <a class='nav-link btn btn-success create-new-button' id='createbuttonDropdown' data-toggle='dropdown' aria-expanded='false' href='#'>+ Create ...</a>
+                <a class='nav-link btn btn-success create-new-button' id='createbuttonDropdown' data-toggle='dropdown' aria-expanded='false' href='#'>+ Add ...</a>
                 <div class='dropdown-menu dropdown-menu-right navbar-dropdown preview-list' aria-labelledby='createbuttonDropdown'>
                   <h6 class='p-3 mb-0'>Projects</h6>
                   <div class='dropdown-divider'></div>
@@ -163,7 +161,7 @@ $result = $conn->query($sql);
                       </div>
                     </div>
                     <div class='preview-item-content'>
-                      <p class='preview-subject ellipsis mb-1'>Add Patient</p>
+                      <p class='preview-subject ellipsis mb-1'>Create Patient</p>
                     </div>
                   </a>
                   <div class='dropdown-divider'></div>

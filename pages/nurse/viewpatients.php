@@ -19,11 +19,12 @@ $sql = "SELECT patient.pat_id, appointments.date,concat(Fname,' ',LName) 'Patien
 COALESCE(beds.room_id,'Accomodation Pending')'Room', COALESCE(beds.bed_id,'Accomodation Pending')'Bed',
 appointments.id,appointments.check_in, 
 case 
-when dis_notes is null then 'Pending'
+when nt.notes is null then 'Pending'
 else 'Ready'
 end as 'dis_notes'
 FROM appointments 
 INNER join patient on appointments.patient_id = patient.pat_id
+Left JOIN (SELECT apt_id,notes from notes WHERE type = 'dis_notes') nt on nt.apt_id = appointments.id
 left join (SELECT * from patients_beds WHERE end_date is null) pb on appointments.id = pb.apt_id 
 Left join beds on beds.bed_id = pb.bed_id
  where type = 'In-Patient' and check_in is not null and check_out is null
@@ -54,9 +55,6 @@ $result = $conn->query($sql);
     <?php include "../nav.php";?>
   <div class="main-panel">
         <div class="content-wrapper">
-            
-            
-        
             <div class="row">
               <div class="col-sm-4 grid-margin">
                 <div class="card">

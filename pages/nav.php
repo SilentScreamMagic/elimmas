@@ -43,7 +43,8 @@
   }
   if ($_SESSION["user"][1]=="Front Desk") {
     $nav =[["../desk/appointments.php","Appointments"],
-  ["../desk/viewpatients.php","Patients"]];
+  ["../desk/viewpatients.php","Patients"],
+["../desk/vitals.php","Vitals"]];
   $files = scandir("../desk");
     $files = array_diff($files, array('.', '..'));
       if(!in_array(basename($_SERVER['PHP_SELF']),$files)){
@@ -89,17 +90,13 @@
   
   <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-      <a class="sidebar-brand brand-logo" href="../../index.html"><img src="../../assets/images/logo.svg" alt="logo" /></a>
-      <a class="sidebar-brand brand-logo-mini" href="../../index.html"><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
+      <a class="sidebar-brand brand-logo" href=<?php $nav[0]?>><img src="../../assets/images/logo.svg" alt="logo" /></a>
+      <a class="sidebar-brand brand-logo-mini" href=<?php $nav[0]?>><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
     </div>
     <ul class="nav">
       <li class="nav-item profile">
         <div class="profile-desc">
           <div class="profile-pic">
-            <div class="count-indicator">
-              <img class="img-xs rounded-circle " src="../../assets/images/faces/face15.jpg" alt="">
-              <span class="count bg-success"></span>
-            </div>
             <div class="profile-name">
               <h5 class="mb-0 font-weight-normal"><?php echo $_SESSION["user"][2]?></h5>
               <span><?php echo $_SESSION["user"][1]?></span>
@@ -178,7 +175,7 @@
               <li class="nav-item dropdown">
                 <a class="nav-link" id="profileDropdown" href="#" data-toggle="dropdown">
                   <div class="navbar-profile">
-                    <img class="img-xs rounded-circle" src="../../assets/images/faces/face15.jpg" alt="">
+                    
                     <p class="mb-0 d-none d-sm-block navbar-profile-name"><?php echo $_SESSION["user"][2]?></p>
                     <i class="mdi mdi-menu-down d-none d-sm-block"></i>
                   </div>

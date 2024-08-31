@@ -142,7 +142,6 @@ if(isset($_POST["bed_id"])){
               <div class='col-12 grid-margin'>
                 <div class='card'>
                   <div class='card-body'>
-                    <h4 class='card-title'>Current Patients</h4>
                     <?php
     $count = 0;
     for ($i=1; $i < sizeof($bedsArray)+1; $i++) { 

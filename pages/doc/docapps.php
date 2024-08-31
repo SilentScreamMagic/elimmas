@@ -43,13 +43,13 @@ if (isset($_POST["appt_date"])){
                     <label for="appt_date" >Date:</label>
                     <input type="date" id="appt_date" name="appt_date">
                     <input type="submit" value="Submit">
-                    
+                    </form>
                     <div class='table-responsive'>
                     <?php
                         $sql = "SELECT appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',appointments.date,appointments.time, appointments.check_in
                         FROM patient pr 
                         join appointments on pr.pat_id = appointments.patient_id
-                        where appointments.date = '$date' and doc_id = '".$_SESSION["user"][0]."'";
+                        where appointments.date = '$date' and doc_id = '".$_SESSION["user"][0]."' and check_out is null";
 
                         $result = $conn->query($sql);
                         ?>
@@ -64,14 +64,12 @@ if (isset($_POST["appt_date"])){
                             if ($result){ 
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                        
-                                        $string = "<tr><td>".$row["Patient Name"]."</td><td>".$row["date"]."</td><td>".$row["time"]."</td><td>".$row["check_in"]."</td>
+                                        echo"<tr><td>".$row["Patient Name"]."</td><td>".$row["date"]."</td><td>".$row["time"]."</td><td>".$row["check_in"]."</td>
                                         <td><form action='docprocs.php' method='post'>
                                             <input type='hidden' name='id' value=".$row['id'].">
                                             <input type='submit' value='View Patient'>
                                         </form></td></tr>";
                                         }
-                                        echo $string;
                                     }
                                 } 
                                 

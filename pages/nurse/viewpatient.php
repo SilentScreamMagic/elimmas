@@ -57,52 +57,52 @@
   
     
     if (isset($_POST["cons"])){
-        $sql = "insert into patients_cons(apt_id,con_id,count,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["cons"].",".$_POST["con_count"].",now())";;
+        $sql = "insert into patients_cons(apt_id,con_id,count,date,created_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["cons"].",".$_POST["con_count"].",now(),'".$_SESSION["user"][0]."')";;
         $result = $conn->query($sql);
         
         $ids = ["","","","","defaultOpen","",""];
     }
     if (isset($_POST["meals"])){
-        $sql = "insert into patients_meals(apt_id,meal_id,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["meals"].",now())";
+        $sql = "insert into patients_meals(apt_id,meal_id,date,created_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["meals"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         
         $ids = ["","","","","","defaultOpen",""];
     }
 
     if (isset($_POST["btemp"])) {
-        $sql = "INSERT INTO `patients_vits` (`date`, `apt_id`, `vit_id`, `measure`) VALUES 
-        (now(), $_SESSION[apt_id], 1, $_POST[btemp]), 
-        (now(), $_SESSION[apt_id], 2, $_POST[pulRate]),
-        (now(), $_SESSION[apt_id], 3, $_POST[respRate]), 
-        (now(), $_SESSION[apt_id], 4, $_POST[dbloodPress]),
-        (now(), $_SESSION[apt_id], 6, $_POST[oxysat]), 
-        (now(), $_SESSION[apt_id], 5, $_POST[sbloodPress])";
+        $sql = "INSERT INTO `patients_vits` (`date`, `apt_id`, `vit_id`, `measure`,created_by) VALUES 
+        (now(), $_SESSION[apt_id], 1, $_POST[btemp],'".$_SESSION["user"][0]."'), 
+        (now(), $_SESSION[apt_id], 2, $_POST[pulRate],'".$_SESSION["user"][0]."'),
+        (now(), $_SESSION[apt_id], 3, $_POST[respRate],'".$_SESSION["user"][0]."'), 
+        (now(), $_SESSION[apt_id], 4, $_POST[dbloodPress],'".$_SESSION["user"][0]."'),
+        (now(), $_SESSION[apt_id], 6, $_POST[oxysat],'".$_SESSION["user"][0]."'), 
+        (now(), $_SESSION[apt_id], 5, $_POST[sbloodPress],'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","defaultOpen","","","","",""];
     }
     if (isset($_POST["nur_notes"])){
-        $sql ="INSERT INTO `notes`( `type`, `apt_id`, `notes`, `date`) VALUES ('nur_notes',".$_SESSION['apt_id'].",'".$_POST['nur_notes']."',now())";
+        $sql ="INSERT INTO `notes`( `type`, `apt_id`, `notes`, `date`,created_by) VALUES ('nur_notes',".$_SESSION['apt_id'].",'".$_POST['nur_notes']."',now(),'".$_SESSION["user"][0]."')";
          $result = $conn->query($sql);
          
          $ids = ["","","defaultOpen","","","",""];
      }
      if (isset($_POST["meds"])){
-        $sql = "insert into patients_procmeds(apt_id,med_id,quantity,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["med_count"].",now())";
+        $sql = "insert into patients_procmeds(apt_id,med_id,quantity,date,created_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["med_count"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","","defaultOpen","","",""];
     }
     if (isset($_POST["oral_type"])){
-        $sql = "insert into fluid_intake ( oral_type, apt_id,amount, iv_type, iv_amount, date) 
-        values('".$_POST["oral_type"]."',".$_SESSION['apt_id'].",".$_POST["o_amount"].",'".$_POST["iv_type"]."',".$_POST["iv_amount"].",now())";
+        $sql = "insert into fluid_intake ( oral_type, apt_id,amount, iv_type, iv_amount, date,created_by) 
+        values('".$_POST["oral_type"]."',".$_SESSION['apt_id'].",".$_POST["o_amount"].",'".$_POST["iv_type"]."',".$_POST["iv_amount"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","","","","","defaultOpen"];
     }
     if (isset($_POST["u_amount"])){
-        $sql = "insert into fluid_output ( apt_id, u_amount,e_amount, d_amount, date) 
-        values(".$_SESSION['apt_id'].",".$_POST["u_amount"].",'".$_POST["e_amount"]."',".$_POST["d_amount"].",now())";
+        $sql = "insert into fluid_output ( apt_id, u_amount,e_amount, d_amount, date,created_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["u_amount"].",'".$_POST["e_amount"]."',".$_POST["d_amount"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","","","","","defaultOpen"];
     }
@@ -138,6 +138,7 @@
            $meds[$row["med_id"]] = $row["med_name"];
         }
     }
+    //<button class="tablinks" onclick="openTab(event, 'rooms')" <?php if('defaultOpen'==$ids[0]) echo 'id ="'.$ids[0].'"';?>>Wards</button>
     ?>
   <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
   
@@ -150,7 +151,7 @@
                     <h4 class='card-title'><?php echo $pname?></h4>
                         <div class="tab">
                             <button class="tablinks" onclick="openTab(event, 'notes')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Notes</button>
-                            <button class="tablinks" onclick="openTab(event, 'rooms')" <?php if('defaultOpen'==$ids[0]) echo 'id ="'.$ids[0].'"';?>>Wards</button>
+                            
                             <button class="tablinks" onclick="openTab(event, 'consumables')"  <?php if('defaultOpen'==$ids[4]) echo 'id ="'.$ids[4].'"';?>>Consumables</button>
                             <button class="tablinks" onclick="openTab(event, 'meal')"  <?php if('defaultOpen'==$ids[5]) echo 'id ="'.$ids[5].'"';?>>Meals</button>
                             <button class="tablinks" onclick="openTab(event, 'vitals')"  <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Vitals</button>
@@ -350,69 +351,7 @@
                         <div id="vitals" class="tabcontent">
                             <!-- Content for rooms tab -->
                             <h3>Vitals</h3>
-                            <script>
-                                $(function() {
-                        /* ChartJS
-                        * -------
-                        * Data and config for chartjs
-                        */
-                        var areaData = {
-                            labels: ["2013", "2014", "2015", "2016", "2017"],
-                            datasets: [{
-                            label: '# of Votes',
-                            data: [12, 40, 30, 5, 2, 3],
-                            backgroundColor: [
-                                'rgba(255, 99, 132, 0.2)',
-                                'rgba(54, 162, 235, 0.2)',
-                                'rgba(255, 206, 86, 0.2)',
-                                'rgba(75, 192, 192, 0.2)',
-                                'rgba(153, 102, 255, 0.2)',
-                                'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                'rgba(255,99,132,1)',
-                                'rgba(54, 162, 235, 1)',
-                                'rgba(255, 206, 86, 1)',
-                                'rgba(75, 192, 192, 1)',
-                                'rgba(153, 102, 255, 1)',
-                                'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1,
-                            fill: true, // 3: no fill
-                            }]
-                        };
-
-                        var areaOptions = {
-                            plugins: {
-                            filler: {
-                                propagate: true
-                            }
-                            },
-                            scales: {
-                            yAxes: [{
-                                gridLines: {
-                                color: "rgba(204, 204, 204,0.1)"
-                                }
-                            }],
-                            xAxes: [{
-                                gridLines: {
-                                color: "rgba(204, 204, 204,0.1)"
-                                }
-                            }]
-                            }
-                        }
-
-                        if ($("#areaChart").length) {
-                            var areaChartCanvas = $("#areaChart").get(0).getContext("2d");
-                            var areaChart = new Chart(areaChartCanvas, {
-                            type: 'line',
-                            data: areaData,
-                            options: areaOptions
-                            });
-                        }
-
-                        });
-                            </script>
+                            
                             <form action= "viewpatient.php" method="post">
                                 <label for="btemp">Body Temperature:</label>
                                 <input type="text" id="btemp" name="btemp" required>
@@ -476,16 +415,6 @@
                                         ?>
                                     </tbody>
                                     </table>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6 grid-margin stretch-card">
-                                        <div class="card">
-                                        <div class="card-body">
-                                            <h4 class="card-title">Area chart</h4>
-                                            <canvas id="areaChart" style="height:250px"></canvas>
-                                        </div>
-                                        </div>
-                                    </div>
                                 </div>
                         </div>
                         <div id="fluid" class="tabcontent">

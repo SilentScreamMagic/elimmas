@@ -3,7 +3,7 @@ include "../conn.php";
 //include "../nav.php";
 //include "../table.html";
 include "../tabs.html";
-
+//
    
 ?>
 <!DOCTYPE html>
@@ -28,7 +28,9 @@ include "../tabs.html";
   <body>
   <div class='container-scroller'>
   
-    <?php include '../nav.php';?>
+    <?php include '../nav.php';
+    include "../searchbar2.php";
+    ?>
   <div class='main-panel'>
         <div class='content-wrapper'>
             <div class='row '>
@@ -39,9 +41,12 @@ include "../tabs.html";
                     <div class="tab">
                         <button class="tablinks" onclick="openTab(event, 'cur_pat')" id="defaultOpen">Current Patient</button>
                         <button class="tablinks" onclick="openTab(event, 'all_pat')" >All Patient</button>
+                        
                     </div> 
+                    
                     <div id="cur_pat" class="tabcontent">
                     <h4 class='card-title'>Current Patients</h4>
+                    <input type='text' id='tableFilterInput' class=' form-control dropdown-input' placeholder='Search Medications...'>
                         <div class='table-responsive'>
                         
                             <?php
@@ -53,7 +58,7 @@ include "../tabs.html";
                                 order by appointments.date;";
                             $result = $conn->query($sql);?>
 
-                             <table class ='table'>
+                             <table id="filterTable" class ='table'>
                         <thead>
                             <tr>
                                 <th>Date</th><th>Patient Name</th><th>Type</th><th>Arrival</th><th>Ward</th><th>Bed</th><th></th>
@@ -95,9 +100,9 @@ include "../tabs.html";
             order by 'Patient Name';";
             $result = $conn->query($sql);?>
             <h4 class='card-title'>All Patients</h4>
+            
                     <div class='table-responsive'>
-                    
-                        <table class ='table'>
+                        <table id="filterTable" class ='table'>
                         <thead>
                             <tr>
                                 <th>Registration Date</th><th>Patient Name</th><th></th>
@@ -143,11 +148,3 @@ include "../tabs.html";
           </div>
           
         </div>
-<html>
-    <body>
-        
-       
-       
-    </body>
-   
-</html>

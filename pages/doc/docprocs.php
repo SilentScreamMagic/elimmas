@@ -37,6 +37,7 @@
         $_SESSION["apt_id"] = $_POST["id"];
         
     }
+    
     $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name"FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
     where id = '.$_SESSION["apt_id"];
     $result = $conn->query($sql)->fetch_assoc();
@@ -44,37 +45,42 @@
     $pname = $result["Patient Name"];
     
     if (isset($_POST["proc_id"])){
-        $sql = "insert into patients_proc(apt_id,proc_id,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["proc_id"].",now())";
+        $sql = "insert into patients_proc(apt_id,proc_id,date ,created_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["proc_id"].",now() ,'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
-        
         $ids = ["","defaultOpen","","","",""];
     }
  
     if (isset($_POST["meds"])){
-        $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,num_months,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",'".$_POST["num_months"]."',now())";
+        $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,num_months,date ,created_by,ad_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",'".$_POST["num_months"]."',now() ,'".$_SESSION["user"][0]."','".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","defaultOpen","","",""];
     }
     if (isset($_POST["labs"])){
-        $sql = "insert into patients_labs(apt_id,lab_id,date) 
-        values(".$_SESSION['apt_id'].",".$_POST["labs"].",now())";
+        $sql = "insert into patients_labs(apt_id,lab_id,date ,created_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["labs"].",now() ,'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         
         $ids = ["","","","defaultOpen","",""];
     }
     if (isset($_POST["notes"])){
-       $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`) VALUES ('doc_notes',$_SESSION[apt_id],'$_POST[notes]',now())";
+       $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('doc_notes',$_SESSION[apt_id],'$_POST[notes]',now() ,'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         
         $ids = ["","","","","defaultOpen",""];
     }
     if (isset($_POST["dis_notes"])){
-        $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`) VALUES ('dis_notes',$_SESSION[apt_id],'$_POST[dis_notes]',now())";
-        echo $sql;
+        $sql = "DELETE FROM `notes` WHERE apt_id =20 and type = 'dis_notes';";
+        $result = $conn->query($sql);
+        $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('dis_notes',$_SESSION[apt_id],'$_POST[dis_notes]',now() ,'".$_SESSION["user"][0]."')";
          $result = $conn->query($sql);
-         
+         $ids = ["","","","","","defaultOpen"];
+     } 
+     if (isset($_POST["deltable"])){
+        $sql = "UPDATE $_POST[deltable] SET `deleted`=1 WHERE $_POST[idtype] = $_POST[delid]";
+        $result = $conn->query($sql);
+    
      } 
    
     $sql = "SELECT * FROM `procedures`;";
@@ -107,7 +113,7 @@
 
     ?>
     <div class='main-panel'>
-        <d class='content-wrapper'>
+        <div class='content-wrapper'>
         <div class="header-container">
         <header class="header2">
  
@@ -121,7 +127,7 @@
                         <button class="tablinks" onclick="openTab(event, 'procs')" <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Procedures</button>
                         <button class="tablinks" onclick="openTab(event, 'meds')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Medications</button>
                         <button class="tablinks" onclick="openTab(event, 'labs')"  <?php if('defaultOpen'==$ids[3]) echo 'id ="'.$ids[3].'"';?>>Labs</button>
-                        <button class="tablinks" onclick="openTab(event, 'dis_notes')"> Discharge</button>   
+                        <button class="tablinks" onclick="openTab(event, 'dis_notes')" <?php if('defaultOpen'==$ids[5]) echo 'id ="'.$ids[5].'"';?>> Discharge</button>   
                     </div>
 <div id="procs" class="tabcontent">
     <!-- Content for beds tab -->
@@ -146,21 +152,26 @@
     
                     <div class='table-responsive'>
                      <?php 
-    $sql = "SELECT patients_proc.date,procedures.Prod_Name, procedures.Price FROM procedures 
+    $sql = "SELECT p_proc_id, patients_proc.date,procedures.Prod_Name, procedures.Price FROM procedures 
     JOIN patients_proc on patients_proc.proc_id = procedures.prod_id
-    where patients_proc.apt_id =".$_SESSION["apt_id"]." order by date;";
+    where patients_proc.apt_id =".$_SESSION["apt_id"]." and deleted = 0 order by date;";
     $result = $conn->query($sql);?>
                         <table class ='table'>
                         <thead>
                             <tr>
-                                <th>Date</th><th>Procedure</th>
+                            <th></th><th>Date</th><th>Procedure</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
                         if ($result->num_rows > 0) {
                             while($row = $result->fetch_assoc()) {
-                                echo "<tr><td>".$row["date"]."</td><td>".$row["Prod_Name"]."</td></tr>";
+                                echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['p_proc_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_proc'>
+                                                <input type='hidden' name='idtype' value= 'p_proc_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td><td>".$row["date"]."</td><td>".$row["Prod_Name"]."</td></tr>";
                             }
                             
                         }
@@ -204,8 +215,8 @@
         <input type="submit" value="Submit"><br><br>    
     </form>
     <?php 
-        $sql = "SELECT patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days,num_months FROM `patients_meds` 
-        join medication on medication.med_id = patients_meds.med_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
+        $sql = "SELECT p_med_id,patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days,num_months FROM `patients_meds` 
+        join medication on medication.med_id = patients_meds.med_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
         $result = $conn->query($sql);?>
         
                     <div class='table-responsive'>
@@ -213,14 +224,20 @@
                         <table class ='table'>
                         <thead>
                             <tr>
-                            <th>Date</th><th>Medication Name</th><th>Per Dose</th><th>Per Day</th><th>Number Of Days</th><th>Number Of Months</th>
+                            <th></th><th>Date</th><th>Medication Name</th><th>Per Dose</th><th>Per Day</th><th>Number Of Days</th><th>Number Of Months</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
                             if ($result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
-                                    echo "<tr><td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["num_months"]."</td></tr>";
+                                    echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['p_med_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_meds'>
+                                                <input type='hidden' name='idtype' value= 'p_med_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td>
+                                    <td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["num_months"]."</td></tr>";
                                 }   
                             }
                         ?>
@@ -250,10 +267,10 @@
         <input type="hidden" name = "labs" id="selectedValue3">
         <input type="submit" value="Submit"><br><br>
     </form>
-    <h4 class='card-title'>Current Patients</h4>
+    
     <?php 
-        $sql = "SELECT date,labs.lab_name,lab_results,lab_date FROM `patients_labs` 
-        join labs on labs.lab_id = patients_labs.lab_id where apt_id = ".$_SESSION["apt_id"]." order by date;";
+        $sql = "SELECT p_lab_id,date,labs.lab_name,lab_results,lab_date FROM `patients_labs` 
+        join labs on labs.lab_id = patients_labs.lab_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
         $result = $conn->query($sql);?>
         
                     <div class='table-responsive'>
@@ -261,14 +278,19 @@
                         <table class ='table'>
                         <thead>
                             <tr>
-                                <th>Date</th><th>Labs Name</th><th></th>
+                            <th></th><th>Date</th><th>Labs Name</th><th></th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                echo "<tr><td>".$row["date"]."</td><td>".$row["lab_name"]."</td>";
+                echo "<tr><td><form action='' method='post'>
+                                                <input type='hidden' name='delid' value=".$row['p_lab_id'].">
+                                                <input type='hidden' name='deltable' value= 'patients_labs'>
+                                                <input type='hidden' name='idtype' value= 'p_lab_id'>
+                                                <input type='submit' value='Delete'>
+                                            </form></td><td>".$row["date"]."</td><td>".$row["lab_name"]."</td>";
                 if ($row["lab_results"]!= null){
                       echo "<td><a href='../open_pdf.php?file=./uploads/$row[lab_results]' target='_blank'>Open PDF</a></td></tr>";  
                 }
@@ -285,8 +307,6 @@
     <div class ="contain">
         <!-- Content for rooms tab -->
     <div>
-        <button  onclick="toggleTransparency('nur_notes')">Nurse's Notes</button>
-        <button onclick="toggleTransparency('doc_notes')">Doctor's Notes</button>
         <h3>Notes</h3>
     <form action= "" method="post">
         <textarea name="notes" cols="70" rows="10"></textarea>
@@ -304,12 +324,12 @@
         <div>
             <h3>Discharge Notes</h3>
             <?php
-        $sql = "SELECT `dis_notes` FROM `appointments` WHERE id =".$_SESSION["apt_id"];
+        $sql = "SELECT GROUP_CONCAT(notes SEPARATOR ' ')'notes' FROM `notes` WHERE apt_id =".$_SESSION["apt_id"] ." and type = 'dis_notes' and deleted = 0;";
         $result = $conn->query($sql);
         $dis_notes = $result->fetch_assoc();?>
             <form action= "" method="post">
                 <input type="hidden" name="apt_id" value = <?php echo $_SESSION['apt_id']?>>
-                <textarea name="dis_notes" cols="70" rows="10"><?php if ($dis_notes["dis_notes"]) echo $dis_notes["dis_notes"];?></textarea>
+                <textarea name="dis_notes" cols="70" rows="10"><?php  echo $dis_notes["notes"];?></textarea>
                 <input type="submit" value="Submit"><br><br>
         </form>
     </div>        
@@ -327,7 +347,7 @@
                             <?php
                             $sql = "SELECT date,vitals.vital_name,patients_vits.vit_id,patients_vits.measure FROM `patients_vits` 
                             INNER JOIN vitals on vitals.vit_id = patients_vits.vit_id 
-                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id = $_SESSION[apt_id])
+                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id = $_SESSION[apt_id]) and deleted = 0
                             order by date;";
                             $result = $conn->query($sql);
                             $vitals = [];
@@ -362,7 +382,7 @@
                                 <h1></h1>
                                 <?php
                                 $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes FROM `notes`
-                                    where type ='doc_notes' and apt_id = $_SESSION[apt_id]
+                                    where type ='doc_notes' and apt_id = $_SESSION[apt_id] and deleted = 0
                                     GROUP by cast(notes.date as date)
                                     order by notes.date;";
                                 $result = $conn->query($sql);
@@ -387,7 +407,7 @@
                         <div id="nur_notes" style=overflow-y:auto>
                                 <?php
                                 $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<blockqoute class=blockqoute><p>',notes.notes SEPARATOR '</p></blockqoute>') notes FROM `notes`
-                                    where type ='nur_notes' and apt_id = $_SESSION[apt_id]
+                                    where type ='nur_notes' and apt_id = $_SESSION[apt_id] and deleted = 0
                                     GROUP by cast(notes.date as date)
                                     order by notes.date;";
                                 $result = $conn->query($sql);
