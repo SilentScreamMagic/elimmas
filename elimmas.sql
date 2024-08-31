@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 31, 2024 at 01:33 PM
+-- Generation Time: Sep 01, 2024 at 12:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -486,7 +486,9 @@ INSERT INTO `patients_cons` (`p_cons_id`, `apt_id`, `con_id`, `count`, `date`, `
 (1, 17, 10, 3, '2024-07-01 20:29:43', 'ellie.asare', 0),
 (2, 17, 10, 4, '2024-07-01 20:29:43', 'ellie.asare', 0),
 (3, 20, 1, 10, '2024-07-18 17:08:44', 'ellie.asare', 0),
-(4, 36, 1, 10, '2024-08-31 06:52:47', 'ellie.asare', 0);
+(4, 36, 1, 10, '2024-08-31 06:52:47', 'ellie.asare', 0),
+(5, 35, 1, 10, '2024-08-31 21:56:35', 'ellie.asare', 1),
+(6, 35, 2, 10, '2024-08-31 22:13:01', 'ellie.asare', 1);
 
 -- --------------------------------------------------------
 
@@ -545,7 +547,8 @@ INSERT INTO `patients_meals` (`p_meal_id`, `meal_id`, `date`, `apt_id`, `served`
 (2, 3, '2024-07-01 20:01:10', 17, '2024-07-02 18:01:10', 'ellie.asare', 0),
 (3, 3, '2024-07-01 20:01:10', 17, '2024-07-02 18:01:10', 'ellie.asare', 0),
 (4, 1, '2024-07-10 23:43:32', 25, NULL, 'ellie.asare', 0),
-(5, 2, '2024-08-31 06:52:53', 36, NULL, 'ellie.asare', 0);
+(5, 2, '2024-08-31 06:52:53', 36, NULL, 'ellie.asare', 0),
+(6, 2, '2024-08-31 22:13:12', 35, NULL, 'ellie.asare', 1);
 
 -- --------------------------------------------------------
 
@@ -637,7 +640,8 @@ INSERT INTO `patients_procmeds` (`p_ppmeds_id`, `med_id`, `quantity`, `date`, `a
 (2, 2, 1, '2024-07-18 17:00:36', 20, 'ellie.asare', 0),
 (3, 2, 1, '2024-07-18 17:04:25', 20, 'ellie.asare', 0),
 (4, 2, 1, '2024-07-18 17:05:48', 20, 'ellie.asare', 0),
-(5, 1, 1, '2024-08-31 06:55:36', 36, 'ellie.asare', 0);
+(5, 1, 1, '2024-08-31 06:55:36', 36, 'ellie.asare', 0),
+(6, 1, 100, '2024-08-31 22:13:36', 35, 'ellie.asare', 1);
 
 -- --------------------------------------------------------
 
@@ -850,12 +854,23 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`username`, `user_type`, `password`, `Name`) VALUES
+('abena.darko', 'Nurse', '12345', 'Abena Darko'),
+('beatrice.sowah', 'Nurse', '12345', 'Beatrice Sowah'),
 ('bryan.ayertey', 'Cashier', '12345', 'Bryan Ayertey'),
+('clementina.ossom', 'Nurse', '12345', 'Clementina Ossom'),
 ('daryl.ayertey', 'Doctor', '12345', 'Daryl Ayertey'),
 ('elkan.ayertey', 'Front Desk', '12345', 'Elkan Ayertey'),
 ('ellie.asare', 'Nurse', '12345', 'Ellie Asare'),
+('hawa.nyarkoh', 'Nurse', '12345', 'Hawa Nyarkoh'),
+('irene.laryea', 'Nurse', '12345', 'Irene Laryea'),
+('jael.borquaye', 'Nurse', '12345', 'Jael Borquaye'),
+('mercy.korkor', 'Nurse', '12345', 'Mercy Korkor'),
+('nancy.yeboah', 'Nurse', '12345', 'Nancy Yeboah'),
 ('padi.ayertey', 'Doctor', '12345', 'Padi Ayertey'),
 ('rose.mary', 'Pharmacist', '12345', 'Rose Mary'),
+('selina.adjei', 'Nurse', '12345', 'Selina Adjei'),
+('theresa.boakyewaa', 'Nurse', '12345', 'Theresa Boakyewaa'),
+('vivian.botchway', 'Nurse', '12345', 'Vivian Botchway'),
 ('yvonne.kofi', 'Lab Tech', '12345', 'Yvonne Kofi');
 
 -- --------------------------------------------------------
@@ -1162,7 +1177,7 @@ ALTER TABLE `patients_beds`
 -- AUTO_INCREMENT for table `patients_cons`
 --
 ALTER TABLE `patients_cons`
-  MODIFY `p_cons_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `p_cons_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `patients_labs`
@@ -1174,7 +1189,7 @@ ALTER TABLE `patients_labs`
 -- AUTO_INCREMENT for table `patients_meals`
 --
 ALTER TABLE `patients_meals`
-  MODIFY `p_meal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `p_meal_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `patients_meds`
@@ -1192,7 +1207,7 @@ ALTER TABLE `patients_proc`
 -- AUTO_INCREMENT for table `patients_procmeds`
 --
 ALTER TABLE `patients_procmeds`
-  MODIFY `p_ppmeds_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `p_ppmeds_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `patients_vits`
