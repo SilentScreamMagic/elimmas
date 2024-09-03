@@ -25,14 +25,20 @@
   
     <?php include '../nav.php';
     include "../conn.php";
+    if (isset($_POST["bloodPress"])){
+      $bp = explode("/",$_POST["bloodPress"]);
+
+    }
+    
     if (isset($_POST["btemp"])) {
         $sql = "INSERT INTO `patients_vits` (`date`, `apt_id`, `vit_id`, `measure`,created_by) VALUES 
         (now(), $_POST[apt_id], 1, $_POST[btemp],'".$_SESSION["user"][0]."'), 
         (now(), $_POST[apt_id], 2, $_POST[pulRate],'".$_SESSION["user"][0]."'),
         (now(), $_POST[apt_id], 3, $_POST[respRate],'".$_SESSION["user"][0]."'), 
-        (now(), $_POST[apt_id], 4, $_POST[dbloodPress],'".$_SESSION["user"][0]."'),
+        (now(), $_POST[apt_id], 4, $bp[1],'".$_SESSION["user"][0]."'),
         (now(), $_POST[apt_id], 6, $_POST[oxysat],'".$_SESSION["user"][0]."'), 
-        (now(), $_POST[apt_id], 5, $_POST[sbloodPress],'".$_SESSION["user"][0]."')";
+        (now(), $_POST[apt_id], 5, $bp[0],'".$_SESSION["user"][0]."'),
+         (now(), $_POST[apt_id],7, $_POST[weight],'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
     }
 
@@ -57,8 +63,8 @@
             <form action="vitals.php" method="post">
                 <div class="form-group">
                     <label for="apt_id">Patients Name:</label>
-                    <select name="apt_id" id="apt_id">
-                        <option value="">Select a patient...</option>
+                    <select name="apt_id" id="apt_id" required>
+                        <option value="" disabled >Select a patient...</option>
                         <?php foreach ($patients as $pid => $name): ?>
                             <option value="<?php echo $pid; ?>"><?php echo $name; ?></option>
                         <?php endforeach; ?>
@@ -70,12 +76,12 @@
                                 <input type="text" id="pulRate" name="pulRate" required><br>
                                 <label for="respRate">Respiration Rate:</label>
                                 <input type="text" id="respRate" name="respRate" required><br>
-                                <label for="dbloodPress">Diastolic Blood Pressure</label>
-                                <input type="text" id="dbloodPress" name="dbloodPress" required ><br>
-                                <label for="sbloodPress">Systolic Blood Pressure</label>
-                                <input type="text" id="sbloodPress" name="sbloodPress" required ><br>
+                                <label for="bloodPress">Blood Pressure</label>
+                                <input type="text" id="bloodPress" name="bloodPress" required ><br>
                                 <label for="oxysat">Oxygen Saturation</label>
                                 <input type="text" id="oxysat" name="oxysat" required ><br>
+                                <label for="weight">Weight</label>
+                                <input type="text" id="weight" name="weight" required ><br>
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                     </div>
@@ -94,4 +100,4 @@
             </div>
           </footer>
           <!-- partial -->
-        </div>";
+        </div>
