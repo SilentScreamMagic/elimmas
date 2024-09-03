@@ -154,7 +154,7 @@
                 <div class='dropdown-menu dropdown-menu-right navbar-dropdown preview-list' aria-labelledby='createbuttonDropdown'>
                   <h6 class='p-3 mb-0'>Projects</h6>
                   <div class='dropdown-divider'></div>
-                  <a class='dropdown-item preview-item' href ="./addpatient.html">
+                  <a class='dropdown-item preview-item' href ="./addpatient.php">
                     <div class='preview-thumbnail'>
                       <div class='preview-icon bg-dark rounded-circle'>
                         <i class='mdi mdi-file-outline text-primary'></i>

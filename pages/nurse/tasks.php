@@ -63,7 +63,7 @@
                         left join (SELECT * from patients_beds WHERE end_date is null) pb
                         on appointments.id = pb.apt_id 
                         LEFT JOIN beds on pb.bed_id =  beds.bed_id
-                        where served is null;";
+                        where served is null and check_out is null;";
                         $result = $conn->query($sql);
                         ?>
                         <div class='table-responsive'>
@@ -125,7 +125,7 @@
                         left join (SELECT * from patients_beds WHERE end_date is null) pb
                         on appointments.id = pb.apt_id 
                         LEFT JOIN beds on pb.bed_id =  beds.bed_id
-                        where served is not null;";
+                        where served is not null and check_out is null;";
                         $result = $conn->query($sql);
                         ?>
                         <div class='table-responsive'>    
@@ -164,7 +164,7 @@
                         left join (SELECT * from patients_beds WHERE end_date is null) pb
                         on appointments.id = pb.apt_id 
                         LEFT JOIN beds on pb.bed_id =  beds.bed_id
-                        where time_ad is null;";
+                        where time_ad is null and check_out is null;";
                         $result = $conn->query($sql);
                         ?>
                         <div class='table-responsive'>
@@ -210,7 +210,7 @@
                         left join (SELECT * from patients_beds WHERE end_date is null) pb
                         on appointments.id = pb.apt_id 
                         LEFT JOIN beds on pb.bed_id =  beds.bed_id
-                        where time_ad is not null;";?>
+                        where time_ad is not null and check_out is null;";?>
                         <div class='table-responsive'>
                             <table class ='table'>
                             <thead>

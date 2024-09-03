@@ -1,76 +1,34 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Patient Information Form</title>
-    <style>
-        body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100;
-    margin: 0;
-}
-
-.form-container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.form-group {
-    margin-bottom: 15px;
-    text-align: left;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-}
-
-.form-group input, .form-group textarea, .form-group select{
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.form-group input:focus, .form-group textarea:focus select:focus{
-    border-color: #007bff;
-    outline: none;
-}
-
-.form-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-    </style>
-</head>
-<body>
+<html lang='en'>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <!-- plugins:css -->
+    <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
+    <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel='stylesheet' href='../../assets/css/style.css'>
+    <!-- End layout styles -->
+    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+  </head>
+  <body>
+  <div class='container-scroller'>
+  
+    <?php include '../nav.php';?>
+  <div class='main-panel'>
+        <div class='content-wrapper'>
+            <div class='row '>
+              <div class='col-12 grid-margin'>
+                <div class='card'>
+                  <div class='card-body'>
+                    <h4 class='card-title'>Current Patients</h4>
+                    
     <div class="form-container">
         <h2>Patient Information Form</h2>
         <form action="process_form.php" method="post">
@@ -151,6 +109,24 @@ button:hover {
         <button class="form-button" type="submit" value="Submit">Submit</button>
     </form>
     </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <footer class='footer'>
+            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
+              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
+              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
+            </div>
+          </footer>
+          <!-- partial -->
+        </div>
+
     
 </body>
 </html>

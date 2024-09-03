@@ -59,14 +59,18 @@ $result = $conn->query($sql);
               <div class="col-sm-4 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h5>Revenue</h5>
+                    <h5>Appointments</h5>
                     <div class="row">
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$32123</h2>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+
+                        <?php 
+                        $sql = "SELECT COUNT(*) AS total_app, COALESCE(SUM(CASE WHEN check_in is not null THEN 1 ELSE 0 END),0) AS arrived_app FROM appointments where check_out is null and date = '9/3/2024';";
+                        $app = $conn->query($sql)->fetch_assoc();
+                        ?>
+                          <h2 class="mb-0"><?php echo $app["total_app"]?></h2>
                         </div>
-                        <h6 class="text-muted font-weight-normal">11.38% Since last month</h6>
+                        <h6 class="text-muted font-weight-normal"><?php echo "Arrivals: $app[arrived_app]"?></h6>
                       </div>
                       <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                         <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
@@ -78,14 +82,19 @@ $result = $conn->query($sql);
               <div class="col-sm-4 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h5>Sales</h5>
+                    <h5>Current Patients</h5>
                     <div class="row">
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$45850</h2>
-                          <p class="text-success ml-2 mb-0 font-weight-medium">+8.3%</p>
+                        <?php 
+                        $sql = "SELECT COUNT(*) AS tot_patients,COALESCE(SUM(CASE WHEN notes.type = 'dis_notes' is not null THEN 1 ELSE 0 END),0) AS dis_ready FROM appointments 
+inner JOIN notes on notes.apt_id = appointments.id
+where check_out is null and appointments.type = 'In-Patient';";
+                        $app = $conn->query($sql)->fetch_assoc();
+                        ?>
+                          <h2 class="mb-0"><?php echo $app["tot_patients"]?></h2>
                         </div>
-                        <h6 class="text-muted font-weight-normal"> 9.61% Since last month</h6>
+                        <h6 class="text-muted font-weight-normal"><?php echo "Discharge Ready: $app[dis_ready]"?></h6>
                       </div>
                       <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                         <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
@@ -97,14 +106,32 @@ $result = $conn->query($sql);
               <div class="col-sm-4 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h5>Purchase</h5>
+                    <h5>Tasks</h5>
                     <div class="row">
-                      <div class="col-8 col-sm-12 col-xl-8 my-auto">
+                      <div class="col-10 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
-                          <h2 class="mb-0">$2039</h2>
-                          <p class="text-danger ml-2 mb-0 font-weight-medium">-2.1% </p>
+                          <?php 
+                          $sql ="SELECT 
+                                (tasks.total_meds + tasks.total_meals) AS total_tasks,
+                                tasks.total_meds,
+                                tasks.total_meals 
+                            FROM (
+                                SELECT
+                                    (SELECT COUNT(*) FROM patients_meds pm
+                                    JOIN appointments a ON pm.apt_id = a.id
+                                    WHERE pm.time_ad IS NULL AND a.check_out IS NULL) AS total_meds,
+
+                                    (SELECT COUNT(*) FROM patients_meals pml
+                                    JOIN appointments a ON pml.apt_id = a.id
+                                    WHERE pml.served IS NULL AND a.check_out IS NULL) AS total_meals
+                            ) AS tasks
+                            LIMIT 1;";
+                            $task = $conn->query($sql)->fetch_assoc();
+                          ?>
+
+                          <h2 class="mb-0"><?php echo $task["total_tasks"]?></h2>
                         </div>
-                        <h6 class="text-muted font-weight-normal">2.27% Since last month</h6>
+                        <h6 class="text-muted font-weight-normal"><?php echo "Meds Pending: ".$task["total_meds"] ."<br> Meals Pending: ".$task["total_meals"]?></h6>
                       </div>
                       <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
                         <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>

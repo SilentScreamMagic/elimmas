@@ -51,33 +51,32 @@ $result = $conn->query($sql);
                         </thead>
                         <tbody>
                         <?php
-
-if ($result){ 
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-           echo "<tr><td>".$row["pat_id"]."</td><td>".$row["Patient Name"]."</td></td>
-        <td> 
-        <div>
-            <form action='apthistory.php' method='post'>
-                <input type='hidden' name='id' value=".$row['pat_id'].">
-                <input type='submit' value='&#128065;'>
-            </form>
-        </div>
-        <div style>
-            <form action='Addappointment.php' method='post'>
-                <input type='hidden' name='id' value='".$row['pat_id']."'>
-                <input type='submit' value='+'>
-            </form>
-        </div>
-        </td>
-        
-        </tr>";
-        }
-        echo "</tbody></table></div></div>";
-    } 
-}
-    $conn->close();
-?>
+                          if ($result){ 
+                              if ($result->num_rows > 0) {
+                                  while($row = $result->fetch_assoc()) {
+                                    echo "<tr><td>".$row["pat_id"]."</td><td>".$row["Patient Name"]."</td></td>
+                                  <td> 
+                                  <div>
+                                      <form action='apthistory.php' method='post'>
+                                          <input type='hidden' name='id' value=".$row['pat_id'].">
+                                          <input type='submit' value='&#128065;'>
+                                      </form>
+                                  </div>
+                                  <div style>
+                                      <form action='Addappointment.php' method='post'>
+                                          <input type='hidden' name='id' value='".$row['pat_id']."'>
+                                          <input type='submit' value='+'>
+                                      </form>
+                                  </div>
+                                  </td>
+                                  
+                                  </tr>";
+                                  }
+                                  echo "</tbody></table></div></div>";
+                              } 
+                          }
+                              $conn->close();
+                        ?>
                         </tbody>
                         </table>
                     </div>
@@ -103,7 +102,7 @@ if ($result){
                 <a class='nav-link btn btn-success create-new-button' id='createbuttonDropdown' data-toggle='dropdown' aria-expanded='false' href='#'>+ Add ...</a>
                 <div class='dropdown-menu dropdown-menu-right navbar-dropdown preview-list' aria-labelledby='createbuttonDropdown'>
                   <div class='dropdown-divider'></div>
-                  <a class='dropdown-item preview-item' href ="./addpatient.html">
+                  <a class='dropdown-item preview-item' href ="./addpatient.php">
                     <div class='preview-thumbnail'>
                       <div class='preview-icon bg-dark rounded-circle'>
                         <i class='mdi mdi-file-outline text-primary'></i>

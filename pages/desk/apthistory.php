@@ -93,7 +93,7 @@ $conn->close();
                 <a class='nav-link btn btn-success create-new-button' id='createbuttonDropdown' data-toggle='dropdown' aria-expanded='false' href='#'>+ Create ...</a>
                 <div class='dropdown-menu dropdown-menu-right navbar-dropdown preview-list' aria-labelledby='createbuttonDropdown'>
                   <div class='dropdown-divider'></div>
-                  <a class='dropdown-item preview-item' href ="./addpatient.html">
+                  <a class='dropdown-item preview-item' href ="./addpatient.php">
                     <div class='preview-thumbnail'>
                       <div class='preview-icon bg-dark rounded-circle'>
                         <i class='mdi mdi-file-outline text-primary'></i>
