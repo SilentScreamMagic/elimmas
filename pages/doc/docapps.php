@@ -46,17 +46,18 @@ if (isset($_POST["appt_date"])){
                     </form>
                     <div class='table-responsive'>
                     <?php
-                        $sql = "SELECT appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',appointments.date,appointments.time, appointments.check_in
+                        $sql = "SELECT appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',users.Name 'Doctor',appointments.date,appointments.time, appointments.check_in 
                         FROM patient pr 
-                        join appointments on pr.pat_id = appointments.patient_id
-                        where appointments.date = '$date' and doc_id = '".$_SESSION["user"][0]."' and check_out is null";
+                        join appointments on pr.pat_id = appointments.patient_id 
+                        join users on appointments.doc_id = users.username;
+                        where appointments.date = '$date' and check_out is null";
 
                         $result = $conn->query($sql);
                         ?>
                         <table class ='table'>
                         <thead>
                             <tr>
-                            <th>Patient Name</th><th>Date</th><th>Time</th><th>Arrived</th><th>Check In</th></tr></
+                            <th>Patient Name</th><th>Date</th><th>Doctor Assigned</th><th>Time</th><th>Arrived</th><th>Check In</th></tr></
                             </tr>
                         </thead>
                         <tbody>
@@ -64,7 +65,7 @@ if (isset($_POST["appt_date"])){
                             if ($result){ 
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                        echo"<tr><td>".$row["Patient Name"]."</td><td>".$row["date"]."</td><td>".$row["time"]."</td><td>".$row["check_in"]."</td>
+                                        echo"<tr><td>".$row["Patient Name"]."</td><td>".$row["Doctor"]."</td><td>".$row["date"]."</td><td>".$row["time"]."</td><td>".$row["check_in"]."</td>
                                         <td><form action='docprocs.php' method='post'>
                                             <input type='hidden' name='id' value=".$row['id'].">
                                             <input type='submit' value='View Patient'>
