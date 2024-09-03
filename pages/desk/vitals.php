@@ -64,7 +64,7 @@
                 <div class="form-group">
                     <label for="apt_id">Patients Name:</label>
                     <select name="apt_id" id="apt_id" required>
-                        <option value="" disabled >Select a patient...</option>
+                        <option value="" disabled selected>Select a patient...</option>
                         <?php foreach ($patients as $pid => $name): ?>
                             <option value="<?php echo $pid; ?>"><?php echo $name; ?></option>
                         <?php endforeach; ?>
