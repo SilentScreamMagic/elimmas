@@ -49,7 +49,7 @@ if (isset($_POST["appt_date"])){
                         $sql = "SELECT appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',users.Name 'Doctor',appointments.date,appointments.time, appointments.check_in 
                         FROM patient pr 
                         join appointments on pr.pat_id = appointments.patient_id 
-                        join users on appointments.doc_id = users.username;
+                        join users on appointments.doc_id = users.username
                         where appointments.date = '$date' and check_out is null";
 
                         $result = $conn->query($sql);
