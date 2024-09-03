@@ -39,7 +39,7 @@
     $sql ="SELECT id, concat(patient.FName,' ', patient.LName)'Patient Name' from appointments
     INNER JOIN patients_beds on patients_beds.apt_id = appointments.id
     INNER JOIN patient ON appointments.patient_id = patient.pat_id
-    WHERE appointments.check_in is not null and appointments.check_out is null and appointments.type = 'Consultation';";
+    WHERE appointments.check_in is not null and appointments.check_out is null";
     $result = $conn->query($sql);
     $patients = [];
     if ($result->num_rows > 0) {
