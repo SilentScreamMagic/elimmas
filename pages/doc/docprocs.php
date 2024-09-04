@@ -359,12 +359,12 @@
                                     echo "<div class='patient-card'>";
                                     echo "<h2>$date</h2>";
                                     echo "<div class='patient-info'>";
-                                    echo "<div><span>Body Temperature </span> $dets[1]</div>";
-                                    echo "<div><span>Pulse Rate </span> $dets[2]</div>";
-                                    echo "<div><span>Respiration Rate </span> $dets[3]</div>";
-                                    echo "<div><span>Diastolic Blood Pressure </span> $dets[4]</div>";
-                                    echo "<div><span>Systolic Blood Pressure </span> $dets[5]</div>";
-                                    echo "<div><span>Oxygen Saturation </span> $dets[4]</div>";
+                                    echo "<div><span>BT:  $dets[1]<sup>o</sup>C</span><span> PR: </span> $dets[2]<sub>bpm</sub> </div>";
+                                    echo "<div><span>Weight: $dets[7] kg</span></div>";
+                                    echo "<div><span>RR: </span> $dets[3] <sub>cycles/min</sub></div>";
+                                    echo "<div><span>BP: </span> $dets[5]/$dets[4]<sub>mmhg</sub></div>";
+                                    echo "<div><span>SpO2: </span> $dets[6]%</div>";
+                                   
                                     echo "</div>";
                                     echo "</div>";
                                 }
@@ -432,12 +432,7 @@
         </div>  
         <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
-          <footer class='footer'>
-            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
-              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
+         
           <!-- partial -->
 </div>
         
