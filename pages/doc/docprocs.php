@@ -218,7 +218,7 @@
                         <table class ='table'>
                         <thead>
                             <tr>
-                            <th></th><th>Date</th><th>Medication Name</th><th>Per Dose</th><th>Per Day</th><th>Number Of Days</th><th>Number Of Months</th>
+                            <th></th><th>Date</th><th>Medication Name</th><th>Per Dose</th><th>Per Day</th><th>Number Of Days</th>
                             </tr>
                         </thead>
                         <tbody>
