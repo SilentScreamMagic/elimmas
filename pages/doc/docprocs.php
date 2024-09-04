@@ -202,14 +202,14 @@
         </div>
         <input type="hidden" name = "meds" id="selectedValue2">
         <label for="med_count">Per Dose</label>
-        <input type="number" name="per_dose" id = "med_count" required>
+        <input type="number" name="per_dose" id = "med_count" size="4" required>
         <label for="per_day">Per Day</label>
-        <input type="number" name="per_day" id = "per_day" required>
+        <input type="number" name="per_day" id = "per_day" size="4" required>
         <label for="num_days">Number Of Days</label>
-        <input type="number" name="num_days" id = "num_days" required>
+        <input type="number" name="num_days" id = "num_days" size="4" required>
         <div id = 'refill' style='display: inline-block; visibility: hidden;'>
             <label for="num_months">Number Of Months</label>
-            <input type="number" name="num_months" id = "num_months" >
+            <input type="number" name="num_months" id = "num_months" size="4">
         </div>
         <input type="submit" value="Submit"><br><br>    
     </form>
@@ -357,13 +357,13 @@
                                 }
                                 foreach($vitals as $date=> $dets){
                                     echo "<div class='patient-card'>";
-                                    echo "<h2>$date</h2>";
+                                    echo "<h4>$date</h4>";
                                     echo "<div class='patient-info'>";
-                                    echo "<div><span>BT:  $dets[1]<sup>o</sup>C</span><span> PR: </span> $dets[2]<sub>bpm</sub> </div>";
-                                    echo "<div><span>Weight: $dets[7] kg</span></div>";
-                                    echo "<div><span>RR: </span> $dets[3] <sub>cycles/min</sub></div>";
-                                    echo "<div><span>BP: </span> $dets[5]/$dets[4]<sub>mmhg</sub></div>";
-                                    echo "<div><span>SpO2: </span> $dets[6]%</div>";
+                                    echo "<div><span>Weight: $dets[7] kg</span><span>    BT:  $dets[1]<sup>o</sup>C</span> </div>";
+                                    echo "<div><span> PR: $dets[2]<sub>bpm</sub></span> <span>    BP: $dets[5]/$dets[4]<sub>mmhg</sub></span> </div>";
+                                    echo "<div><span>RR: $dets[3] <sub>cycles/min</sub></span> <span>     SpO2: $dets[6]%</span></div>";
+                                    echo "<div></div>";
+                                    echo "<div> </div>";
                                    
                                     echo "</div>";
                                     echo "</div>";
@@ -380,15 +380,14 @@
                         <div id="doc_notes"  class="scrollable-container">
                                 <h1></h1>
                                 <?php
-                                $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes FROM `notes`
-                                    where type ='doc_notes' and apt_id = $_SESSION[apt_id] and deleted = 0
-                                    GROUP by cast(notes.date as date)
-                                    order by notes.date;";
+                                $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes,users.Name  FROM `notes` 
+                                INNER join users on created_by = users.username where type ='doc_notes' and apt_id = 36 and deleted = 0 GROUP by cast(notes.date as date) order by notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                     echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
-                                echo '<div class="date">' . $row["date"] . '</div>';
+                                echo '<h4>' . $row["date"] . '</h4>';
+                                echo '<h5>' . $row["Name"] . '</h5>';
                                 echo $row["notes"];
                                 echo '</div>';
                                     }
