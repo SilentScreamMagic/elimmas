@@ -51,8 +51,8 @@
     }
  
     if (isset($_POST["meds"])){
-        $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,num_months,date ,created_by,ad_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",'".$_POST["num_months"]."',now() ,'".$_SESSION["user"][0]."','".$_SESSION["user"][0]."')";
+        $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,date ,created_by,ad_by) 
+        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",now() ,'".$_SESSION["user"][0]."','".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","defaultOpen","","",""];
     }
@@ -187,7 +187,6 @@
     <!-- Content for rooms tab -->
     <h4 class='card-title'>Medications</h4>
     <p>List of Medications...</p>
-    <button onclick='openOption()'>Refill?</button>
     <form action= "" method="post">
     <label>Medication:</label>
     <div class="dropdown" id="dropdown2">
@@ -200,21 +199,17 @@
                 endforeach;?>
             </div>
         </div>
-        <input type="hidden" name = "meds" id="selectedValue2">
+        <input type="hidden" name = "meds" id="selectedValue2"><br>
         <label for="med_count">Per Dose</label>
-        <input type="number" name="per_dose" id = "med_count" size="4" required>
+        <input type="number" name="per_dose" id = "med_count" style="width: 50px ;" required> &nbsp;
         <label for="per_day">Per Day</label>
-        <input type="number" name="per_day" id = "per_day" size="4" required>
+        <input type="number" name="per_day" id = "per_day" style="width: 50px;" required>&nbsp;
         <label for="num_days">Number Of Days</label>
-        <input type="number" name="num_days" id = "num_days" size="4" required>
-        <div id = 'refill' style='display: inline-block; visibility: hidden;'>
-            <label for="num_months">Number Of Months</label>
-            <input type="number" name="num_months" id = "num_months" size="4">
-        </div>
+        <input type="number" name="num_days" id = "num_days" style="width: 50px;" required>&nbsp;
         <input type="submit" value="Submit"><br><br>    
     </form>
     <?php 
-        $sql = "SELECT p_med_id,patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days,num_months FROM `patients_meds` 
+        $sql = "SELECT p_med_id,patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days FROM `patients_meds` 
         join medication on medication.med_id = patients_meds.med_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
         $result = $conn->query($sql);?>
         
@@ -236,7 +231,7 @@
                                                 <input type='hidden' name='idtype' value= 'p_med_id'>
                                                 <input type='submit' value='Delete'>
                                             </form></td>
-                                    <td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["num_months"]."</td></tr>";
+                                    <td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td></tr>";
                                 }   
                             }
                         ?>
@@ -359,9 +354,9 @@
                                     echo "<div class='patient-card'>";
                                     echo "<h4>$date</h4>";
                                     echo "<div class='patient-info'>";
-                                    echo "<div><span>Weight: $dets[7] kg</span><span>    BT:  $dets[1]<sup>o</sup>C</span> </div>";
-                                    echo "<div><span> PR: $dets[2]<sub>bpm</sub></span> <span>    BP: $dets[5]/$dets[4]<sub>mmhg</sub></span> </div>";
-                                    echo "<div><span>RR: $dets[3] <sub>cycles/min</sub></span> <span>     SpO2: $dets[6]%</span></div>";
+                                    echo "<div><span><strong>Weight: </strong>$dets[7] kg</span>|<span>  <strong>BT:</strong>  $dets[1]<sup>o</sup>C</span> </div>";
+                                    echo "<div><span><strong>PR:</strong> $dets[2]<sub>bpm</sub></span> |<span>    <strong>BP:</strong> $dets[5]/$dets[4]<sub>mmhg</sub></span> </div>";
+                                    echo "<div><span><strong>RR:</strong> $dets[3] <sub>cycles/min</sub></span>| <span>     <strong>SpO2:</strong> $dets[6]%</span></div>";
                                     echo "<div></div>";
                                     echo "<div> </div>";
                                    
