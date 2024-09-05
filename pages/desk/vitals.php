@@ -1,5 +1,8 @@
 <?php
-    
+$id ="unchanged";
+    if (isset($_POST["id"])){
+      $id = $_POST["id"];
+    }
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -10,6 +13,9 @@
     <!-- plugins:css -->
     <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
     <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <link rel="stylesheet" href="../../assets/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+    
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -58,33 +64,63 @@
               <div class='col-12 grid-margin'>
                 <div class='card'>
                   <div class='card-body'>
-                   
-                  <div class="form-container">
-            <form action="vitals.php" method="post">
-                <div class="form-group">
-                    <label for="apt_id">Patients Name:</label>
-                    <select name="apt_id" id="apt_id" required>
-                        <option value="" disabled selected>Select a patient...</option>
-                        <?php foreach ($patients as $pid => $name): ?>
-                            <option value="<?php echo $pid; ?>"><?php echo $name; ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                                <label for="btemp">Body Temperature:</label>
-                                <input type="text" id="btemp" name="btemp" required><br>
-                                <label for="pulRate">Pulse Rate:</label>
-                                <input type="text" id="pulRate" name="pulRate" required><br>
-                                <label for="respRate">Respiration Rate:</label>
-                                <input type="text" id="respRate" name="respRate" required><br>
-                                <label for="bloodPress">Blood Pressure</label>
-                                <input type="text" id="bloodPress" name="bloodPress" required ><br>
-                                <label for="oxysat">Oxygen Saturation</label>
-                                <input type="text" id="oxysat" name="oxysat" required ><br>
-                                <label for="weight">Weight</label>
-                                <input type="text" id="weight" name="weight" required ><br>
-                                <input type="submit" value="Submit"><br><br>
-                            </form>
+                  <h4 class="card-title">Patient Vitals</h4>
+                <form class = "form-sample" action="vitals.php" method="post">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="apt_id">Patients Name:</label>
+                        <div class="col-sm-9">
+                          <select class="js-example-basic-single" style="width:20%" name="apt_id" id="apt_id" required>
+                            <option value="" disabled <?php if(!isset($_POST["id"])) echo "selected" ; ?>>Select a patient...</option>
+                            <?php foreach ($patients as $pid => $name): ?>
+                                <option value=<?php echo "'$pid' "; 
+                                if($pid == $id){
+                                  echo "selected";
+                              }?>><?php echo $name; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        </div>
+                        
                     </div>
+                    <div class="form-group row">
+                      <label for="btemp" class="col-sm-3 col-form-label">Body Temperature:</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" id="btemp" name="btemp" required>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="pulRate" class="col-sm-3 col-form-label">Pulse Rate:</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" id="pulRate" name="pulRate" required>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="respRate" class="col-sm-3 col-form-label">Respiration Rate:</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" id="respRate" name="respRate" required>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="bloodPress" class="col-sm-3 col-form-label">Blood Pressure</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" id="bloodPress" name="bloodPress" pattern="^[0-9]+/[0-9]+$"required >
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label for="oxysat" class="col-sm-3 col-form-label">Oxygen Saturation</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" id="oxysat" name="oxysat" required >
+                      </div>
+                      
+                    </div>
+                    <div class="form-group row">
+                      <label for="weight" class="col-sm-3 col-form-label" >Weight</label>
+                      <div class="col-sm-9">
+                        <input type="text" class="form-control" id="weight" name="weight" required >
+                      </div>
+                    
+                    </div>
+                      <input type="submit" value="Submit">
+                    </form>             
                   </div>
                 </div>
               </div>
@@ -101,3 +137,6 @@
           </footer>
           <!-- partial -->
         </div>
+         <script src="../../assets/vendors/select2/select2.min.js"></script>
+        <script src="../../assets/js/select2.js"></script>
+   

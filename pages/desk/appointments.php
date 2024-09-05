@@ -8,6 +8,8 @@
     <!-- plugins:css -->
     <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
     <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <link rel="stylesheet" href="../../assets/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -109,6 +111,9 @@
                                             <form class ='display: inline-block;' action='apthistory.php' method='post'>
                                                 <input type='hidden' name='id' value=".$row['pat_id'].">
                                                 <input type='submit' value='&#128065;'>
+                                            </form></td><td><form class ='display: inline-block;' action='vitals.php' method='post'>
+                                                <input type='hidden' name='id' value=".$row['id'].">
+                                                <input type='submit' value='Take Vitals'>
                                             </form></td></tr>";
                                         }else{
                                             $string = $string . "<td><form action='' method='post'>

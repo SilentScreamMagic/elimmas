@@ -6,15 +6,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $doctor_name = $_POST["doc_id"];
     $date = $_POST["date"];
     $time = $_POST["time"];
-    $diagnosis = $_POST["diagnosis"];
     $type = $_POST["type"];
-    $patient_condition = $_POST["patient_condition"];
     $diet = $_POST["diet"];
-    $resuscitation_status = $_POST["resuscitation_status"];
-    $medication_prescribed = $_POST["medical_history"];
 
-    $sql = "INSERT INTO appointments (patient_id, doc_id, date, time, diagnosis,type, patient_condition, resuscitation_status, diet, medical_history)
-    VALUES ('$patient_id', '$doctor_name', '$date', '$time', '$diagnosis','$type', '$patient_condition', '$resuscitation_status', '$diet', '$medical_history')";
+    $sql = "INSERT INTO appointments (patient_id, doc_id, date, time, type, diet)
+    VALUES ('$patient_id', '$doctor_name', '$date', '$time','$type', '$diet')";
         if ($conn->query($sql) === TRUE) {
             header("Location: ./apthistory.php?id=$patient_id");
         } 
