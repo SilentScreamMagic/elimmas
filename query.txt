@@ -83,3 +83,49 @@ INSERT INTO your_table_name (med_id, med_name, price) VALUES
 ON DUPLICATE KEY UPDATE
     med_name = VALUES(med_name),
     price = VALUES(price);
+
+INSERT INTO `procedures` (`Prod_Name`, `Price`) VALUES
+('consultation - specialist', 400),
+('consultation - gp', 200),
+('consultation - other', NULL),
+('review', 200),
+('refill and lab review', 0),
+
+('ultrasound - obs', 250),
+('ultrasound - trans vag', 300),
+('ultrasound - abd', 300),
+('ultrasound - fetal anomaly', 350),
+('ultrasound - doppler', 300),
+('ultrasound - follicle tracking', 350),
+('ultrasound - cavity length', 300),
+('ultrasound shs', 800),
+
+('diagnostic hysteroscopy', 3200),
+('operative hysteroscopy - polyps', 9300),
+('operative hysteroscopy - fibroids', 9300),
+('operative hysteroscopy - adhesions', 9300),
+('operative hysteroscopy - 2nd resection', 6000),
+('second look hysteroscopy', 2300),
+('operative hysteroscopy top up', 7300),
+('cyst aspiration', 2600),
+
+('prp', 2500),
+('iucd', 400),
+('mirena', 2000),
+('implanon / jandelle insertion', 400),
+('triamcinolone shot', 370),
+('mva', 1000),
+
+('colposcopy', 850),
+('cavity length assessment', 200),
+('IUI', 4000),
+
+('tetanus', 50),
+('antenatal reg', 100),
+('ctg', 200),
+('post natal counselling', 100),
+('weighing', 50),
+
+('medical report - adoption', 800),
+('medical report - fit to fly', 300);
+
