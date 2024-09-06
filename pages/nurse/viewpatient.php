@@ -72,13 +72,8 @@
     }
 
     if (isset($_POST["btemp"])) {
-        $sql = "INSERT INTO `patients_vits` (`date`, `apt_id`, `vit_id`, `measure`,created_by) VALUES 
-        (now(), $_SESSION[apt_id], 1, $_POST[btemp],'".$_SESSION["user"][0]."'), 
-        (now(), $_SESSION[apt_id], 2, $_POST[pulRate],'".$_SESSION["user"][0]."'),
-        (now(), $_SESSION[apt_id], 3, $_POST[respRate],'".$_SESSION["user"][0]."'), 
-        (now(), $_SESSION[apt_id], 4, $_POST[dbloodPress],'".$_SESSION["user"][0]."'),
-        (now(), $_SESSION[apt_id], 6, $_POST[oxysat],'".$_SESSION["user"][0]."'), 
-        (now(), $_SESSION[apt_id], 5, $_POST[sbloodPress],'".$_SESSION["user"][0]."')";
+        $sql = "INSERT INTO `patients_vits`( `date`, `apt_id`, `created_by`, `body_temp`, `pulse_rate`, `respiration_rate`, `systolic_bp`, `dystolic_bp`, `oxygen_sat`, `weight`) 
+        VALUES (now(),$_SESSION[apt_id],'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$_POST[sbloodPress]','$_POST[dbloodPress]','$_POST[oxysat]','$_POST[weight]')";
         $result = $conn->query($sql);
         $ids = ["","defaultOpen","","","","",""];
     }
@@ -385,59 +380,35 @@
                                 <input type="text" id="pulRate" name="pulRate" required><br>
                                 <label for="respRate">Respiration Rate:</label>
                                 <input type="text" id="respRate" name="respRate" required>
-                                <label for="dbloodPress">Diastolic Blood Pressure</label>
-                                <input type="text" id="dbloodPress" name="dbloodPress" required ><br>
+                                <label for="oxysat">Oxygen Saturation</label>
+                                <input type="text" id="oxysat" name="oxysat" required ><br>
+                                
                                 <label for="sbloodPress">Systolic Blood Pressure</label>
                                 <input type="text" id="sbloodPress" name="sbloodPress" required >
-                                <label for="oxysat">Oxygen Saturation</label>
-                                <input type="text" id="oxysat" name="oxysat" required >
+                                <label for="dbloodPress">Diastolic Blood Pressure</label>
+                                <input type="text" id="dbloodPress" name="dbloodPress" required ><br>
+                                <label for="weight">Weight</label>
+                                <input type="text" id="weight" name="weight" required >
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
-                                $sql = "SELECT p_vit_id,date,vitals.vital_name,measure FROM `patients_vits` 
-                                join vitals on vitals.vit_id = patients_vits.vit_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+                                $sql = "SELECT * FROM `patients_vits` where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
                                 $result = $conn->query($sql); 
                                 ?>
                                 <div class='table-responsive'>
                                     <table class ='table'>
                                     <thead>
                                         <tr>
-                                            <th>Date</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Diastolic Blood Pressure</th><th>Oxygen Saturation</th><th>Systolic Blood Pressure</th>
+                                            <th>Date</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Blood Pressure</th><th>Oxygen Saturation</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                            if ($result->num_rows > 0) {
-                                                if ($result->num_rows > 0) {
-                                                    $rowCounter = 0;
-                                                    $groupedRows = [];
-                                                    $group = [];
-                                                    while ($row = $result->fetch_assoc()) {
-                                                        $group[] = $row;
-                                                        $rowCounter++;
-                                                        // Group every 4 rows
-                                                        if ($rowCounter % 6 == 0) {
-                                                            $groupedRows[] = $group;
-                                                            $group = []; // Reset group
-                                                        }
-                                                    }
-                                                    if (!empty($group)) {
-                                                        $groupedRows[] = $group;
-                                                    }
-                                                    
-                                                
-                                                    foreach ($groupedRows as $group) {
-                                                        echo '<tr><td>'.$group[0]['date'].'</td>';
-                                                        foreach ($group as $row) {
-                                                            echo '<td>';
-                                                            echo $row['measure'];
-                                                            echo '</td>';
-                                                        }
-                                                    
-                                                        echo '</tr>';
-                                                    }
+                                             if ($result->num_rows > 0) {
+                                                while($row = $result->fetch_assoc()) {
+                                                    echo "<tr><td>".$row["date"]."</td><td>".$row["body_temp"]."</td><td>".$row["pulse_rate"]."</td><td>".$row["respiration_rate"]."</td><td>".$row["systolic_bp"]."/".$row["dystolic_bp"]."</td><td>".$row["oxygen_sat"]."</td><td>".$row["weight"]."</td></tr>";
                                                 }
-                                            }
+                                              }
                                         ?>
                                     </tbody>
                                     </table>

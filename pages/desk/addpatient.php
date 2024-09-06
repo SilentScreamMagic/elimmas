@@ -7,6 +7,8 @@
     <!-- plugins:css -->
     <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
     <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <link rel="stylesheet" href="../../assets/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -16,6 +18,34 @@
     <link rel='stylesheet' href='../../assets/css/style.css'>
     <!-- End layout styles -->
     <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+    <style>
+      .step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Mark the active step: */
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #04AA6D;
+}
+.tab {
+  display: none;
+}
+    </style>
   </head>
   <body>
   <div class='container-scroller'>
@@ -27,88 +57,270 @@
               <div class='col-12 grid-margin'>
                 <div class='card'>
                   <div class='card-body'>
-                    <h4 class='card-title'>Current Patients</h4>
+                    <h3 class='card-title'>Add Patients</h3>
                     
-    <div class="form-container">
-        <h2>Patient Information Form</h2>
-        <form action="process_form.php" method="post">
-        
-        <div class="form-group">
-            <label for="FName">First Name:</label>
-            <input type="text" id="FName" name="FName" required>
-        </div>
-        <div class="form-group">
-        <label for="LName">Last Name:</label>
-        <input type="text" id="LName" name="LName" required>
-        </div>
-        <div class="form-group">
-        <label for="DOB">Date of Birth:</label>
-        <input type="date" id="DOB" name="DOB" required>
-</div>
-<div class="form-group">
-        <label>Gender:</label>
-        <select id="gender" name="gender" required>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>     
-</div>
-<div class="form-group">
-        <label for="financial_type">Financial Type:</label>
-        <input type="text" id="financial_type" name="financial_type" required>
-</div>
-
-<div class="form-group">
-        <label for="guardian_fname">Guardian's First Name:</label>
-        <input type="text" id="guardian_fname" name="guardian_fname">
-    </div>
-    <div class="form-group">
-        <label for="guardian_lname">Guardian's Last Name:</label>
-        <input type="text" id="guardian_lname" name="guardian_lname" >
-    </div>
-    <div class="form-group">
-        <label>Marital Status:</label>
-        <select id="marital_status" name="marital_status" required>
-            <option value="Single">Single</option>
-            <option value="Married">Married</option>
-            <option value="Divorced">Divorced</option>
-            <option value="Widowed">Widowed</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="address">Address:</label>
-        <textarea id="address" name="address" rows="4" cols="50" required></textarea>
-    </div>
-    <div class="form-group">
-        <label for="patient_phone">Patient's Phone:</label>
-        <input type="tel" id="patient_phone" name="patient_phone" required>
-    </div>
-    <div class="form-group">
-        <label for="patient_email">Patient's Email:</label>
-        <input type="email" id="patient_email" name="patient_email">
-    </div>
-    <div class="form-group">
-        <label for="guardian_phone">Guardian's Phone:</label>
-        <input type="tel" id="guardian_phone" name="guardian_phone">
-    </div>
-    <div class="form-group">
-        <label for="guardian_email">Guardian's Email:</label>
-        <input type="email" id="guardian_email" name="guardian_email" >
-    </div>
-    <div class="form-group">
-        <label for="referred_by">Referred By:</label>
-        <input type="text" id="referred_by" name="referred_by">
-    </div>
-    <div class="form-group">
-        <label for="employment">Employment:</label>
-        <input type="text" id="employment" name="employment" >
-    </div>
-    <div class="form-group">
-        <label for="special_codes">Special Codes:</label>
-        <input type="text" id="special_codes" name="special_codes">
-    </div>
-        <button class="form-button" type="submit" value="Submit">Submit</button>
-    </form>
-    </div>
+      
+        <form id ="form" class="form-sample" action="process_form.php" method="post">
+          <div class="tab">
+          <h4 >Patients info</h4>
+            <div class="form-group row">
+            <label class="col-sm-3 col-form-label" class="col-sm-3 col-form-label" for="FName">First Name:</label>
+              <div class="col-sm-9">
+                <input class="form-control" class="form-control" type="text" id="FName" name="FName" required>
+              </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="LName">Last Name:</label>
+            <div class="col-sm-9">
+              <input class="form-control" type="text" id="LName" name="LName" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="DOB">Date of Birth:</label>
+            <div class="col-sm-9">
+              <input class="form-control" type="date" id="DOB" name="DOB" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Gender:</label>
+            <div class="col-sm-9">
+                <select class="js-example-basic-single" style="width:100%" id="gender" name="gender" required>
+                <option value="" selected disabled>Gender</option> 
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select> 
+              </div>   
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Marital Status:</label>
+              <div class="col-sm-9">
+                <select class="js-example-basic-single" style="width:100%" id="marital_status" name="marital_status" placeholder = "Marital Status" required>
+                  <option value="" selected disabled>Marital Status</option>  
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </select>
+              </div> 
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="address">Address:</label>
+              <div class="col-sm-9">
+                <textarea class="form-control" id="address" name="address" rows="4" cols="50" required></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="patient_phone">Patient's Phone:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="tel" id="patient_phone" name="patient_phone" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="patient_email">Patient's Email:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="email" id="patient_email" name="patient_email">
+              </div>
+            </div> 
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="employment">Employment:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" id="employment" name="employment" >
+                </div>
+              </div>
+          </div>
+          <div class="tab">
+          <h4>Emergency Contact</h4>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_fname">Emergency's First Name:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" id="emergency_fname" name="emergency_fname">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_lname">Emergency's Last Name:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" id="emergency_lname" name="emergency_lname" >
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_phone">Emergency's Phone:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="tel" id="emergency_phone" name="emergency_phone">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_email">Emergency's Email:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="email" id="emergency_email" name="emergency_email" >
+              </div>
+            </div>
+          </div >
+            <div class="tab">
+            <h4>Other Info</h4>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="referred_by">Referred By:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" id="referred_by" name="referred_by">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="special_codes">Special Codes:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" id="special_codes" name="special_codes">
+                </div>    
+              </div>
+            </div>
+          
+            <div style="overflow:auto;">
+              <div style="float:right;">
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+                <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:40px;">
+              <span class="step"></span>
+              <span class="step"></span>
+              <span class="step"></span>
+            </div>
+          </form>
+          <form id ="form" class="form-sample" action="process_form.php" method="post">
+          <div class="tab">
+          <h4 >Patients info</h4>
+            <div class="form-group row">
+            <label class="col-sm-3 col-form-label" class="col-sm-3 col-form-label" for="FName">First Name:</label>
+              <div class="col-sm-9">
+                <input class="form-control" class="form-control" type="text" id="FName" name="FName" required>
+              </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="LName">Last Name:</label>
+            <div class="col-sm-9">
+              <input class="form-control" type="text" id="LName" name="LName" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="DOB">Date of Birth:</label>
+            <div class="col-sm-9">
+              <input class="form-control" type="date" id="DOB" name="DOB" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Gender:</label>
+            <div class="col-sm-9">
+                <select class="js-example-basic-single" style="width:100%" id="gender" name="gender" required>
+                <option value="" selected disabled>Gender</option> 
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select> 
+              </div>   
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label">Marital Status:</label>
+              <div class="col-sm-9">
+                <select class="js-example-basic-single" style="width:100%" id="marital_status" name="marital_status" placeholder = "Marital Status" required>
+                  <option value="" selected disabled>Marital Status</option>  
+                  <option value="Single">Single</option>
+                  <option value="Married">Married</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </select>
+              </div> 
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="address">Address:</label>
+              <div class="col-sm-9">
+                <textarea class="form-control" id="address" name="address" rows="4" cols="50" required></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="patient_phone">Patient's Phone:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="tel" id="patient_phone" name="patient_phone" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="patient_email">Patient's Email:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="email" id="patient_email" name="patient_email">
+              </div>
+            </div> 
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="employment">Employment:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" id="employment" name="employment" >
+                </div>
+              </div>
+          </div>
+          <div class="tab">
+          <h4>Emergency Contact</h4>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_fname">Emergency's First Name:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" id="emergency_fname" name="emergency_fname">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_lname">Emergency's Last Name:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="text" id="emergency_lname" name="emergency_lname" >
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_phone">Emergency's Phone:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="tel" id="emergency_phone" name="emergency_phone">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label" for="emergency_email">Emergency's Email:</label>
+              <div class="col-sm-9">
+                <input class="form-control" type="email" id="emergency_email" name="emergency_email" >
+              </div>
+            </div>
+          </div >
+            <div class="tab">
+            <h4>Other Info</h4>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="referred_by">Referred By:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" id="referred_by" name="referred_by">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="special_codes">Special Codes:</label>
+                <div class="col-sm-9">
+                  <input class="form-control" type="text" id="special_codes" name="special_codes">
+                </div>    
+              </div>
+            </div>
+          
+            <div style="overflow:auto;">
+              <div style="float:right;">
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+                <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:40px;">
+              <span class="step"></span>
+              <span class="step"></span>
+              <span class="step"></span>
+              <span class="step"></span>
+            </div>
+          </form>
+          
+            <div style="overflow:auto;">
+              <div style="float:right;">
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+                <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:40px;">
+              <span class="step"></span>
+              <span class="step"></span>
+              <span class="step"></span>
+            </div>
+          </div>
+      
                     </div>
                   </div>
                 </div>
@@ -118,15 +330,83 @@
           </div>
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
-          <footer class='footer'>
-            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
-              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
           <!-- partial -->
         </div>
+        <script src="../../assets/vendors/select2/select2.min.js"></script>
+        <script src="../../assets/js/select2.js"></script>
+        <script>
+          var currentTab = 0; // Current tab is set to be the first tab (0)
+          showTab(currentTab); // Display the current tab
 
+          function showTab(n) {
+            // This function will display the specified tab of the form ...
+            var x = document.getElementsByClassName("tab");
+            x[n].style.display = "block";
+            // ... and fix the Previous/Next buttons:
+            if (n == 0) {
+              document.getElementById("prevBtn").style.display = "none";
+            } else {
+              document.getElementById("prevBtn").style.display = "inline";
+            }
+            if (n == (x.length - 1)) {
+              document.getElementById("nextBtn").innerHTML = "Submit";
+            } else {
+              document.getElementById("nextBtn").innerHTML = "Next";
+            }
+            // ... and run a function that displays the correct step indicator:
+            fixStepIndicator(n)
+          }
+
+          function nextPrev(n) {
+            // This function will figure out which tab to display
+            var x = document.getElementsByClassName("tab");
+            // Exit the function if any field in the current tab is invalid:
+              if (n == 1 && !validateForm()) return false;
+            // Hide the current tab:
+            x[currentTab].style.display = "none";
+            // Increase or decrease the current tab by 1:
+            currentTab = currentTab + n;
+            // if you have reached the end of the form... :
+            if (currentTab >= x.length) {
+              //...the form gets submitted:
+              document.getElementById("form").submit();
+              return false;
+            }
+            // Otherwise, display the correct tab:
+            showTab(currentTab);
+          }
+
+          function fixStepIndicator(n) {
+            // This function removes the "active" class of all steps...
+            var i, x = document.getElementsByClassName("step");
+            for (i = 0; i < x.length; i++) {
+              x[i].className = x[i].className.replace(" active", "");
+            }
+            //... and adds the "active" class to the current step:
+            x[n].className += " active";
+          }
+          function validateForm() {
+            // This function deals with validation of the form fields
+            var w,x, y,z, i, valid = true;
+            x = document.getElementsByClassName("tab");
+            y = x[currentTab].getElementsByTagName("input");
+            // A loop that checks every input field in the current tab:
+            for (i = 0; i < y.length; i++) {
+              // If a field is empty...
+              if (y[i].value == "" && y[i].required == true) {
+                // add an "invalid" class to the field:
+                y[i].className += " invalid";
+                // and set the current valid status to false:
+                valid = false;
+              }
+            }
+            // If the valid status is true, mark the step as finished and valid:
+            if (valid) {
+              document.getElementsByClassName("step")[currentTab].className += " finish";
+            }
+            return valid; // return the valid status
+          }
+        </script>
     
 </body>
 </html>

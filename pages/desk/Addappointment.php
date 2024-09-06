@@ -116,21 +116,7 @@
                             
                         </div>
                         
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label" for="diet">Diet:</label>
-                            <div class="col-sm-9">
-                                <select class="js-example-basic-single" style="width:100%" id="diet" name="diet" required>
-                                <option value="regular">Regular Diet</option>
-                                <option value="mechanical_soft">Mechanical Soft Diet</option>
-                                <option value="puree">Puree Diet</option>
-                                <option value="low_fiber">Low Fiber/“GI Soft” Diet</option>
-                                <option value="carbohydrate_controlled">Carbohydrate Controlled Diet</option>
-                                <option value="cardiac">Cardiac Diet</option>
-                                <option value="thickened_liquids">Thickened Liquids Restrictions</option>
-                            </select>
-                            </div>
-                        </div>
-                        <button class="form-button" type="submit" value="Submit">Submit</button>
+                        <button  class="btn btn-primary mr-2" type="submit" value="Submit">Submit</button>
                     </form>
             
                   </div>
@@ -141,13 +127,6 @@
           </div>
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
-          <footer class='footer'>
-            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
-              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
-          <!-- partial -->
         </div>
         <script src="../../assets/vendors/select2/select2.min.js"></script>
         <script src="../../assets/js/select2.js"></script>

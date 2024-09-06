@@ -339,29 +339,28 @@
                       <div class="card-body">
                         <h4 class="card-title">Vitals</h4>
                             <?php
-                            $sql = "SELECT date,vitals.vital_name,patients_vits.vit_id,patients_vits.measure FROM `patients_vits` 
-                            INNER JOIN vitals on vitals.vit_id = patients_vits.vit_id 
-                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id = $_SESSION[apt_id]) and deleted = 0
-                            order by date;";
+                            $sql = "SELECT patients_vits.* FROM `patients_vits` 
+                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id = 37) and deleted = 0 order by date;";
                             $result = $conn->query($sql);
                             $vitals = [];
 
-                            if ($result->num_rows > 0) {
-                                while($row = $result->fetch_assoc()) {
-                                    $vitals[$row["date"]][$row["vit_id"]] =$row["measure"];
-                                }
-                                foreach($vitals as $date=> $dets){
-                                    echo "<div class='patient-card'>";
-                                    echo "<h4>$date</h4>";
+                            if ($row = $result->fetch_assoc()) {
+                                echo "<div class='patient-card'>";
+                                    echo "<h4>$row[date]</h4>";
                                     echo "<div class='patient-info'>";
-                                    echo "<div><span><strong>Weight: </strong>$dets[7] kg</span>|<span>  <strong>BT:</strong>  $dets[1]<sup>o</sup>C</span> </div>";
-                                    echo "<div><span><strong>PR:</strong> $dets[2]<sub>bpm</sub></span> |<span>    <strong>BP:</strong> $dets[5]/$dets[4]<sub>mmhg</sub></span> </div>";
-                                    echo "<div><span><strong>RR:</strong> $dets[3] <sub>cycles/min</sub></span>| <span>     <strong>SpO2:</strong> $dets[6]%</span></div>";
+                                    echo "<div><span><strong>Weight: </strong>$row[weight] kg</span>|<span>  <strong>BT:</strong>  $row[body_temp]<sup>o</sup>C</span> </div>";
+                                    echo "<div><span><strong>PR:</strong> $row[pulse_rate]<sub>bpm</sub></span> |<span>    <strong>BP:</strong> $row[systolic_bp]/$row[dystolic_bp]<sub>mmhg</sub></span> </div>";
+                                    echo "<div><span><strong>RR:</strong> $row[respiration_rate] <sub>cycles/min</sub></span>| <span>     <strong>SpO2:</strong> $row[oxygen_sat]%</span></div>";
                                     echo "<div></div>";
                                     echo "<div> </div>";
                                    
                                     echo "</div>";
                                     echo "</div>";
+                                while($row = $result->fetch_assoc()) {
+                                    $vitals[$row["date"]][$row["vit_id"]] =$row["measure"];
+                                }
+                                foreach($vitals as $date=> $dets){
+                                    
                                 }
                             }
                         ?>

@@ -2,7 +2,7 @@
 include "../conn.php";
 include "../searchbar2.php";
 //include "../table.html";
-$sql = "SELECT patient.pat_id,concat(Fname,' ',LName) 'Patient Name' FROM patient";
+$sql = "SELECT patient.pat_id,concat(Fname,' ',LName) 'Patient Name',patient.*, concat(emergency_fname,' ',emergency_lname)'Emergency Contact' FROM patient;";
 $result = $conn->query($sql);
 ?>
 <a href="./addpatient.html">Add Patient</a>
@@ -41,11 +41,23 @@ $result = $conn->query($sql);
                         <table id='filterTable' class ='table'>
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Patient Name</th>
-                                <th>Type</th>
-                                
                                 <th></th>
+                                <th>Patient ID</th>
+                                <th>Patient Name</th>
+                                <th>DOB	</th>
+                                <th>gender	</th>
+                                <th>Phone</th>	
+                                <th>Email</th>
+                                <th>Marital Status</th>	
+                                <th>Address</th>	
+                                <th>Emergency Contact	</th>	
+                                <th>Emergency Phone</th>	
+                                <th>Emergency Email</th>	
+                                <th>Referred by</th>	
+                                <th>Registration Date</th>	
+                                <th>Employment</th>	
+                                <th>Special Codes</th>
+                                
                                 <th></th>
                             </tr>
                         </thead>
@@ -54,21 +66,25 @@ $result = $conn->query($sql);
                           if ($result){ 
                               if ($result->num_rows > 0) {
                                   while($row = $result->fetch_assoc()) {
-                                    echo "<tr><td>".$row["pat_id"]."</td><td>".$row["Patient Name"]."</td></td>
-                                  <td> 
+                                    echo "<tr><td> 
                                   <div>
                                       <form action='apthistory.php' method='post'>
                                           <input type='hidden' name='id' value=".$row['pat_id'].">
-                                          <input type='submit' value='&#128065;'>
+                                          <input class ='btn-md btn-primary' type='submit' value='&#128065;'>
                                       </form>
                                   </div>
-                                  <div style>
+                                  <div>
                                       <form action='Addappointment.php' method='post'>
                                           <input type='hidden' name='id' value='".$row['pat_id']."'>
-                                          <input type='submit' value='+'>
+                                          <input style = 'width: 30px' class ='btn-md btn-info' type='submit' value='+'>
                                       </form>
                                   </div>
-                                  </td>
+                                  </td><td>".$row["pat_id"]."</td><td>".$row["Patient Name"]."</td>
+                                    <td>".$row["DOB"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
+                                  <td>".$row["marital_status"]."</td><td>".$row["address"]."</td><td>".$row["Emergency Contact"]."</td>
+                                  <td>".$row["emergency_phone"]."</td><td>".$row["emergency_email"]."</td><td>".$row["referred_by"]."</td>
+                                  <td>".$row["registration_date"]."</td><td>".$row["employment"]."</td><td>".$row["special_codes"]."</td>
+                                    
                                   
                                   </tr>";
                                   }
@@ -87,13 +103,7 @@ $result = $conn->query($sql);
             
           </div>
           <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
-          <footer class="footer">
-            <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
+          
           <!-- partial -->
         </div>
 

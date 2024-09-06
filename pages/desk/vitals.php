@@ -37,14 +37,8 @@ $id ="unchanged";
     }
     
     if (isset($_POST["btemp"])) {
-        $sql = "INSERT INTO `patients_vits` (`date`, `apt_id`, `vit_id`, `measure`,created_by) VALUES 
-        (now(), $_POST[apt_id], 1, $_POST[btemp],'".$_SESSION["user"][0]."'), 
-        (now(), $_POST[apt_id], 2, $_POST[pulRate],'".$_SESSION["user"][0]."'),
-        (now(), $_POST[apt_id], 3, $_POST[respRate],'".$_SESSION["user"][0]."'), 
-        (now(), $_POST[apt_id], 4, $bp[1],'".$_SESSION["user"][0]."'),
-        (now(), $_POST[apt_id], 6, $_POST[oxysat],'".$_SESSION["user"][0]."'), 
-        (now(), $_POST[apt_id], 5, $bp[0],'".$_SESSION["user"][0]."'),
-         (now(), $_POST[apt_id],7, $_POST[weight],'".$_SESSION["user"][0]."')";
+        $sql = "INSERT INTO `patients_vits`( `date`, `apt_id`, `created_by`, `body_temp`, `pulse_rate`, `respiration_rate`, `systolic_bp`, `dystolic_bp`, `oxygen_sat`, `weight`) 
+        VALUES (now(),$_POST[apt_id],'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$bp[0]','$bp[1]','$_POST[oxysat]','$_POST[weight]')";
         $result = $conn->query($sql);
     }
 
@@ -125,16 +119,47 @@ $id ="unchanged";
                 </div>
               </div>
             </div>
-            
+            <div class='row '>
+              <div class='col-12 grid-margin'>
+                <div class='card'>
+                  <div class='card-body'>
+                  <h4 class="card-title">Today's Vitals</h4>
+                  <?php 
+                                $sql = "SELECT concat(patient.FName,' ', patient.LName)'Patient Name',patients_vits.* FROM `patients_vits` 
+                            INNER JOIN appointments on appointments.id = patients_vits.apt_id
+                            INNER JOIN patient on appointments.patient_id = patient.pat_id
+                            inner JOIN users on users.username = patients_vits.created_by
+                            where  cast(patients_vits.date as date)= '".date("Y-m-d")."' and deleted = 0 and users.user_type = 'Front Desk'
+                            GROUP by apt_id
+                            order by date;";
+                                $result = $conn->query($sql); 
+                                ?>
+                                <div class='table-responsive'>
+                                    <table class ='table'>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th><th>Patient Name</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Blood Pressure</th><th>Oxygen Saturation</th><th>Weight</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            if ($result->num_rows > 0) {
+                                              while($row = $result->fetch_assoc()) {
+                                                  echo "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["body_temp"]."</td><td>".$row["pulse_rate"]."</td><td>".$row["respiration_rate"]."</td><td>".$row["systolic_bp"]."/".$row["dystolic_bp"]."</td><td>".$row["oxygen_sat"]."</td><td>".$row["weight"]."</td></tr>";
+                                              }
+                                            }
+                                        ?>
+                                    </tbody>
+                                    </table>
+                                </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
-          <footer class='footer'>
-            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
-              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
+        
           <!-- partial -->
         </div>
          <script src="../../assets/vendors/select2/select2.min.js"></script>
