@@ -1,6 +1,5 @@
 <?php
 include "../conn.php";
-include "../searchbar2.php";
 //include "../table.html";
 $sql = "SELECT patient.pat_id,concat(Fname,' ',LName) 'Patient Name',patient.*, concat(emergency_fname,' ',emergency_lname)'Emergency Contact' FROM patient;";
 $result = $conn->query($sql);
@@ -24,6 +23,17 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="../../assets/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+    <style>
+    .hidden {
+            display: none;
+        }
+        .dropdown-input {
+            margin-bottom: 12px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+</style>
   </head>
   <body>
   <div class="container-scroller">
@@ -94,7 +104,35 @@ $result = $conn->query($sql);
           
           <!-- partial -->
         </div>
+        <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var input = document.getElementById("tableFilterInput");
+        input.addEventListener("keyup", function() {
+            var filter = input.value.toUpperCase();
+            var table = document.getElementById("filterTable");
+            var rows = table.getElementsByTagName("tr");
 
+            for (var i = 1; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var showRow = false;
+                if (filter ==""){
+                    showRow = true
+                }else{
+                    var cellValue = cells[2].textContent || cells[2].innerText;
+                    if (cellValue.toUpperCase().indexOf(filter) > -1) {
+                        showRow = true;
+                    }
+                }
+                
+                if (showRow) {
+                    rows[i].classList.remove("hidden");
+                } else {
+                    rows[i].classList.add("hidden");
+                }
+            }
+        });
+    });
+</script>
         <script>
     document.getElementById('create').innerHTML +=`<li class='nav-item dropdown d-none d-lg-block'>
                 <a class='nav-link btn btn-success create-new-button' id='createbuttonDropdown' data-toggle='dropdown' aria-expanded='false' href='#'>+ Add ...</a>
