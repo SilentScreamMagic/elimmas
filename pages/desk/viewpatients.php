@@ -42,22 +42,12 @@ $result = $conn->query($sql);
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Patient ID</th>
+                                <th>Date</th>
                                 <th>Patient Name</th>
                                 <th>DOB	</th>
                                 <th>Gender	</th>
                                 <th>Phone</th>	
                                 <th>Email</th>
-                                <th>Marital Status</th>	
-                                <th>Address</th>	
-                                <th>Emergency Contact	</th>	
-                                <th>Emergency Phone</th>	
-                                <th>Emergency Email</th>	
-                                <th>Referred by</th>	
-                                <th>Registration Date</th>	
-                                <th>Employment</th>	
-                                <th>Special Codes</th>
-                                
                                 <th></th>
                             </tr>
                         </thead>
@@ -79,11 +69,9 @@ $result = $conn->query($sql);
                                           <input style = 'width: 30px' class ='btn-md btn-info' type='submit' value='+'>
                                       </form>
                                   </div>
-                                  </td><td>".$row["pat_id"]."</td><td>".$row["Patient Name"]."</td>
+                                  </td><td>".$row["registration_date"]."</td><td>".$row["Patient Name"]."</td>
                                     <td>".$row["DOB"]."</td><td>".$row["gender"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
-                                  <td>".$row["marital_status"]."</td><td>".$row["address"]."</td><td>".$row["Emergency Contact"]."</td>
-                                  <td>".$row["emergency_phone"]."</td><td>".$row["emergency_email"]."</td><td>".$row["referred_by"]."</td>
-                                  <td>".$row["registration_date"]."</td><td>".$row["employment"]."</td><td>".$row["special_codes"]."</td>
+                                  
                                     
                                   
                                   </tr>";
