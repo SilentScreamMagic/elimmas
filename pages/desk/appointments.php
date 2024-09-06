@@ -32,9 +32,8 @@
     if (isset($_POST["appt_date"])){
         $date = date("Y-m-d",strtotime($_POST["appt_date"]));
     }
-    if (isset($_POST['id'])){
-        $date = $_POST["cdate"];
-        $sql = "update appointments set check_in = now() where id =".$_POST["id"];
+    if (isset($_POST['checkin_id'])){
+        $sql = "update appointments set check_in = now() where id =".$_POST["checkin_id"];
         $result = $conn->query($sql);
         if(isset($_POST["bed"])){
             $sql = "INSERT INTO `patients_beds` ( `bed_id`, `apt_id`, `start_date`,created_by) 
@@ -42,6 +41,10 @@
             $conn->query($sql);
             $sql = "update beds set status = 'occupied' where bed_id = $_POST[bed]";
         }
+    }
+    if (isset($_POST['checkout_id'])){
+      $sql = "update appointments set check_out = now() where id =".$_POST["checkout_id"];
+      $result = $conn->query($sql);
     }
     $sql = "SELECT room_id, bed_id,status FROM `beds` 
         where status = 'clean'
@@ -109,16 +112,20 @@
                                         if ($row["check_in"]!= null){
                                             $string = $string. "<td>".$row["check_in"]." 
                                             <form class ='display: inline-block;' action='apthistory.php' method='post'>
-                                                <input type='hidden' name='id' value=".$row['pat_id'].">
+                                                <input type='hidden' name='checkin_id' value=".$row['pat_id'].">
                                                 <input type='submit' value='&#128065;'>
                                             </form></td><td><form class ='display: inline-block;' action='vitals.php' method='post'>
                                                 <input type='hidden' name='id' value=".$row['id'].">
                                                 <input type='submit' value='Take Vitals'>
-                                            </form></td></tr>";
+                                            </form></td>
+                                            <td><form class ='display: inline-block;' action='' method='post'>
+                                                <input type='hidden' name='checkout_id' value=".$row['id'].">
+                                                <input type='submit' value='Check Out'>
+                                            </form></td>
+                                            </tr>";
                                         }else{
                                             $string = $string . "<td><form action='' method='post'>
                                             <input type='hidden' name='id' value=".$row['id'].">
-                                            <input type='hidden' name='cdate' value=$date>
                                             $sel
                                             <input type='submit' value='Arrival Time'>
                                         </form></td></tr>";
