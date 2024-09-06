@@ -117,8 +117,9 @@
                                             </form></td><td><form class ='display: inline-block;' action='vitals.php' method='post'>
                                                 <input type='hidden' name='id' value=".$row['id'].">
                                                 <input type='submit' value='Take Vitals'>
-                                            </form></td>
-                                            <td><form class ='display: inline-block;' action='' method='post'>
+                                            </form></td>";
+                                            if($row["type"] == "Consultation")
+                                            $string = $string."<td><form class ='display: inline-block;' action='' method='post'>
                                                 <input type='hidden' name='checkout_id' value=".$row['id'].">
                                                 <input type='submit' value='Check Out'>
                                             </form></td>
