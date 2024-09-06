@@ -45,7 +45,7 @@ $result = $conn->query($sql);
                                 <th>Patient ID</th>
                                 <th>Patient Name</th>
                                 <th>DOB	</th>
-                                <th>gender	</th>
+                                <th>Gender	</th>
                                 <th>Phone</th>	
                                 <th>Email</th>
                                 <th>Marital Status</th>	
@@ -80,7 +80,7 @@ $result = $conn->query($sql);
                                       </form>
                                   </div>
                                   </td><td>".$row["pat_id"]."</td><td>".$row["Patient Name"]."</td>
-                                    <td>".$row["DOB"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
+                                    <td>".$row["DOB"]."</td><td>".$row["gender"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
                                   <td>".$row["marital_status"]."</td><td>".$row["address"]."</td><td>".$row["Emergency Contact"]."</td>
                                   <td>".$row["emergency_phone"]."</td><td>".$row["emergency_email"]."</td><td>".$row["referred_by"]."</td>
                                   <td>".$row["registration_date"]."</td><td>".$row["employment"]."</td><td>".$row["special_codes"]."</td>
