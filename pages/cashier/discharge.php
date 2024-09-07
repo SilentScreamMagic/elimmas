@@ -89,8 +89,12 @@ $html = "<!DOCTYPE html>
     </style>
 </head>
 <body>
-    <h1>$pname's Bill</h1>
-    <div class='bill-section' id='ward-accommodation'>
+    <h1>$pname's Bill</h1>";
+    
+            
+$total_ward_cost = 0;
+if ($result_wards->num_rows > 0) {
+    $html.="<div class='bill-section' id='ward-accommodation'>
         <h2>Ward Accommodation</h2>
         <table>
             <thead>
@@ -105,45 +109,41 @@ $html = "<!DOCTYPE html>
                 </tr>
             </thead>
             <tbody>";
-            
-$total_ward_cost = 0;
-if ($result_wards->num_rows > 0) {
     while ($row = $result_wards->fetch_assoc()) {
         $html .= "<tr><td>" . $row['start_date'] . "</td><td>" . $row['end_date'] . "</td><td> Ward " . $row['room_id'] . "</td><td>" . $row['num_beds'] . "</td><td>" . $row['Duration'] . "</td><td>" . $row['Unit Price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_ward_cost += $row['Cost'];
     }
     $html.="<tr><td></td><td></td><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_ward_cost</td></tr>";
-}
-
-$html .= "</tbody>
+    $html .= "</tbody>
         </table>
-    </div>
-    <div class='bill-section' id='labs'>
-        <h2>Labs</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Lab Name</th>
-                    <th>Count</th>
-                    <th>Unit Price</th>
-                    <th>Cost ($)</th>
-                </tr>
-            </thead>
-            <tbody>";
+    </div>";
+}
 
 $total_lab_cost = 0;
 if ($result_labs->num_rows > 0) {
+    $html .="<div class='bill-section' id='labs'>
+    <h2>Labs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Lab Name</th>
+                <th>Count</th>
+                <th>Unit Price</th>
+                <th>Cost ($)</th>
+            </tr>
+        </thead>
+        <tbody>";
     while ($row = $result_labs->fetch_assoc()) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['lab_name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_lab_cost += $row['Cost'];
     }
-    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_ward_cost</td></tr>";
+    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_ward_cost</td></tr></tbody>
+        </table>
+    </div>";
 }
 
-$html .= "</tbody>
-        </table>
-    </div>
+$html .= "
     <div class='bill-section' id='medications'>
         <h2>Medications</h2>
         <table>
@@ -164,12 +164,16 @@ if ($result_meds->num_rows > 0) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['med_name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_meds_cost += $row['Cost'];
     }
-    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_meds_cost</td></tr>";
+    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_meds_cost</td></tr></tbody>
+        </table>
+    </div>";
 }
 
-$html .= "</tbody>
-        </table>
-    </div>
+
+
+$total_meal_cost = 0;
+if ($result_meals->num_rows > 0) {
+    $html .= "
     <div class='bill-section' id='meals'>
         <h2>Meals</h2>
         <table>
@@ -183,18 +187,19 @@ $html .= "</tbody>
                 </tr>
             </thead>
             <tbody>";
-
-$total_meal_cost = 0;
-if ($result_meals->num_rows > 0) {
     while ($row = $result_meals->fetch_assoc()) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['meal_name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_meal_cost += $row['Cost'];
     }
-    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_meal_cost</td></tr>";
-}
-$html .= "</tbody>
+    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_meal_cost</td></tr></tbody>
         </table>
-    </div>
+    </div>";
+}
+
+
+$total_proc_cost = 0;
+if ($result_proc->num_rows > 0) {
+    $html .= "
     <div class='bill-section' id='theatre-procedures'>
         <h2>Theatre Procedures</h2>
         <table>
@@ -208,19 +213,20 @@ $html .= "</tbody>
                 </tr>
             </thead>
             <tbody>";
-
-$total_proc_cost = 0;
-if ($result_proc->num_rows > 0) {
     while ($row = $result_proc->fetch_assoc()) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['Prod_Name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_proc_cost += $row['Cost'];
     }
-    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_proc_cost</td></tr>";
+    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_proc_cost</td></tr></tbody>
+        </table>
+    </div>";
 }
 
-$html .= "</tbody>
-        </table>
-    </div>
+
+
+$total_con_cost = 0;
+if ($result_con->num_rows > 0) {
+    $html .= "
     <div class='bill-section' id='consumables'>
         <h2>Consumables</h2>
         <table>
@@ -234,19 +240,16 @@ $html .= "</tbody>
                 </tr>
             </thead>
             <tbody>";
-
-$total_con_cost = 0;
-if ($result_con->num_rows > 0) {
     while ($row = $result_con->fetch_assoc()) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['con_name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_con_cost += $row['Cost'];
     }
-    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_con_cost</td></tr>";
+    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_con_cost</td></tr></tbody>
+        </table>
+    </div>";
 }
 
-$html .= "</tbody>
-        </table>
-    </div>
+$html .= "
     <div class='bill-summary'>
         <h2>Summary</h2>
         <table class='summary-table'>
