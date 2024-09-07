@@ -20,7 +20,7 @@ $sql_wards = "SELECT patients_beds.start_date,patients_beds.end_date,rooms.price
     rooms.room_id,datediff(patients_beds.end_date,patients_beds.start_date) 'Duration', 
     rooms.price*COUNT(rooms.room_id)*datediff(patients_beds.end_date,patients_beds.start_date) 'Cost' FROM `patients_beds` 
     JOIN beds on beds.bed_id = patients_beds.bed_id 
-    join rooms on rooms.room_id = beds.room_id where apt_id = $apt_id 
+    join rooms on rooms.room_id = beds.room_id where deleted = 0 and apt_id = $apt_id 
     GROUP by rooms.room_id
     HAVING COUNT(patients_beds.bed_id) > 0
     order by start_date;";
@@ -28,7 +28,7 @@ $result_wards = $conn->query($sql_wards);
 
 // Fetch Labs
 $sql_labs = "SELECT date,labs.lab_name,count(patients_labs.lab_id) 'Count',labs.price,labs.price*count(patients_labs.lab_id) 'Cost' FROM `patients_labs` 
-    join labs on labs.lab_id = patients_labs.lab_id where apt_id =$apt_id 
+    join labs on labs.lab_id = patients_labs.lab_id where deleted = 0 and apt_id =$apt_id 
     GROUP by patients_labs.lab_id
     HAVING COUNT(patients_labs.lab_id) > 0
     order by date;";
@@ -36,7 +36,7 @@ $result_labs = $conn->query($sql_labs);
 
 // Fetch Medications
 $sql_meds = "SELECT patients_meds.date,medication.med_name,medication.price,sum(per_dose*per_day*num_days) 'Count',medication.price*sum(per_dose*per_day*num_days) 'Cost' FROM `patients_meds` 
-    join medication on medication.med_id = patients_meds.med_id where apt_id = $apt_id 
+    join medication on medication.med_id = patients_meds.med_id where deleted = 0 and apt_id = $apt_id 
     GROUP by patients_meds.med_id
     order by date;";
 $result_meds = $conn->query($sql_meds);
@@ -44,7 +44,7 @@ $result_meds = $conn->query($sql_meds);
 // Fetch Meals
 $sql_meals = "SELECT date, meals.meal_name, COUNT(patients_meals.meal_id) AS 'Count', meals.price, (meals.price * COUNT(patients_meals.meal_id)) AS 'Cost' FROM patients_meals
     JOIN meals ON meals.meal_id = patients_meals.meal_id
-    WHERE apt_id = $apt_id
+    WHERE deleted = 0 and apt_id = $apt_id
     GROUP BY meals.meal_id
     HAVING COUNT(patients_meals.meal_id) > 0
     ORDER BY date;";
@@ -53,7 +53,7 @@ $result_meals = $conn->query($sql_meals);
 // Fetch Theatre Procedures
 $sql_proc = "SELECT patients_proc.date,procedures.Prod_Name,COUNT(procedures.prod_id) 'Count' ,procedures.price,procedures.Price*COUNT(procedures.prod_id) 'Cost'  FROM procedures 
     JOIN patients_proc on patients_proc.proc_id = procedures.prod_id
-    where patients_proc.apt_id =$apt_id
+    where deleted = 0 and patients_proc.apt_id =$apt_id
     GROUP by procedures.prod_id
     HAVING COUNT(patients_proc.proc_id) > 0
     order by date;";
@@ -61,7 +61,7 @@ $result_proc = $conn->query($sql_proc);
 
 // Fetch Consumables
 $sql_con = "SELECT date,consumables.con_name,consumables.price,sum(patients_cons.count)'Count',price*sum(patients_cons.count) 'Cost' FROM `patients_cons` 
-    join consumables on consumables.con_id = patients_cons.con_id where apt_id = $apt_id
+    join consumables on consumables.con_id = patients_cons.con_id where deleted = 0 and apt_id = $apt_id
     GROUP by patients_cons.con_id
     HAVING COUNT(patients_cons.con_id) > 0
     order by date;";

@@ -362,7 +362,7 @@
                         <h4 class="card-title">Vitals</h4>
                             <?php
                             $sql = "SELECT patients_vits.* FROM `patients_vits` 
-                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id = 37) and deleted = 0 order by date;";
+                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id =$_SESSION[apt_id]) and deleted = 0 order by date;";
                             $result = $conn->query($sql);
                             $vitals = [];
 
@@ -397,7 +397,7 @@
                                 <h1></h1>
                                 <?php
                                 $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes,users.Name  FROM `notes` 
-                                INNER join users on created_by = users.username where type ='doc_notes' and apt_id = 36 and deleted = 0 GROUP by cast(notes.date as date) order by notes.date;";
+                                INNER join users on created_by = users.username where type ='doc_notes' and apt_id = $_SESSION[apt_id] and deleted = 0 GROUP by cast(notes.date as date) order by notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
