@@ -85,46 +85,124 @@ ON DUPLICATE KEY UPDATE
     price = VALUES(price);
 
 INSERT INTO `procedures` (`Prod_Name`, `Price`) VALUES
+-- Consultation
 ('Consultation - Specialist', 400),
 ('Consultation - GP', 200),
 ('Consultation - Other', NULL),
-('Review', 200),
-('Refill And Lab Review', 0),
+('Consultation - Review', 200),
+('Consultation - Refill And Lab Review', 0),
 
+-- Ultrasound
 ('Ultrasound - Obs', 250),
 ('Ultrasound - Trans Vag', 300),
-('Ultrasound - ABD', 300),
+('Ultrasound - Abd', 300),
 ('Ultrasound - Fetal Anomaly', 350),
 ('Ultrasound - Doppler', 300),
 ('Ultrasound - Follicle Tracking', 350),
 ('Ultrasound - Cavity Length', 300),
-('Ultrasound SHS', 800),
+('Ultrasound - SHS', 800),
 
-('Diagnostic Hysteroscopy', 3200),
-('Operative Hysteroscopy - Polyps', 9300),
-('Operative Hysteroscopy - Fibroids', 9300),
-('Operative Hysteroscopy - Adhesions', 9300),
-('Operative Hysteroscopy - 2nd Resection', 6000),
-('Second Look Hysteroscopy', 2300),
-('Operative Hysteroscopy Top Up', 7300),
-('Cyst Aspiration', 2600),
+-- Hysteroscopies
+('Hysteroscopies - Diagnostic', 3200),
+('Hysteroscopies - Operative - Polyps', 9300),
+('Hysteroscopies - Operative - Fibroids', 9300),
+('Hysteroscopies - Operative - Adhesions', 9300),
+('Hysteroscopies - Operative - 2nd Resection', 6000),
+('Hysteroscopies - Second Look', 2300),
+('Hysteroscopies - Operative Top Up', 7300),
+('Hysteroscopies - Cyst Aspiration', 2600),
 
-('Prp', 2500),
-('Iucd', 400),
-('Mirena', 2000),
-('Implanon / Jandelle Insertion', 400),
-('Triamcinolone Shot', 370),
-('Mva', 1000),
+-- Others
+('Others - PRP', 2500),
+('Others - IUCD', 400),
+('Others - Mirena', 2000),
+('Others - Implanon / Jandelle Insertion', 400),
+('Others - Triamcinolone Shot', 370),
+('Others - MVA', 1000),
 
-('Colposcopy', 850),
-('Cavity Length Assessment', 200),
-('IUI', 4000),
+-- Other Procedures
+('Others - Colposcopy', 850),
+('Others - Cavity Length Assessment', 200),
+('Others - IUI', 4000),
 
-('Tetanus', 50),
-('Antenatal Reg', 100),
-('Ctg', 200),
-('Post Natal Counselling', 100),
-('Weighing', 50),
+-- Additional Procedures
+('Others - Tetanus', 50),
+('Others - Antenatal Reg', 100),
+('Others - CTG', 200),
+('Others - Post Natal Counselling', 100),
+('Others - Weighing', 50),
 
-('Medical Report - Adoption', 800),
-('Medical Report - Fit To Fly', 300);
+-- Medical Reports
+('Others - Medical Report - Adoption', 800),
+('Others - Medical Report - Fit To Fly', 300);
+
+
+INSERT INTO `labs` (`lab_name`, `price`) VALUES
+-- Hematology
+('Hematology - FBC', 110),
+('Hematology - Blood Group', 80),
+('Hematology - Sickling', 65),
+('Hematology - Hb Electrophoresis', 85),
+('Hematology - Clotting Profile', 95),
+
+-- Hormones
+('Hormones - FSH', 110),
+('Hormones - LH', 110),
+('Hormones - Estrogen', 110),
+('Hormones - AMH', 650),
+('Hormones - Insulin', 220),
+('Hormones - Vit D', 300),
+('Hormones - SHBG', 110),
+('Hormones - Progesterone', 110),
+('Hormones - Prolactin', 110),
+('Hormones - DHEAS', 110),
+('Hormones - Testosterone', 110),
+('Hormones - T3', 120),
+('Hormones - T4', 120),
+('Hormones - TSH', 120),
+('Hormones - BHCG', 170),
+('Hormones - UPT', 55),
+
+-- BIOCHEM
+('BIOCHEM - Blood Sugar', 45),
+('BIOCHEM - HbA1C', 120),
+('BIOCHEM - Calcium', 65),
+('BIOCHEM - BUE + Cr', 170),
+('BIOCHEM - LFT', 200),
+('BIOCHEM - Lipids', 150),
+
+-- Infections
+('Infections - HVS R/E', 100),
+('Infections - BF for MPS', 45),
+('Infections - Hep B', 85),
+('Infections - Hep C', 85),
+('Infections - Retro', 85),
+('Infections - VDRL', 95),
+('Infections - Urine R/E', 45),
+('Infections - Urine C/S', 200),
+('Infections - Swab for C/S', 200),
+('Infections - COVID AG', 250),
+('Infections - Hep B Panel', 500),
+('Infections - G6PD', 150),
+('Infections - HPV', 250),
+('Infections - Pap Smear', 150),
+('Infections - CRP', 110),
+('Infections - AFP', 110),
+('Infections - CEA', 140),
+('Infections - CA 125', 140),
+
+-- Pathology
+('Pathology - Histopath', 750),
+('Pathology - Cytology', 700),
+('Pathology - Semen Analysis', 150),
+('Pathology - PSA', 170),
+
+-- Schedules
+('Schedules - Preop Labs', 1560),
+('Schedules - Antenatal Labs', 1360),
+('Schedules - Well Man 1', NULL),
+('Schedules - Well Man 2', NULL),
+('Schedules - Well Woman 1', NULL),
+('Schedules - Well Woman 2', NULL),
+('Schedules - Chlamydia', 100),
+('Schedules - Gonorrhea', 100);

@@ -134,13 +134,12 @@
 <div id="procs" class="tabcontent">
     <!-- Content for beds tab -->
      <h4 class='card-title'>Procedures</h4>
-    <p>List of Procedures...</p>
     <form action= "" method="post">
         <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="patient_id">Procedure Name:</label>
+        <label class="col-sm-3 col-form-label" for="proc_id">Procedure Name:</label>
         <div class="col-sm-9">
-            <select class="js-example-basic-single" style="width:50%" name="proc_id" id="proc_id">
-                <option value="" disabled <?php if(!isset($_POST["id"])) echo "selected" ; ?>>Select a Procedure...</option>
+            <select class="js-example-basic-single" style="width:80%" name="proc_id" id="proc_id">
+                <option value="" disabled selected>Select a Procedure...</option>
                 <?php 
                     foreach ($proc as $pid => $det): ?>
                         <option value="<?php echo $pid; ?>"><?php echo $det; ?></option>
@@ -189,26 +188,46 @@
 <div id="meds" class="tabcontent">
     <!-- Content for rooms tab -->
     <h4 class='card-title'>Medications</h4>
-    <p>List of Medications...</p>
     <form action= "" method="post">
-    <label>Medication:</label>
-    <div class="dropdown" id="dropdown2">
-        <input type="text" placeholder="Search.." class="dropdown-input" data-dropdown="dropdown2">
-        <div class="dropdown-content">
-            <?php 
-                foreach ($meds as $mid => $det): ?>
-                    <div data-value="<?php echo $mid; ?>"><?php echo $det; ?></div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="meds">Medication:</label>
+        <div class="col-sm-9">
+            <select class="js-example-basic-single" style="width:80%" name="meds" id="meds">
+                <option value="" disabled selected>Select a Medication...</option>
                 <?php 
-                endforeach;?>
+                    foreach ($meds as $mid => $det): ?>
+                        <option value="<?php echo $mid; ?>"><?php echo $det; ?></option>
+                    <?php 
+                    endforeach;?>
+                </select>
             </div>
-        </div>
-        <input type="hidden" name = "meds" id="selectedValue2"><br>
-        <label for="med_count">Per Dose</label>
-        <input type="number" name="per_dose" id = "med_count" style="width: 50px ;" required> &nbsp;
-        <label for="per_day">Per Day</label>
-        <input type="number" name="per_day" id = "per_day" style="width: 50px;" required>&nbsp;
-        <label for="num_days">Number Of Days</label>
-        <input type="number" name="num_days" id = "num_days" style="width: 50px;" required>&nbsp;
+        </div>          
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="med_count">Per Dose:</label>
+                    <div class="col-sm-9">
+                    <input type="number" name="per_dose" id = "med_count" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="per_day">Per Day:</label>
+                    <div class="col-sm-9">
+                    <input type="number" name="per_day" id = "per_day" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="num_days">No. Of Days:</label>
+                    <div class="col-sm-9">
+                    <input type="number" name="num_days" id = "num_days" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+        </div>          
         <input type="submit" value="Submit"><br><br>    
     </form>
     <?php 
@@ -247,22 +266,22 @@
 <div id="labs" class="tabcontent">
     <!-- Content for rooms tab -->
     <h3>Labs</h3>
-    <p>List of Labs...</p>
     
     <form action= "" method="post">
-        <label>Select an Option:</label>
-        <div class="dropdown" id="dropdown3">
-        <input type="text" placeholder="Search.." class="dropdown-input" data-dropdown="dropdown3">
-        <div class="dropdown-content">
-            <?php 
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="labs">Labs:</label>
+        <div class="col-sm-9">
+            <select class="js-example-basic-single" style="width:80%" name="labs" id="labs">
+                <option value="" disabled selected>Select a Lab...</option>
+                <?php 
                 foreach ($labs as $lid => $det): ?>
-                    <div data-value="<?php echo $lid; ?>"><?php echo $det; ?></div>
+                    <option value="<?php echo $lid; ?>"><?php echo $det; ?></option>
                 <?php 
                 endforeach;?>
-            </div>
-        </div>
-        <input type="hidden" name = "labs" id="selectedValue3">
+            </select>
+        </div>    
         <input type="submit" value="Submit"><br><br>
+        </div>
     </form>
     
     <?php 
