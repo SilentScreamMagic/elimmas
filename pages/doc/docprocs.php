@@ -1,4 +1,4 @@
-<?php 
+<option?php 
     
 ?>
 <!DOCTYPE html>
@@ -10,6 +10,9 @@
     <!-- plugins:css -->
     <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
     <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <link rel="stylesheet" href="../../assets/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+    
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
@@ -133,20 +136,20 @@
      <h4 class='card-title'>Procedures</h4>
     <p>List of Procedures...</p>
     <form action= "" method="post">
-        <label>Procedure Name:</label>
-        <div class="dropdown" id="dropdown1">
-        <input type="text" placeholder="Search.." class="dropdown-input" data-dropdown="dropdown1">
-        <div class="dropdown-content">
-            <?php 
-                foreach ($proc as $pid => $det): ?>
-                    <div data-value="<?php echo $pid; ?>"><?php echo $det; ?></div>
+        <div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="patient_id">Procedure Name:</label>
+        <div class="col-sm-9">
+            <select class="js-example-basic-single" style="width:50%" name="proc_id" id="proc_id">
+                <option value="" disabled <?php if(!isset($_POST["id"])) echo "selected" ; ?>>Select a Procedure...</option>
                 <?php 
-                endforeach;?>
+                    foreach ($proc as $pid => $det): ?>
+                        <option value="<?php echo $pid; ?>"><?php echo $det; ?></option>
+                    <?php 
+                    endforeach;?>
+                </select>
             </div>
-        </div>
-        <input type="hidden" name = "proc_id" id="selectedValue1">
-    
         <input type="submit" value="Submit"><br><br>
+                </div>
     </form> 
     
                     <div class='table-responsive'>
@@ -428,7 +431,8 @@
          
           <!-- partial -->
 </div>
-        
+<script src="../../assets/vendors/select2/select2.min.js"></script>
+<script src="../../assets/js/select2.js"></script>
 
        
 
