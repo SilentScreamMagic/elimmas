@@ -72,14 +72,14 @@
                                 patient p ON p.pat_id = a.patient_id
                             LEFT JOIN 
                                 (SELECT med_id, apt_id, per_dose * per_day * num_days AS requested FROM patients_meds 
-                                GROUP BY med_id, apt_id) AS meds_requested 
+                                where deleted =0 GROUP BY med_id, apt_id ) AS meds_requested 
                                 ON pm.med_id = meds_requested.med_id AND pm.apt_id = meds_requested.apt_id
                             LEFT JOIN 
                                 (SELECT med_id, apt_id, SUM(quantity) AS provided FROM medstock 
-                                GROUP BY med_id, apt_id ) AS meds_provided 
+                                where deleted =0 GROUP BY med_id, apt_id  ) AS meds_provided 
                                 ON pm.med_id = meds_provided.med_id AND pm.apt_id = meds_provided.apt_id
                             WHERE 
-                                pm.time_ad IS NULL AND pm.apt_id = $_SESSION[id]
+                                pm.time_ad IS NULL AND pm.apt_id = $_SESSION[id] and deleted =0
                             GROUP BY 
                                 med_id, apt_id
                         ) AS subquery
