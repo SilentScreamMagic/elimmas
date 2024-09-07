@@ -1,22 +1,5 @@
 <?php
-    include "../conn.php";
-    //include "../nav.php";
-    //include "../table.html";
-    include "../tabs.html";
-    if(isset($_POST["id"])){
-        $_SESSION["id"] = $_POST["id"];
-        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name"FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
-        where id = '.$_SESSION["id"];
-        $result = $conn->query($sql)->fetch_assoc();
-        $_SESSION["pname"] = $result["Patient Name"];
-        
-    }
-    if(isset($_POST["med_id"])){
-        $sql = "insert into medstock(med_id, quantity,apt_id,t_date) 
-        values(".$_POST["med_id"].",-".$_POST["med_count"].",".$_POST["apt_id"].",now())";
-
-        $result = $conn->query($sql);
-    }
+    
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -40,7 +23,28 @@
   <body>
   <div class='container-scroller'>
   
-    <?php include '../nav.php';?>
+    <?php  
+    include "../conn.php";
+    
+    include '../nav.php';
+   
+    //include "../nav.php";
+    //include "../table.html";
+    
+    if(isset($_POST["id"])){
+        $_SESSION["id"] = $_POST["id"];
+        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name"FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+        where id = '.$_SESSION["id"];
+        $result = $conn->query($sql)->fetch_assoc();
+        $_SESSION["pname"] = $result["Patient Name"];
+        
+    }
+    if(isset($_POST["med_id"])){
+        $sql = "insert into medstock(med_id, quantity,apt_id,t_date) 
+        values(".$_POST["med_id"].",-".$_POST["med_count"].",".$_POST["apt_id"].",now())";
+
+        $result = $conn->query($sql);
+    }?>
   <div class='main-panel'>
         <div class='content-wrapper'>
             <div class='row '>
@@ -75,7 +79,7 @@
                                 GROUP BY med_id, apt_id ) AS meds_provided 
                                 ON pm.med_id = meds_provided.med_id AND pm.apt_id = meds_provided.apt_id
                             WHERE 
-                                pm.time_ad IS NULL AND pm.apt_id = 17
+                                pm.time_ad IS NULL AND pm.apt_id = $_SESSION[id]
                             GROUP BY 
                                 med_id, apt_id
                         ) AS subquery
