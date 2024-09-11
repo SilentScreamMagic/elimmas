@@ -202,7 +202,7 @@ $total_proc_cost = 0;
 if ($result_proc->num_rows > 0) {
     $html .= "
     <div class='bill-section' id='theatre-procedures'>
-        <h2>Theatre Procedures</h2>
+        <h2>Procedures</h2>
         <table>
             <thead>
                 <tr>
