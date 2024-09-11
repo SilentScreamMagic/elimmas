@@ -138,7 +138,7 @@ if ($result_labs->num_rows > 0) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['lab_name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_lab_cost += $row['Cost'];
     }
-    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_ward_cost</td></tr></tbody>
+    $html.="<tr><td></td><td></td><td></td><td><strong>Total</strong></td><td>$total_lab_cost</td></tr></tbody>
         </table>
     </div>";
 }
