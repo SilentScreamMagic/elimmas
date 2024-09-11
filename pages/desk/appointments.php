@@ -37,7 +37,7 @@
         $result = $conn->query($sql);
         if(isset($_POST["bed"])){
             $sql = "INSERT INTO `patients_beds` ( `bed_id`, `apt_id`, `start_date`,created_by) 
-                    VALUES ( $_POST[bed],$_POST[id], now(),'".$_SESSION["user"][0]."')";
+                    VALUES ( $_POST[bed],$_POST[checkin_id], now(),'".$_SESSION["user"][0]."')";
             $conn->query($sql);
             $sql = "update beds set status = 'occupied' where bed_id = $_POST[bed]";
         }
