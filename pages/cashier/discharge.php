@@ -143,7 +143,11 @@ if ($result_labs->num_rows > 0) {
     </div>";
 }
 
-$html .= "
+
+
+$total_meds_cost = 0;
+if ($result_meds->num_rows > 0) {
+    $html .= "
     <div class='bill-section' id='medications'>
         <h2>Medications</h2>
         <table>
@@ -157,9 +161,6 @@ $html .= "
                 </tr>
             </thead>
             <tbody>";
-
-$total_meds_cost = 0;
-if ($result_meds->num_rows > 0) {
     while ($row = $result_meds->fetch_assoc()) {
         $html .= "<tr><td>" . $row['date'] . "</td><td>" . $row['med_name'] . "</td><td>" . $row['Count'] . "</td><td>" . $row['price'] . "</td><td>" . $row['Cost'] . "</td></tr>";
         $total_meds_cost += $row['Cost'];
