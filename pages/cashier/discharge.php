@@ -260,31 +260,44 @@ $html .= "
                     <th>Total ($)</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
+            <tbody>";
+            if ($total_ward_cost!=0){
+                $html.="<tr>
                     <td>Ward Accommodation</td>
                     <td>" . $total_ward_cost . "</td>
-                </tr>
-                <tr>
+                </tr>";
+            }
+            if ($total_lab_cost!=0){
+                $html.="<tr>
                     <td>Labs</td>
                     <td>" . $total_lab_cost . "</td>
-                </tr>
-                <tr>
+                </tr>";
+            }
+            if ($total_meds_cost!=0){
+                $html.="<tr>
                     <td>Medications</td>
                     <td>" . $total_meds_cost . "</td>
-                </tr>
-                <tr>
+                </tr>";
+            }
+            if ($total_meal_cost!=0){
+                $html.="<tr>
                     <td>Meals</td>
                     <td>" . $total_meal_cost . "</td>
-                </tr>
-                <tr>
-                    <td>Theatre Procedures</td>
+                </tr>";
+            }
+            if ($total_proc_cost!=0){
+                $html.="<tr>
+                    <td>Procedure</td>
                     <td>" . $total_proc_cost . "</td>
-                </tr>
-                <tr>
+                </tr>";
+            }
+            if ($total_con_cost!=0){
+                $html.="<tr>
                     <td>Consumables</td>
                     <td>" . $total_con_cost . "</td>
-                </tr>
+                </tr>";
+            }
+                $html.="
                 <tr>
                     <td><strong>Total</strong></td>
                     <td>" . ($total_ward_cost + $total_lab_cost + $total_meds_cost + $total_meal_cost + $total_proc_cost + $total_con_cost) . "</td>
