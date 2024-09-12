@@ -91,8 +91,9 @@
     }
 
     if (isset($_POST["btemp"])) {
+        $bp = explode("/",$_POST["bloodPress"]);
         $sql = "INSERT INTO `patients_vits`( `date`, `apt_id`, `created_by`, `body_temp`, `pulse_rate`, `respiration_rate`, `systolic_bp`, `dystolic_bp`, `oxygen_sat`, `weight`) 
-        VALUES (now(),$_SESSION[apt_id],'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$_POST[sbloodPress]','$_POST[dbloodPress]','$_POST[oxysat]','$_POST[weight]')";
+        VALUES (now(),$_SESSION[apt_id],'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$bp[0]','$bp[1]','$_POST[oxysat]',0)";
         $result = $conn->query($sql);
         $ids = ["","defaultOpen","","","","",""];
     }
@@ -414,21 +415,52 @@
                             <h4 class='card-title'>Vitals</h4>
                             
                             <form action= "viewpatient.php" method="post">
-                                <label for="btemp">Body Temperature:</label>
-                                <input type="text" id="btemp" name="btemp" required>
-                                <label for="pulRate">Pulse Rate:</label>
-                                <input type="text" id="pulRate" name="pulRate" required><br>
-                                <label for="respRate">Respiration Rate:</label>
-                                <input type="text" id="respRate" name="respRate" required>
-                                <label for="oxysat">Oxygen Saturation</label>
-                                <input type="text" id="oxysat" name="oxysat" required ><br>
-                                
-                                <label for="sbloodPress">Systolic Blood Pressure</label>
-                                <input type="text" id="sbloodPress" name="sbloodPress" required >
-                                <label for="dbloodPress">Diastolic Blood Pressure</label>
-                                <input type="text" id="dbloodPress" name="dbloodPress" required ><br>
-                                <label for="weight">Weight</label>
-                                <input type="text" id="weight" name="weight" required >
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="btemp">Body Temp.</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" id="btemp" name="btemp" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="pulRate">Pulse Rate</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" id="pulRate" name="pulRate" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="respRate">Resp. Rate</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" id="respRate" name="respRate" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="oxysat">Oxygen Sat.</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" id="oxysat" name="oxysat" required >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="respRate">Blood Pressure</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" id="bloodPress" name="bloodPress" pattern="^[0-9]+/[0-9]+$" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
@@ -439,14 +471,14 @@
                                     <table class ='table'>
                                     <thead>
                                         <tr>
-                                            <th>Date</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Blood Pressure</th><th>Oxygen Saturation</th>
+                                            <th>Date</th><th>Body Temp.</th><th>Pulse Rate</th><th>Resp. Rate</th><th>Blood Pressure</th><th>Oxygen Saturation</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                              if ($result->num_rows > 0) {
                                                 while($row = $result->fetch_assoc()) {
-                                                    echo "<tr><td>".$row["date"]."</td><td>".$row["body_temp"]."</td><td>".$row["pulse_rate"]."</td><td>".$row["respiration_rate"]."</td><td>".$row["systolic_bp"]."/".$row["dystolic_bp"]."</td><td>".$row["oxygen_sat"]."</td><td>".$row["weight"]."</td></tr>";
+                                                    echo "<tr><td>".$row["date"]."</td><td>".$row["body_temp"]."</td><td>".$row["pulse_rate"]."</td><td>".$row["respiration_rate"]."</td><td>".$row["systolic_bp"]."/".$row["dystolic_bp"]."</td><td>".$row["oxygen_sat"]."</td></tr>";
                                                 }
                                               }
                                         ?>
@@ -459,26 +491,75 @@
                             <h4 class='card-title'>Fluids</h4>
                             <h3>Fluid Intake</h3>
                             <form action= "" method="post">
-                                <label for="oral_type">Oral Type</label>
-                                <input type="text" name="oral_type" id = "oral_type" required>
-                                <label for="o_amount">Amount</label>
-                                <input type="number" name="o_amount" id = "o_amount" required>
-                                <label for="iv_type">IV Type</label>
-                                <input type="text" name="iv_type" id = "iv_type" required>
-                                <label for="iv_amount">amount</label>
-                                <input type="number" name="iv_amount" id = "iv_amount" required>
-
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="oral_type">Oral Type</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" name="oral_type" id = "oral_type" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label"for="o_amount">Oral Amount</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="o_amount" id = "o_amount" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="iv_type">IV Type</label>
+                                        <div class="col-sm-9">  
+                                            <input type="text" name="iv_type" id = "iv_type" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="iv_amount">IV Amount</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="iv_amount" id = "iv_amount" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                               
                                 <input type="submit" value="Submit"><br><br>    
                             </form>
                             <h3>Fluid Output</h3>
                             <form action= "" method="post">
-                                <label for="u_amount">Urine Amount</label>
-                                <input type="number" name="u_amount" id = "U_amount" required>
-                                <label for="o_amount">Emesis Amount</label>
-                                <input type="number" name="e_amount" id = "e_amount" required>
-                                <label for="d_amount">Drainage Amount</label>
-                                <input type="number" name="d_amount" id = "d_amount" required>
-
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="u_amount">Urine Amount</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="u_amount" id = "U_amount" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="o_amount">Emesis Amount</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="e_amount" id = "e_amount" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="d_amount">Drainage Amount</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="d_amount" id = "d_amount" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                                 <input type="submit" value="Submit"><br><br>    
                             </form>
                             <?php
