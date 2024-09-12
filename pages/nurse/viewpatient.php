@@ -3,6 +3,26 @@
 ?>
 <!DOCTYPE html>
 <html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <!-- plugins:css -->
+    <link rel='stylesheet' href='../../assets/vendors/mdi/css/materialdesignicons.min.css'>
+    <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
+    <link rel="stylesheet" href="../../assets/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="../../assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+    
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel='stylesheet' href='../../assets/css/style.css'>
+    <!-- End layout styles -->
+    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+  </head>
 
 <body>
     <script> 
@@ -19,8 +39,7 @@
         }
     </script>
 
-<!DOCTYPE html>
-<html lang='en'>
+
   
   <body>
   
@@ -172,8 +191,7 @@
                         </div>   
                         <div id="rooms" class="tabcontent">
                             <!-- Content for rooms tab -->
-                            <h3>Rooms</h3>
-                            <p>List of rooms...</p>
+                            <h4 class='card-title'>Rooms</h4>
                             
                             <form action= "viewpatient.php" method="post">
                                 <label for="bed">Select an Option:</label>
@@ -221,23 +239,35 @@
                         </div>
                         <div id="consumables" class="tabcontent">
                             <!-- Content for rooms tab -->
-                            <h3>Cons</h3>
-                            <p>List of Consumables...</p>
+                            <h4 class='card-title'>Consumables</h4>
                             
                             <form action= "viewpatient.php" method="post">
-                                <label for="cons">Select an Option:</label>
-                                <div class="dropdown" id="dropdown3">
-                                    <input type="text" placeholder="Search.." class="dropdown-input" data-dropdown="dropdown3">
-                                    <div class="dropdown-content">
-                                        <?php foreach ($cons as $cid => $dets): ?>
-                                            <div data-value="<?php echo $cid; ?>"><?php echo $dets[1]." - ".$dets[0]; ?></div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                    
+                            <div class="row">
+                            <div class="col-sm-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label" for="cons">Consumable</label>
+                                <div class="col-sm-9">
+                                <select class="js-example-basic-single" style="width:100%" name="cons" id="cons">
+                                    <option value="" disabled selected>Select a consumable...</option>
+                                    <?php 
+                                        foreach ($cons as $cid => $dets): ?>
+                                            <option value="<?php echo $cid; ?>"><?php echo $dets[1]." - ".$dets[0]; ?></option>
+                                        <?php 
+                                        endforeach;?>
+                                    </select>
                                 </div>
-                                <input type="hidden" name = "cons" id="selectedValue3">
-                                <label for="con_count">Count</label>
-                                <input type="number" name="con_count" id = "con_count">
+                                
+                                </div> 
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="con_count">Count</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="con_count" id = "con_count">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
@@ -273,8 +303,7 @@
                         </div>
                         <div id="meal" class="tabcontent">
                         <!-- Content for rooms tab -->
-                        <h3>Meals</h3>
-                        <p>List of Meals...</p>
+                        <h4 class='card-title'>Meals</h4>
                         
                         <form action= "viewpatient.php" method="post">
                             <label for="meals">Select an Option:</label>
@@ -318,23 +347,34 @@
                         </div>
                         <div id="meds" class="tabcontent">
                         <!-- Content for rooms tab -->
-                        <h3>Medications</h3>
-                        <p>List of Medications...</p>
+                        <h4 class='card-title'>Medications</h4>
                         <form action= "" method="post">
-                        <label>Medication:</label>
-                        <div class="dropdown" id="dropdown2">
-                            <input type="text" placeholder="Search.." class="dropdown-input" data-dropdown="dropdown2">
-                            <div class="dropdown-content">
-                                <?php 
-                                    foreach ($meds as $mid => $det): ?>
-                                        <div data-value="<?php echo $mid; ?>"><?php echo $det; ?></div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label" for="meds">Medication</label>
+                                <div class="col-sm-9">
+                                <select class="js-example-basic-single" style="width:100%" name="meds" id="meds">
+                                    <option value="" disabled selected>Select a medication...</option>
                                     <?php 
-                                    endforeach;?>
+                                        foreach ($meds as $mid => $dets): ?>
+                                            <option value="<?php echo $mid; ?>"><?php echo $dets; ?></option>
+                                        <?php 
+                                        endforeach;?>
+                                    </select>
                                 </div>
-                            </div>
-                            <input type="hidden" name = "meds" id="selectedValue2">
-                            <label for="med_count">Quantity</label>
-                            <input type="number" name="med_count" id = "med_count" required>
+                                
+                                </div> 
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="med_count">Quantity</label>
+                                        <div class="col-sm-9">  
+                                            <input type="number" name="med_count" id = "med_count">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
 
                             <input type="submit" value="Submit"><br><br>    
                         </form>
@@ -371,7 +411,7 @@
                         </div>
                         <div id="vitals" class="tabcontent">
                             <!-- Content for rooms tab -->
-                            <h3>Vitals</h3>
+                            <h4 class='card-title'>Vitals</h4>
                             
                             <form action= "viewpatient.php" method="post">
                                 <label for="btemp">Body Temperature:</label>
@@ -416,7 +456,7 @@
                         </div>
                         <div id="fluid" class="tabcontent">
                             <!-- Content for rooms tab -->
-                            <h2>Fluid</h2>
+                            <h4 class='card-title'>Fluids</h4>
                             <h3>Fluid Intake</h3>
                             <form action= "" method="post">
                                 <label for="oral_type">Oral Type</label>
@@ -619,15 +659,10 @@
               </div>
         </div>   
        <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
-          <footer class='footer'>
-            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
-              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
-          <!-- partial -->
+         
 
+          <script src="../../assets/vendors/select2/select2.min.js"></script>
+<script src="../../assets/js/select2.js"></script>
 
 
 
