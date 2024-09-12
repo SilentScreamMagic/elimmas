@@ -87,7 +87,7 @@ $result = $conn->query($sql);
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
                         <?php 
-                        $sql = "SELECT COUNT(*) AS tot_patients,COALESCE(SUM(CASE WHEN notes.type = 'dis_notes' is not null THEN 1 ELSE 0 END),0) AS dis_ready FROM appointments 
+                        $sql = "SELECT COUNT(DISTINCT apt_id) AS tot_patients,COALESCE(SUM(CASE WHEN notes.type = 'dis_notes'  THEN 1 ELSE 0 END),0) AS dis_ready FROM appointments 
 inner JOIN notes on notes.apt_id = appointments.id
 where check_out is null and appointments.type = 'In-Patient';";
                         $app = $conn->query($sql)->fetch_assoc();
@@ -209,13 +209,5 @@ where check_out is null and appointments.type = 'In-Patient';";
             </div>
             
           </div>
-          <!-- content-wrapper ends -->
-          <!-- partial:partials/_footer.html -->
-          <footer class="footer">
-            <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/bootstrap-admin-template/" target="_blank">Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
-          <!-- partial -->
+          
         </div>
