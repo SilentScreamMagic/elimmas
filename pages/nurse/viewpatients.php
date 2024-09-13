@@ -65,7 +65,7 @@ $result = $conn->query($sql);
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
 
                         <?php 
-                        $sql = "SELECT COUNT(*) AS total_app, COALESCE(SUM(CASE WHEN check_in is not null THEN 1 ELSE 0 END),0) AS arrived_app FROM appointments where check_out is null and date = '9/3/2024';";
+                        $sql = "SELECT COUNT(*) AS total_app, COALESCE(SUM(CASE WHEN check_in is not null THEN 1 ELSE 0 END),0) AS arrived_app FROM appointments where check_out is null and date = 'date(Y-m-d)';";
                         $app = $conn->query($sql)->fetch_assoc();
                         ?>
                           <h2 class="mb-0"><?php echo $app["total_app"]?></h2>
@@ -87,8 +87,8 @@ $result = $conn->query($sql);
                       <div class="col-8 col-sm-12 col-xl-8 my-auto">
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
                         <?php 
-                        $sql = "SELECT COUNT(DISTINCT apt_id) AS tot_patients,COALESCE(SUM(CASE WHEN notes.type = 'dis_notes'  THEN 1 ELSE 0 END),0) AS dis_ready FROM appointments 
-inner JOIN notes on notes.apt_id = appointments.id
+                        $sql = "SELECT COUNT(DISTINCT id) AS tot_patients,COALESCE(SUM(CASE WHEN notes.type = 'dis_notes'  THEN 1 ELSE 0 END),0) AS dis_ready FROM appointments 
+left JOIN notes on notes.apt_id = appointments.id
 where check_out is null and appointments.type = 'In-Patient';";
                         $app = $conn->query($sql)->fetch_assoc();
                         ?>
