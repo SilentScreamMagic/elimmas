@@ -89,7 +89,7 @@ $result = $conn->query($sql);
                         <?php 
                         $sql = "SELECT COUNT(DISTINCT id) AS tot_patients,COALESCE(SUM(CASE WHEN notes.type = 'dis_notes'  THEN 1 ELSE 0 END),0) AS dis_ready FROM appointments 
 left JOIN notes on notes.apt_id = appointments.id
-where check_out is null and appointments.type = 'In-Patient';";
+where check_in is not null and check_out is null and appointments.type = 'In-Patient';";
                         $app = $conn->query($sql)->fetch_assoc();
                         ?>
                           <h2 class="mb-0"><?php echo $app["tot_patients"]?></h2>
