@@ -3,11 +3,7 @@ include "../conn.php";
 //include "../nav.php";
 //include "../table.html";
 include "../searchbar2.php";
-if(isset($_POST["med_id"])){
-    $sql = "insert into medstock(med_id, quantity,t_date) 
-    values(".$_POST["med_id"].",".$_POST["med_count"].",now())";
-    $result = $conn->query($sql);
-}
+
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -31,7 +27,12 @@ if(isset($_POST["med_id"])){
   <body>
   <div class='container-scroller'>
   
-    <?php include '../nav.php';?>
+    <?php include '../nav.php';
+    if(isset($_POST["med_id"])){
+      $sql = "insert into medstock(med_id, quantity,t_date,created_by) 
+      values(".$_POST["med_id"].",".$_POST["med_count"].",now(),'".$_SESSION["user"][0]."')";
+      $result = $conn->query($sql);
+  }?>
   <div class='main-panel'>
         <div class='content-wrapper'>
             <div class='row '>
@@ -95,7 +96,4 @@ $result = $conn->query($sql);
           <!-- partial -->
         </div>
 
-<?php
-echo "";
-echo "<table id='filterTable'><tr><th>ID Number</th><th>Medication</th><th>Stock Quantity</th><th></th></tr>";
 

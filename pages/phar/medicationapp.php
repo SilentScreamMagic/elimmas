@@ -40,8 +40,8 @@
         
     }
     if(isset($_POST["med_id"])){
-        $sql = "insert into medstock(med_id, quantity,apt_id,t_date) 
-        values(".$_POST["med_id"].",-".$_POST["med_count"].",".$_POST["apt_id"].",now())";
+        $sql = "insert into medstock(med_id, quantity,apt_id,t_date,created_by) 
+        values(".$_POST["med_id"].",-".$_POST["med_count"].",".$_POST["apt_id"].",now(),'".$_SESSION["user"][0]."')";
 
         $result = $conn->query($sql);
     }?>

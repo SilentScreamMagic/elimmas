@@ -3,17 +3,9 @@ include "../conn.php";
 //include "../nav.php";
 //include "../table.html";
 include "../searchbar2.php";
-if(isset($_POST["med_id"])){
-    $sql = "insert into medstock(med_id, quantity,t_date,dispense_to) 
-    values(".$_POST["med_id"].",-".$_POST["med_count"].",now(),'".$_POST["to"]."')";
-    $result = $conn->query($sql);
-}
 
-$sql = "SELECT medication.med_id, med_name, COALESCE(SUM(medstock.quantity), 0) AS 'Stock'
-FROM medication
-LEFT JOIN medstock ON medstock.med_id = medication.med_id
-GROUP BY med_id;";
-$result = $conn->query($sql);
+
+
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -37,7 +29,17 @@ $result = $conn->query($sql);
   <body>
   <div class='container-scroller'>
   
-    <?php include '../nav.php';?>
+    <?php include '../nav.php';
+    if(isset($_POST["med_id"])){
+      $sql = "insert into medstock(med_id, quantity,t_date,dispense_to,created_by) 
+      values(".$_POST["med_id"].",-".$_POST["med_count"].",now(),'".$_POST["to"]."','".$_SESSION["user"][0]."')";
+      $result = $conn->query($sql);
+      $sql = "SELECT medication.med_id, med_name, COALESCE(SUM(medstock.quantity), 0) AS 'Stock'
+FROM medication
+LEFT JOIN medstock ON medstock.med_id = medication.med_id
+GROUP BY med_id;";
+$result = $conn->query($sql);
+  }?>
   <div class='main-panel'>
         <div class='content-wrapper'>
             <div class='row '>
