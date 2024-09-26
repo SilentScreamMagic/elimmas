@@ -79,6 +79,12 @@ $result = $conn->query($sql);
                                           <input style = 'width: 30px' class ='btn-md btn-info' type='submit' value='+'>
                                       </form>
                                   </div>
+                                  <div>
+                                      <form action='addpatient.php' method='post'>
+                                          <input type='hidden' name='edit' value='".$row['pat_id']."'>
+                                          <input style = 'width: 30px' class ='btn-md btn-info' type='submit' value='*'>
+                                      </form>
+                                  </div>
                                   </td><td>".$row["registration_date"]."</td><td>".$row["Patient Name"]."</td>
                                     <td>".$row["DOB"]."</td><td>".$row["gender"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
                                   
