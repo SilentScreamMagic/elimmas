@@ -1,6 +1,4 @@
-<option?php 
-    
-?>
+
 <!DOCTYPE html>
 <html lang='en'>
   <head>
@@ -34,6 +32,9 @@
     include "../tabs.html";
     include "../test.php";
     
+    $notes = "";
+    $ndate = "";
+    
     $ids=["","","","","defaultOpen",""];
     if (isset($_POST["id"])){
         $_SESSION["apt_id"] = $_POST["id"];
@@ -66,12 +67,22 @@
         
         $ids = ["","","","defaultOpen","",""];
     }
-    if (isset($_POST["notes"])){
-       $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('doc_notes',$_SESSION[apt_id],'$_POST[notes]',now() ,'".$_SESSION["user"][0]."')";
-        $result = $conn->query($sql);
-        
-        $ids = ["","","","","defaultOpen",""];
+    if(isset($_POST["button"])){
+         if ($_POST["button"]=="Submit"){
+            $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('doc_notes',$_SESSION[apt_id],'$_POST[notes]',now() ,'".$_SESSION["user"][0]."')";
+            $result = $conn->query($sql);
+            unset($_SESSION["notes"]);
+            unset($_SESSION["ndate"]);
+            $ids = ["","","","","defaultOpen",""];
+        }else{
+            $_SESSION["notes"] = $_POST["notes"];
+            $_SESSION["ndate"]=date("d/m/y h:i:s");
+        }
     }
+   if(isset($_SESSION["notes"])){
+    $notes = $_SESSION["notes"];
+    $ndate = $_SESSION["ndate"];
+   }
     if (isset($_POST["dis_notes"])){
         $sql = "DELETE FROM `notes` WHERE apt_id =20 and type = 'dis_notes';";
         $result = $conn->query($sql);
@@ -325,8 +336,12 @@
     <div>
         <h3>Notes</h3>
     <form action= "" method="post">
-        <textarea name="notes" cols="70" rows="10"></textarea>
-        <input type="submit" value="Submit"><br><br>
+        <textarea id="notes" name="notes" cols="70" rows="10"><?php echo $notes?></textarea><br><br>
+        <?php if($ndate !=""){
+            echo "Last Saved $ndate";
+        }  ?><br>
+        <input name = "button" type="submit" value="Submit"><br><br>
+        <input name = "button" id="submit-btn" type="submit" style="display: none;" value="Autosave">
     </form>
     </div>     
     
@@ -457,25 +472,41 @@
 
 
 <script>
-function openOption() {
-    if(document.getElementById("refill").style.visibility == "visible"){
-        document.getElementById("refill").style.visibility = "hidden";
-    }else{
-        document.getElementById("refill").style.visibility = "visible"
+    function openOption() {
+        if(document.getElementById("refill").style.visibility == "visible"){
+            document.getElementById("refill").style.visibility = "hidden";
+        }else{
+            document.getElementById("refill").style.visibility = "visible"
+        }
     }
-}
-function toggleTransparency(input) {
-    if(document.getElementById(input).style.visibility == "visible"){
-        document.getElementById(input).style.visibility = "hidden";
-    }else{
-        document.getElementById(input).style.visibility = "visible"
+    function toggleTransparency(input) {
+        if(document.getElementById(input).style.visibility == "visible"){
+            document.getElementById(input).style.visibility = "hidden";
+        }else{
+            document.getElementById(input).style.visibility = "visible"
+        }
     }
-}
     function toggleExpand() {
         var div = document.getElementById('expandableDiv');
         div.classList.toggle('expanded');
     }
 </script>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let notesField = document.getElementById('notes');
+            let submitButton = document.getElementById('submit-btn');
+            let timeoutId;
+
+            // Detect changes in the textarea
+            notesField.addEventListener('input', function() {
+                clearTimeout(timeoutId); // Clear the previous timer
+                timeoutId = setTimeout(function() {
+                    submitButton.click(); // Trigger submit button click
+                }, 5000); // Wait for 2 seconds of inactivity
+            });
+        });
+    </script>
+
 </body>
 </html>
 <?php
