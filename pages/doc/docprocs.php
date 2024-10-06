@@ -41,11 +41,17 @@
         
     }
     
-    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name"FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", DOB FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
     where id = '.$_SESSION["apt_id"];
     $result = $conn->query($sql)->fetch_assoc();
     $pat_id=$result["pat_id"];
     $pname = $result["Patient Name"];
+    $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
+    $today = date("d-m-Y");
+    $diff = date_diff(date_create($dateOfBirth), date_create($today));
+    $age = $diff->format("%y");
+    
+    
     
     if (isset($_POST["proc_id"])){
         $sql = "insert into patients_proc(apt_id,proc_id,date ,created_by) 
@@ -84,7 +90,7 @@
     $ndate = $_SESSION["ndate"];
    }
     if (isset($_POST["dis_notes"])){
-        $sql = "DELETE FROM `notes` WHERE apt_id =20 and type = 'dis_notes';";
+        $sql = "DELETE FROM `notes` WHERE $_SESSION[apt_id] and type = 'dis_notes';";
         $result = $conn->query($sql);
         $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('dis_notes',$_SESSION[apt_id],'$_POST[dis_notes]',now() ,'".$_SESSION["user"][0]."')";
          $result = $conn->query($sql);
@@ -134,7 +140,7 @@
           <div class="col-md-9 grid-margin">
                 <div class="card">
                 <div class='card-body'>
-                    <h4 class='card-title'><?php echo $pname?></h4>
+                    <h4 class='card-title'><?php echo $pname. " (Age: " .$age.")"?></h4>
                     <div class="tab">
                         <button class="tablinks" onclick="openTab(event, 'notes')" <?php if('defaultOpen'==$ids[4]) echo 'id ="'.$ids[4].'"';?>>Notes</button>
                         <button class="tablinks" onclick="openTab(event, 'procs')" <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Procedures</button>
@@ -412,15 +418,17 @@
                                 <h1></h1>
                                 <?php
                                 $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes,users.Name  FROM `notes` 
-                                INNER join users on created_by = users.username where type ='doc_notes' and apt_id = $_SESSION[apt_id] and deleted = 0 GROUP by cast(notes.date as date) order by notes.date;";
+                                INNER join users on created_by = users.username 
+                                INNER join appointments on notes.apt_id = appointments.id
+                                where notes.type ='doc_notes' and appointments.patient_id = $pat_id and deleted = 0 GROUP by cast(notes.date as date) order by notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                    echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
-                                echo '<h4>' . $row["date"] . '</h4>';
-                                echo '<h5>' . $row["Name"] . '</h5>';
-                                echo $row["notes"];
-                                echo '</div>';
+                                        echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
+                                        echo '<h4>' . $row["date"] . '</h4>';
+                                        echo '<h5>' . $row["Name"] . '</h5>';
+                                        echo $row["notes"];
+                                        echo '</div>';
                                     }
                                 }
                             
@@ -492,10 +500,17 @@
     }
 </script>
 <script>
+
+        
         document.addEventListener('DOMContentLoaded', function() {
             let notesField = document.getElementById('notes');
             let submitButton = document.getElementById('submit-btn');
             let timeoutId;
+            let sessionSet ="<?php echo isset($_SESSION["notes"])?>";
+            notesField.focus()
+            if (sessionSet ==1){
+                document.getElementById('notes').focus()
+            }
 
             // Detect changes in the textarea
             notesField.addEventListener('input', function() {

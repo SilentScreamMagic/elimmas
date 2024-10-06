@@ -46,7 +46,7 @@ include "../tabs.html";
                     
                     <div id="cur_pat" class="tabcontent">
                     <h4 class='card-title'>Current Patients</h4>
-                    <input type='text' id='tableFilterInput' class=' form-control dropdown-input' placeholder='Search Medications...'>
+                    <input type='text' id='tableFilterInput' class=' form-control dropdown-input' placeholder='Search Patients...'>
                         <div class='table-responsive'>
                         
                             <?php
