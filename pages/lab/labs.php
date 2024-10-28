@@ -71,10 +71,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                   <div class='card-body'>
                     <h4 class='card-title'>Lab Requests</h4>
                     <?php 
-    $sql = "SELECT patients_labs.p_lab_id,patients_labs.date, appointments.patient_id, CONCAT(patient.FName, ' ', patient.LName) AS 'Patient Name', labs.lab_name, patients_labs.lab_results, patients_labs.lab_date FROM patients_labs 
+    $sql = "SELECT patients_labs.p_lab_id,patients_labs.date, CONCAT(patient.FName, ' ', patient.LName) AS 'Patient Name', 
+labs.lab_name, patients_labs.lab_results, patients_labs.lab_date, appointments.check_in, appointments.check_out FROM patients_labs 
 INNER JOIN appointments ON patients_labs.apt_id = appointments.id 
 INNER JOIN patient ON patient.pat_id = appointments.patient_id 
-INNER JOIN labs ON patients_labs.lab_id = labs.lab_id;";
+INNER JOIN labs ON patients_labs.lab_id = labs.lab_id
+WHERE appointments.check_out is null
+ORDER by patients_labs.date;";
     $result = $conn->query($sql);?>
                     <div class='table-responsive'>
                     
