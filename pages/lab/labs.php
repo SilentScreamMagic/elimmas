@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                   <div class='card-body'>
                     <h4 class='card-title'>Lab Requests</h4>
                     <?php 
-    $sql = "SELECT patients_labs.p_lab_id,patients_labs.date, CONCAT(patient.FName, ' ', patient.LName) AS 'Patient Name', 
+    $sql = "SELECT patients_labs.p_lab_id,patients_labs.date, CONCAT(patient.FName, ' ', patient.LName) AS 'Patient Name', DOB,
 labs.lab_name, patients_labs.lab_results, patients_labs.lab_date, appointments.check_in, appointments.check_out FROM patients_labs 
 INNER JOIN appointments ON patients_labs.apt_id = appointments.id 
 INNER JOIN patient ON patient.pat_id = appointments.patient_id 
@@ -91,7 +91,11 @@ ORDER by patients_labs.date;";
                         <?php
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-            $string = "<tbody><tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["lab_name"]."</td>";
+          $dateOfBirth = date("d-m-Y", strtotime($row["DOB"]));
+    $today = date("d-m-Y");
+    $diff = date_diff(date_create($dateOfBirth), date_create($today));
+    $age = $diff->format("%y");
+            $string = "<tbody><tr><td>".$row["date"]."</td><td>".$row["Patient Name"]." (Age: ".$age.")"."</td><td>".$row["lab_name"]."</td>";
             if (is_null($row["lab_results"])) {
                 $string =$string ."
                 <td><form action='labs.php' method='post' enctype='multipart/form-data'>
