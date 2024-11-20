@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($result["count"] == 0){
                 $id = $conn->insert_id;
                 
-                $sql = "INSERT INTO `patients_proc` (`apt_id`, `proc_id`, `date`, `created_by`) VALUES ('$id', '1', now(),'".$_SESSION["user"][0]."')";
+                $sql = "INSERT INTO `patients_proc` (`apt_id`, `proc_id`, `date`, `created_by`) VALUES ('$id', '74', now(),'".$_SESSION["user"][0]."')";
                 echo $sql;
                 $conn->query($sql);
             }
