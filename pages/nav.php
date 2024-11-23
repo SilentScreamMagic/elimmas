@@ -34,7 +34,7 @@
       }
   }
   if ($_SESSION["user"][1]=="Lab Tech") {
-    $nav =[["../lab/labs.php","Labs Requests"]];
+    $nav =[["../lab/labs.php","Labs Requests"],["../lab/labhist.php","Labs History"]];
   $files = scandir("../lab");
     $files = array_diff($files, array('.', '..'));
       if(!in_array(basename($_SERVER['PHP_SELF']),$files)){
@@ -111,7 +111,7 @@
                 </div>
               </div>
               <div class="preview-item-content">
-                <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                <p class="preview-subject ellipsis mb-1 text-small"> Change Password</p>
               </div>
             </a>
             <div class="dropdown-divider"></div>
