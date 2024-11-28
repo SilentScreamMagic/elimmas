@@ -2,16 +2,6 @@
 if (isset($_GET['file'])) {
     $filePath = $_GET['file'];
     // Check if the file exists
-    if ($filePath == "./uploads/Millicent Akolatse.pdf"){
-        echo "Same";
-    }else{
-        echo "Different";
-    }
-    if (file_exists($filePath)){
-        echo "Same";
-    }else{
-        echo "Different";
-    }
     if (file_exists($filePath) && mime_content_type($filePath) == 'application/pdf') {
         // Set headers to display the PDF in the browser
         header('Content-Type: application/pdf');
