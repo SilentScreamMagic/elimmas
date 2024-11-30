@@ -3,7 +3,7 @@ include "../conn.php";
 //include "../nav.php";
 //include "../table.html";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $targetDir = "../uploads/";
+    $targetDir = "../../uploads/";
     $targetFile = $targetDir . basename($_FILES["fileToUpload"]["name"]);
     $uploadOk = 1;
 
@@ -131,7 +131,6 @@ ORDER by patients_labs.date;";
           </footer>
           <!-- partial -->
         </div>
-<h2>Upload File</h2>
 <div id="lab_id">
    
    
