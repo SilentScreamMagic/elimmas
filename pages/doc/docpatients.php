@@ -24,6 +24,7 @@ include "../tabs.html";
     <link rel='stylesheet' href='../../assets/css/style.css'>
     <!-- End layout styles -->
     <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+   
   </head>
   <body>
   <div class='container-scroller'>
@@ -39,14 +40,14 @@ include "../tabs.html";
                   <div class='card-body'>
                     
                     <div class="tab">
-                        <button class="tablinks" onclick="openTab(event, 'cur_pat')" id="defaultOpen">Current Patient</button>
-                        <button class="tablinks" onclick="openTab(event, 'all_pat')" >All Patient</button>
+                        <button class="tablinks" onclick="openTab(event, 'cur_pat')" >Current Patient</button>
+                        <button class="tablinks" onclick="openTab(event, 'all_pat')" id="defaultOpen">All Patient</button>
                         
                     </div> 
                     
                     <div id="cur_pat" class="tabcontent">
                     <h4 class='card-title'>Current Patients</h4>
-                    <input type='text' id='tableFilterInput' class=' form-control dropdown-input' placeholder='Search Patients...'>
+                    
                         <div class='table-responsive'>
                         
                             <?php
@@ -55,10 +56,10 @@ include "../tabs.html";
                                 left join (SELECT * from patients_beds WHERE end_date is null) pb on appointments.id = pb.apt_id 
                                 Left join beds on beds.bed_id = pb.bed_id
                                 where check_in is not null and check_out is null
-                                order by appointments.date;";
+                                order by Fname";
                             $result = $conn->query($sql);?>
 
-                             <table id="filterTable" class ='table'>
+                             <table  class ='table'>
                         <thead>
                             <tr>
                                 <th>Date</th><th>Patient Name</th><th>Type</th><th>Arrival</th><th>Ward</th><th>Bed</th><th></th>
@@ -96,11 +97,10 @@ include "../tabs.html";
                         <div id="all_pat" class="tabcontent">
 
         <?php
-            $sql = "SELECT registration_date,patient.pat_id, concat(Fname,' ',LName) 'Patient Name' FROM patient
-            order by 'Patient Name';";
+            $sql = "SELECT DISTINCT pat_id registration_date,patient.pat_id, concat(Fname,' ',LName) 'Patient Name' FROM patient order by 'Patient Name';";
             $result = $conn->query($sql);?>
             <h4 class='card-title'>All Patients</h4>
-            
+            <input type='text' id='tableFilterInput' class=' form-control dropdown-input' placeholder='Search Patients...'>
                     <div class='table-responsive'>
                         <table id="filterTable" class ='table'>
                         <thead>
@@ -143,3 +143,4 @@ include "../tabs.html";
           </div>
           
         </div>
+        
