@@ -60,9 +60,9 @@
         $ids = ["","defaultOpen","","","",""];
     }
  
-    if (isset($_POST["meds"])){
+    if (isset($_POST["med"])){
         $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,date ,created_by,ad_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",now() ,'".$_SESSION["user"][0]."','".$_SESSION["user"][0]."')";
+        values(".$_SESSION['apt_id'].",".$_POST["med"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",now() ,'".$_SESSION["user"][0]."','".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","defaultOpen","","",""];
     }
@@ -207,9 +207,9 @@
     <h4 class='card-title'>Medications</h4>
     <form action= "" method="post">
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="meds">Medication:</label>
+        <label class="col-sm-3 col-form-label" for="med">Medication:</label>
         <div class="col-sm-9">
-            <select class="js-example-basic-single" style="width:80%" name="meds" id="meds">
+            <select class="js-example-basic-single" style="width:80%" name="med" id="med">
                 <option value="" disabled selected>Select a Medication...</option>
                 <?php 
                     foreach ($meds as $mid => $det): ?>
@@ -286,9 +286,9 @@
     
     <form action= "" method="post">
     <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="labs">Labs:</label>
+        <label class="col-sm-3 col-form-label" for="lab">Labs:</label>
         <div class="col-sm-9">
-            <select class="js-example-basic-single" style="width:80%" name="labs" id="labs">
+            <select class="js-example-basic-single" style="width:80%" name="labs" id="lab">
                 <option value="" disabled selected>Select a Lab...</option>
                 <?php 
                 foreach ($labs as $lid => $det): ?>
@@ -342,7 +342,7 @@
     <div>
         <h3>Notes</h3>
     <form action= "" method="post">
-        <textarea id="notes" name="notes" cols="70" rows="10"><?php echo $notes?></textarea><br><br>
+        <textarea autofocus id="note" name="notes" cols="70" rows="10"><?php echo $notes?></textarea><br><br>
         <?php if($ndate !=""){
             echo "Last Saved $ndate";
         }  ?><br>
@@ -476,9 +476,6 @@
 <script src="../../assets/vendors/select2/select2.min.js"></script>
 <script src="../../assets/js/select2.js"></script>
 
-       
-
-
 <script>
     function openOption() {
         if(document.getElementById("refill").style.visibility == "visible"){
@@ -500,16 +497,25 @@
     }
 </script>
 <script>
-
+       window.addEventListener("load",(event) =>{
+            let notesField = document.getElementById('note');
+            console.log(notesField.innerHTML);
+            notesField.focus();
+           
+            
+        })
         
         document.addEventListener('DOMContentLoaded', function() {
-            let notesField = document.getElementById('notes');
+            let notesField = document.getElementById('note');
             let submitButton = document.getElementById('submit-btn');
             let timeoutId;
             let sessionSet ="<?php echo isset($_SESSION["notes"])?>";
-            notesField.focus()
             if (sessionSet ==1){
-                document.getElementById('notes').focus()
+                notesField.focus();
+                let length = notesField.value.length;
+                console.log(length);
+                
+                notesField.setSelectionRange(length, length);
             }
 
             // Detect changes in the textarea
@@ -517,9 +523,9 @@
                 clearTimeout(timeoutId); // Clear the previous timer
                 timeoutId = setTimeout(function() {
                     submitButton.click(); // Trigger submit button click
-                }, 5000); // Wait for 2 seconds of inactivity
+                }, 5000); // Wait for 5 seconds of inactivity
             });
-        });
+        })
     </script>
 
 </body>
