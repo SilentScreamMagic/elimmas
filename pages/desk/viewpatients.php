@@ -85,10 +85,10 @@ $result = $conn->query($sql);
                                           <input class ='btn-md btn-info' type='submit' value='Edit Patient'>
                                       </form>
           </div>
-                                    </td><td> 
+                                    </td> 
                                   
                                   
-                                  </td><td>".$row["registration_date"]."</td><td>".$row["Patient Name"]."</td>
+                                  <td>".$row["registration_date"]."</td><td>".$row["Patient Name"]."</td>
                                     <td>".$row["DOB"]."</td><td>".$row["gender"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
                                   
                                     

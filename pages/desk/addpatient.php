@@ -95,8 +95,8 @@ input.invalid {
             <div class="col-sm-9">
                 <select class="js-example-basic-single" style="width:100%" id="gender" name="gender" required>
                 <option value="" <?php if(!isset($_POST["edit"])) echo "selected disabled" ?> >Gender</option> 
-                  <option value="Male" <?php if(isset($_POST["edit"])&& $pat["DOB"]=="Male") echo "selected" ?>>Male</option>
-                  <option value="Female" <?php if(isset($_POST["edit"])&& $pat["DOB"]=="Female") echo "selected" ?>>Female</option>
+                  <option value="Male" <?php if(isset($_POST["edit"])&& $pat["gender"]=="Male") echo "selected" ?>>Male</option>
+                  <option value="Female" <?php if(isset($_POST["edit"])&& $pat["gender"]=="Female") echo "selected" ?>>Female</option>
                 </select> 
               </div>   
             </div>
@@ -104,11 +104,11 @@ input.invalid {
               <label class="col-sm-3 col-form-label">Marital Status:</label>
               <div class="col-sm-9">
                 <select class="js-example-basic-single" style="width:100%" id="marital_status" name="marital_status" placeholder = "Marital Status" required>
-                  <option value="" selected disabled>Marital Status</option>  
-                  <option value="Single">Single</option>
-                  <option value="Married">Married</option>
-                  <option value="Divorced">Divorced</option>
-                  <option value="Widowed">Widowed</option>
+                  <option value="" <?php if(!isset($_POST["edit"])) echo "selected disabled" ?>>Marital Status</option>  
+                  <option value="Single" <?php if(isset($_POST["edit"])&& $pat["marital_status"]=="Single") echo "selected" ?>>Single</option>
+                  <option value="Married"<?php if(isset($_POST["edit"])&& $pat["marital_status"]=="Married") echo "selected" ?>>Married</option>
+                  <option value="Divorced"<?php if(isset($_POST["edit"])&& $pat["marital_status"]=="Divored") echo "selected" ?>>Divorced</option>
+                  <option value="Widowed"<?php if(isset($_POST["edit"])&& $pat["marital_status"]=="Widowed") echo "selected" ?>>Widowed</option>
                 </select>
               </div> 
             </div>
@@ -176,6 +176,7 @@ input.invalid {
                 <label class="col-sm-3 col-form-label" for="special_codes">Special Codes:</label>
                 <div class="col-sm-9">
                   <input class="form-control" type="text" id="special_codes" name="special_codes" value=<?php if(isset($_POST["edit"])) echo $pat["referred_by"] ?>>
+                  <input type="hidden" name="id" value =<?php if(isset($_POST["edit"])) echo $_POST["edit"] ?>>
                 </div>    
               </div>
             </div>
