@@ -76,7 +76,7 @@ labs.lab_name, patients_labs.lab_results, patients_labs.lab_date, appointments.c
 INNER JOIN appointments ON patients_labs.apt_id = appointments.id 
 INNER JOIN patient ON patient.pat_id = appointments.patient_id 
 INNER JOIN labs ON patients_labs.lab_id = labs.lab_id
-WHERE appointments.check_out is null
+WHERE appointments.date = CURRENT_DATE
 ORDER by patients_labs.date;";
     $result = $conn->query($sql);?>
                     <div class='table-responsive'>
