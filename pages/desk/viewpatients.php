@@ -1,7 +1,8 @@
 <?php
 include "../conn.php";
 //include "../table.html";
-$sql = "SELECT patient.pat_id,concat(Fname,' ',LName) 'Patient Name',patient.*, concat(emergency_fname,' ',emergency_lname)'Emergency Contact' FROM patient;";
+$sql = "SELECT patient.pat_id,concat(Fname,' ',LName) 'Patient Name',patient.*, concat(emergency_fname,' ',emergency_lname)'Emergency Contact' FROM patient
+order by FName,Lname;";
 $result = $conn->query($sql);
 ?>
 <a href="./addpatient.html">Add Patient</a>

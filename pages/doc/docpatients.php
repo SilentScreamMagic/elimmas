@@ -56,7 +56,7 @@ include "../tabs.html";
                                 left join (SELECT * from patients_beds WHERE end_date is null) pb on appointments.id = pb.apt_id 
                                 Left join beds on beds.bed_id = pb.bed_id
                                 where check_in is not null and check_out is null
-                                order by Fname";
+                                order by Fname,Lname";
                             $result = $conn->query($sql);?>
 
                              <table  class ='table'>
@@ -97,7 +97,7 @@ include "../tabs.html";
                         <div id="all_pat" class="tabcontent">
 
         <?php
-            $sql = "SELECT DISTINCT pat_id registration_date,patient.pat_id, concat(Fname,' ',LName) 'Patient Name' FROM patient order by 'Patient Name';";
+            $sql = "SELECT DISTINCT pat_id registration_date,patient.pat_id, concat(Fname,' ',LName) 'Patient Name' FROM patient order by Fname,Lname;";
             $result = $conn->query($sql);?>
             <h4 class='card-title'>All Patients</h4>
             <input type='text' id='tableFilterInput' class=' form-control dropdown-input' placeholder='Search Patients...'>
