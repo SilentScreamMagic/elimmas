@@ -7,6 +7,10 @@ $date = date("Y-m-d");
 if (isset($_POST["appt_date"])){
     $date = date("Y-m-d",strtotime($_POST["appt_date"]));
 }
+if (isset($_POST["apt_id"])){
+  $sql = "update appointments set check_out = now() where id =".$_POST["apt_id"];
+  $result = $conn->query($sql);
+}
 ?>
 <!DOCTYPE html>
 <html lang='en'>

@@ -41,11 +41,12 @@
         
     }
     
-    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", DOB FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
     where id = '.$_SESSION["apt_id"];
     $result = $conn->query($sql)->fetch_assoc();
     $pat_id=$result["pat_id"];
     $pname = $result["Patient Name"];
+    $checkout = $result["check_out"];
     $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
     $today = date("d-m-Y");
     $diff = date_diff(date_create($dateOfBirth), date_create($today));
@@ -141,6 +142,16 @@
                 <div class="card">
                 <div class='card-body'>
                     <h4 class='card-title'><?php echo $pname. " (Age: " .$age.")"?></h4>
+                    <?php 
+                        if($checkout==null){
+                            echo "<form action='docapps.php' method='post'>
+                                <input type='hidden' name='apt_id' value= $_SESSION[apt_id]>
+                                <input type='submit' value='End Appointment'>
+                            </form>";
+                        }
+                        
+                    ?>
+                    
                     <div class="tab">
                         <button class="tablinks" onclick="openTab(event, 'notes')" <?php if('defaultOpen'==$ids[4]) echo 'id ="'.$ids[4].'"';?>>Notes</button>
                         <button class="tablinks" onclick="openTab(event, 'procs')" <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Procedures</button>
