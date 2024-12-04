@@ -67,25 +67,27 @@ $result = $conn->query($sql);
                           if ($result){ 
                               if ($result->num_rows > 0) {
                                   while($row = $result->fetch_assoc()) {
-                                    echo "<tr><td> 
-                                  <div>
-                                      <form action='apthistory.php' method='post'>
+                                    echo "<tr><td>
+                                     <a href='#' id='profile-dropdown' data-toggle='dropdown'><i class='mdi mdi-dots-vertical'></i></a>
+                                    <div class='dropdown-menu dropdown-menu-right sidebar-dropdown preview-list' aria-labelledby='profile-dropdown'>
+            <form action='apthistory.php' method='post'>
                                           <input type='hidden' name='id' value=".$row['pat_id'].">
-                                          <input class ='btn-md btn-primary' type='submit' value='&#128065;'>
+                                          <input class ='btn-md btn-primary' type='submit' value='View Patient'>
                                       </form>
-                                  </div>
-                                  <div>
-                                      <form action='Addappointment.php' method='post'>
+            <div class='dropdown-divider'></div>
+            <form action='Addappointment.php' method='post'>
                                           <input type='hidden' name='id' value='".$row['pat_id']."'>
-                                          <input style = 'width: 30px' class ='btn-md btn-info' type='submit' value='+'>
+                                          <input class ='btn-md btn-info' type='submit' value='Add Appointment'>
                                       </form>
-                                  </div>
-                                  <div>
-                                      <form action='addpatient.php' method='post'>
+            <div class='dropdown-divider'></div>
+            <form action='addpatient.php' method='post'>
                                           <input type='hidden' name='edit' value='".$row['pat_id']."'>
-                                          <input style = 'width: 30px' class ='btn-md btn-info' type='submit' value='*'>
+                                          <input class ='btn-md btn-info' type='submit' value='Edit Patient'>
                                       </form>
-                                  </div>
+          </div>
+                                    </td><td> 
+                                  
+                                  
                                   </td><td>".$row["registration_date"]."</td><td>".$row["Patient Name"]."</td>
                                     <td>".$row["DOB"]."</td><td>".$row["gender"]."</td><td>".$row["patient_phone"]."</td><td>".$row["patient_email"]."</td>
                                   
