@@ -75,19 +75,19 @@ input.invalid {
             <div class="form-group row">
             <label class="col-sm-3 col-form-label" class="col-sm-3 col-form-label" for="FName">First Name:</label>
               <div class="col-sm-9">
-                <input class="form-control" class="form-control" type="text" id="FName" name="FName" value=<?php if(isset($_POST["edit"])) echo $pat["FName"] ?> required> 
+                <input class="form-control" class="form-control" type="text" id="FName" name="FName" required value=<?php if(isset($_POST["edit"])) echo $pat["FName"] ?> > 
               </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="LName">Last Name:</label>
             <div class="col-sm-9">
-              <input class="form-control" type="text" id="LName" name="LName" value=<?php if(isset($_POST["edit"])) echo $pat["LName"] ?> required>
+              <input class="form-control" type="text" id="LName" name="LName" required value=<?php if(isset($_POST["edit"])) echo $pat["LName"] ?> >
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="DOB">Date of Birth:</label>
             <div class="col-sm-9">
-              <input class="form-control" type="date" id="DOB" name="DOB" value=<?php if(isset($_POST["edit"])) echo $pat["DOB"] ?> required>
+              <input class="form-control" type="date" id="DOB" name="DOB" required value=<?php if(isset($_POST["edit"])) echo $pat["DOB"] ?> required>
             </div>
           </div>
           <div class="form-group row">
@@ -121,7 +121,7 @@ input.invalid {
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="patient_phone">Patient's Phone:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="tel" id="patient_phone" name="patient_phone" value=<?php if(isset($_POST["edit"])) echo $pat["patient_phone"] ?> required>
+                <input class="form-control" type="tel" id="patient_phone" name="patient_phone" required value=<?php if(isset($_POST["edit"])) echo $pat["patient_phone"] ?> >
               </div>
             </div>
             <div class="form-group row">
