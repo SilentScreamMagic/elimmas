@@ -34,19 +34,29 @@
     
     $notes = "";
     $ndate = "";
-    
     $ids=["","","","","defaultOpen",""];
     if (isset($_POST["id"])){
         $_SESSION["apt_id"] = $_POST["id"];
         
     }
+    if (isset($_POST["apt_id"])){
+        if($_POST["type"]=="In-Patient"){
+            $sql = "update appointments set type = 'Consultation' where id =$_POST[apt_id]";
+            $result = $conn->query($sql);
+        }else{
+            $sql = "update appointments set type = 'In-Patient' where id =$_POST[apt_id]";
+            $result = $conn->query($sql);
+        }
+        
+      }
     
-    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", appointments.type, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
     where id = '.$_SESSION["apt_id"];
     $result = $conn->query($sql)->fetch_assoc();
     $pat_id=$result["pat_id"];
     $pname = $result["Patient Name"];
     $checkout = $result["check_out"];
+    $type = $result["type"];
     $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
     $today = date("d-m-Y");
     $diff = date_diff(date_create($dateOfBirth), date_create($today));
@@ -151,7 +161,14 @@
                         }
                         
                     ?>
-                    
+                    <?php 
+                            echo "<form action='docprocs.php' method='post'>
+                                <input type='hidden' name='apt_id' value= $_SESSION[apt_id]>
+                                <input type='hidden' name='type' value= '$type'>
+                                <input type='submit' value='Current Appointment type: $type'>
+                            </form>";
+                        
+                    ?>
                     <div class="tab">
                         <button class="tablinks" onclick="openTab(event, 'notes')" <?php if('defaultOpen'==$ids[4]) echo 'id ="'.$ids[4].'"';?>>Notes</button>
                         <button class="tablinks" onclick="openTab(event, 'procs')" <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Procedures</button>
@@ -358,6 +375,7 @@
             echo "Last Saved $ndate";
         }  ?><br>
         <input name = "button" type="submit" value="Submit"><br><br>
+        <input name = "cursor" id="cursor" type="hidden" value="0">
         <input name = "button" id="submit-btn" type="submit" style="display: none;" value="Autosave">
     </form>
     </div>     
@@ -520,12 +538,14 @@
             let notesField = document.getElementById('note');
             let submitButton = document.getElementById('submit-btn');
             let timeoutId;
+            let cursor = document.getElementById("cursor");
             let sessionSet ="<?php echo isset($_SESSION["notes"])?>";
             if (sessionSet ==1){
                 notesField.focus();
-                let length = notesField.value.length;
-                console.log(length);
-                
+                let length = "<?php echo $_POST["cursor"] ?? 0 ?>";
+                if (length == 0){
+                    length = notesField.value.length;
+                }
                 notesField.setSelectionRange(length, length);
             }
 
@@ -533,6 +553,7 @@
             notesField.addEventListener('input', function() {
                 clearTimeout(timeoutId); // Clear the previous timer
                 timeoutId = setTimeout(function() {
+                    cursor.value = notesField.selectionStart;
                     submitButton.click(); // Trigger submit button click
                 }, 5000); // Wait for 5 seconds of inactivity
             });
