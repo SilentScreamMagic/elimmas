@@ -3,33 +3,7 @@ include "../conn.php";
 include "../searchbar2.php";
 //include "../table.html";
 
-if(isset($_POST['id'])){
-    $sql = "UPDATE `appointments` SET check_out = now() WHERE id = ".$_POST['id'];
-    $result = $conn->query($sql);
-    $sql = "SELECT * FROM `patients_beds` WHERE apt_id = ".$_POST['id']." and end_date is null";
-    $result = $conn->query($sql)->fetch_assoc();
-    $bid = $result["bed_id"];
-    $sql = "UPDATE `patients_beds` SET end_date = now() WHERE apt_id = ".$_POST['id']." and end_date is null";
-    $result = $conn->query($sql);
-    $sql = "UPDATE `beds` SET `status`='dirty' WHERE `bed_id`=$bid";
-    $result = $conn->query($sql);
-}
 
-$sql = "SELECT patient.pat_id, appointments.date,concat(Fname,' ',LName) 'Patient Name',appointments.type,
-COALESCE(beds.room_id,'Accomodation Pending')'Room', COALESCE(beds.bed_id,'Accomodation Pending')'Bed',
-appointments.id,appointments.check_in, 
-case 
-when nt.notes is null then 'Pending'
-else 'Ready'
-end as 'dis_notes'
-FROM appointments 
-INNER join patient on appointments.patient_id = patient.pat_id
-Left JOIN (SELECT apt_id,notes from notes WHERE type = 'dis_notes') nt on nt.apt_id = appointments.id
-left join patients_beds pb on appointments.id = pb.apt_id 
-Left join beds on beds.bed_id = pb.bed_id
- where type = 'In-Patient' and check_in is not null and check_out is null
- order by appointments.date;";
-$result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +26,53 @@ $result = $conn->query($sql);
   </head>
   <body>
   <div class="container-scroller">
-    <?php include "../nav.php";?>
+    <?php include "../nav.php";
+    if(isset($_POST["bed"])){
+      $sql = "INSERT INTO `patients_beds` ( `bed_id`, `apt_id`, `start_date`,created_by) 
+              VALUES ( $_POST[bed],$_POST[apt_id], now(),'".$_SESSION["user"][0]."')";
+      $conn->query($sql);
+      $sql = "update beds set status = 'occupied' where bed_id = $_POST[bed]";
+      $conn->query($sql);
+  }
+  if(isset($_POST['id'])){
+    $sql = "UPDATE `appointments` SET check_out = now() WHERE id = ".$_POST['id'];
+    $result = $conn->query($sql);
+    $sql = "SELECT * FROM `patients_beds` WHERE apt_id = ".$_POST['id']." and end_date is null";
+    $result = $conn->query($sql)->fetch_assoc();
+    $bid = $result["bed_id"];
+    $sql = "UPDATE `patients_beds` SET end_date = now() WHERE apt_id = ".$_POST['id']." and end_date is null";
+    $result = $conn->query($sql);
+    $sql = "UPDATE `beds` SET `status`='dirty' WHERE `bed_id`=$bid";
+    $result = $conn->query($sql);
+}
+
+$sql = "SELECT room_id, bed_id,status FROM `beds` 
+        where status = 'clean'
+        order by beds.bed_id;";
+     $result = $conn->query($sql);
+     if ($result->num_rows > 0) {
+        $rooms = array();
+        while ($row = $result->fetch_assoc()) {
+            $rooms[$row["room_id"]][] = $row["bed_id"];
+        }
+    }
+  
+$sql = "SELECT patient.pat_id, appointments.date,concat(Fname,' ',LName) 'Patient Name',appointments.type,
+COALESCE(beds.room_id,'N/A')'Room', COALESCE(beds.bed_id,'N/A')'Bed',
+appointments.id,appointments.check_in, 
+case 
+when nt.notes is null then 'Pending'
+else 'Ready'
+end as 'dis_notes'
+FROM appointments 
+INNER join patient on appointments.patient_id = patient.pat_id
+Left JOIN (SELECT apt_id,notes from notes WHERE type = 'dis_notes') nt on nt.apt_id = appointments.id
+left join patients_beds pb on appointments.id = pb.apt_id 
+Left join beds on beds.bed_id = pb.bed_id
+ where type = 'In-Patient' and check_in is not null and check_out is null
+ order by appointments.date;";
+$result = $conn->query($sql);
+    ?>
   <div class="main-panel">
         <div class="content-wrapper">
             <div class="row">
@@ -193,7 +213,21 @@ where check_in is not null and check_out is null and appointments.type = 'In-Pat
                                     ";
                                         
                                 }
-                            
+                                $sel="";
+                                if ($row["Room"]=="N/A"){
+                                  $sel = "<td><form action='' method='post'>
+                                  <select name='bed' id='bed' required>
+                                  <option value='' disabled selected>Select a Room and Bed...</option>";
+                                  foreach ($rooms as $rid =>$beds):
+                                      foreach($beds as $bid)
+                                      $sel = $sel. "<option value='$bid'>Ward $rid Bed $bid </option>";
+                                      endforeach;
+                                      $sel = $sel.'</select>
+                                       <input type="hidden" name ="apt_id" value='.$row['id'].'>
+                                      <input type="submit" value="Arrival Time">
+                                      </form></td>';
+                                  }
+                                  echo $sel;
                                 }
                                 //echo "</tr></tbody></table></div></div>";
                             } 
