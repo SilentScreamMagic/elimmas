@@ -471,7 +471,7 @@
                                     <table class ='table'>
                                     <thead>
                                         <tr>
-                                            <th>Date</th><th>Body Temp.</th><th>Pulse Rate</th><th>Resp. Rate</th><th>Blood Pressure</th><th>Oxygen Saturation</th>
+                                            <th>Date</th><th>Body Temp (<sup>o</sup>C)</th><th>Pulse Rate (bpm)</th><th>Resp. Rate (<sub>cycles/min</sub>)</th><th>Blood Pressure</th><th>Oxygen Saturation (%)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -692,7 +692,8 @@
                         <div id="doc_notes"  class="scrollable-container">
                                 <h1></h1>
                                 <?php
-                                $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes FROM `notes`
+                                $sql = "SELECT users.Name,cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes FROM `notes`
+                                    INNER join users on users.username = created_by
                                     where type ='doc_notes' and apt_id = $_SESSION[apt_id]
                                     GROUP by cast(notes.date as date)
                                     order by notes.date;";
@@ -701,6 +702,7 @@
                                     while($row = $result->fetch_assoc()) {
                                     echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
                                 echo '<div class="date">' . $row["date"] . '</div>';
+                                echo $row["Name"]."<br>";
                                 echo $row["notes"];
                                 echo '</div>';
                                     }
@@ -717,7 +719,8 @@
                         <h4 class="card-title">Nurses's Notes</h4>
                         <div id="nur_notes" style=overflow-y:auto>
                                 <?php
-                                $sql = "SELECT cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<blockqoute class=blockqoute><p>',notes.notes SEPARATOR '</p></blockqoute>') notes FROM `notes`
+                                $sql = "SELECT users.Name,cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<blockqoute class=blockqoute><p>',notes.notes SEPARATOR '</p></blockqoute>') notes FROM `notes`
+                                    INNER join users on users.username = created_by
                                     where type ='nur_notes' and apt_id = $_SESSION[apt_id]
                                     GROUP by cast(notes.date as date)
                                     order by notes.date;";
@@ -726,6 +729,7 @@
                                     while($row = $result->fetch_assoc()) {
                                     echo '<div class="text-box">';
                                 echo '<div class="date">' . $row["date"] . '</div>';
+                                echo $row["Name"]."<br>";
                                 echo $row["notes"];
                                 echo '</div>';
                                     }

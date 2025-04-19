@@ -126,8 +126,8 @@
                                             </tr>";
                                         }else{
                                             $string = $string . "<td><form action='' method='post'>
-                                            <input type='hidden' name='checkin_id' value=".$row['id'].">
-                                            $sel
+                                            <input type='hidden' name='checkin_id' value=".$row['id'].">".
+                                            $sel."
                                             <input type='submit' value='Arrival Time'>
                                         </form></td></tr>";
                                         }
