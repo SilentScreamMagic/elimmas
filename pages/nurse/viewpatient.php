@@ -22,6 +22,88 @@
     <link rel='stylesheet' href='../../assets/css/style.css'>
     <!-- End layout styles -->
     <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+    <style>
+   .scroll-box {
+      width: 300px;
+      height: 200px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+    }
+
+    .item {
+      position: relative;
+      padding: 8px;
+      margin-bottom: 5px;
+      background-color: #000;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .preview {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 250px;
+      padding: 8px;
+      background: #333;
+      color: white;
+      border-radius: 4px;
+      font-size: 14px;
+      z-index: 10;
+      white-space: normal;
+    }
+
+    .item:hover .preview {
+      display: block;
+    }
+    
+  </style>
+ <style>
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    .popup-box p {
+      margin: 10 0 10px;
+      color: black;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    #popupContent {
+    white-space: pre-wrap; /* Preserves line breaks and spacing */
+    }
+  </style>
   </head>
 
 <body>
@@ -689,22 +771,18 @@
                     <div class="card">
                       <div class="card-body">
                         <h4 class="card-title">Doctor's Notes</h4>
-                        <div id="doc_notes"  class="scrollable-container">
+                        <div id="doc_notes"  class="scroll-box">
                                 <h1></h1>
                                 <?php
-                                $sql = "SELECT users.Name,cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<br>',notes.notes,'<br>' SEPARATOR '<br>') notes FROM `notes`
-                                    INNER join users on users.username = created_by
-                                    where type ='doc_notes' and apt_id = $_SESSION[apt_id]
-                                    GROUP by cast(notes.date as date)
-                                    order by notes.date;";
+                                $sql = "SELECT users.Name,notes.date,notes.notes notes FROM `notes` 
+                                INNER join users on users.username = created_by where type ='doc_notes' and apt_id =$_SESSION[apt_id] 
+                                order by notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                    echo '<div id="expandableDiv" class="text-box expandable" onclick="toggleExpand()">';
-                                echo '<div class="date">' . $row["date"] . '</div>';
-                                echo $row["Name"]."<br>";
-                                echo $row["notes"];
-                                echo '</div>';
+                                        echo '<div class="text-box">';
+                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'. $row["Name"].'| '. $row["date"];
+                                        echo '<div class="preview"></div></div></div>';
                                     }
                                 }
                             
@@ -717,21 +795,17 @@
                     <div class="card">
                       <div class="card-body">
                         <h4 class="card-title">Nurses's Notes</h4>
-                        <div id="nur_notes" style=overflow-y:auto>
+                        <div id="nur_notes" class="scroll-box">
                                 <?php
-                                $sql = "SELECT users.Name,cast(notes.date as date) date,GROUP_CONCAT(cast(notes.date as time),'<blockqoute class=blockqoute><p>',notes.notes SEPARATOR '</p></blockqoute>') notes FROM `notes`
-                                    INNER join users on users.username = created_by
-                                    where type ='nur_notes' and apt_id = $_SESSION[apt_id]
-                                    GROUP by cast(notes.date as date)
-                                    order by notes.date;";
+                                $sql = "SELECT users.Name,notes.date,notes.notes notes FROM `notes` 
+                                INNER join users on users.username = created_by where type ='nur_notes' and apt_id =$_SESSION[apt_id] 
+                                order by notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                    echo '<div class="text-box">';
-                                echo '<div class="date">' . $row["date"] . '</div>';
-                                echo $row["Name"]."<br>";
-                                echo $row["notes"];
-                                echo '</div>';
+                                        echo '<div class="text-box">';
+                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'. $row["Name"].'| '. $row["date"];
+                                        echo '<div class="preview"></div></div></div>';
                                     }
                                 }
                             
@@ -744,10 +818,49 @@
               </div>
         </div>   
        <!-- content-wrapper ends -->
-         
+       <div id="popup" class="popup-overlay">
+    <div class="popup-box">
+      <button class="popup-close" id="closePopup">&times;</button>
+      <p id="popupContent"></p>
+    </div>
+  </div>
 
           <script src="../../assets/vendors/select2/select2.min.js"></script>
 <script src="../../assets/js/select2.js"></script>
+<script>
+    const WORD_LIMIT = 5;
+    document.querySelectorAll('.item').forEach(item => {
+      const fullText = item.getAttribute('data-full-text');
+      const words = fullText.split(' ').slice(0, WORD_LIMIT).join(' ');
+      alert(words);
+      const preview = item.querySelector('.preview');
+      preview.textContent = words + (fullText.split(' ').length > WORD_LIMIT ? '...' : '');
+    });
+  </script>
+  
+  <script>
+     const popup = document.getElementById('popup');
+    const popupContent = document.getElementById('popupContent');
+    const closeBtn = document.getElementById('closePopup');
+
+    document.querySelectorAll('.item').forEach(item => {
+      item.addEventListener('click', () => {
+        const fullText = item.getAttribute('data-full-text');
+        popupContent.textContent = fullText;
+        popup.style.display = 'flex';
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        popup.style.display = 'none';
+      }
+    });
+  </script>
 
 
 
