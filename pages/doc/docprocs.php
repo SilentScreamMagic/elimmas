@@ -639,7 +639,7 @@
                 timeoutId = setTimeout(function() {
                     cursor.value = notesField.selectionStart;
                     submitButton.click(); // Trigger submit button click
-                }, 15000); // Wait for 5 seconds of inactivity
+                }, 5000); // Wait for 5 seconds of inactivity
             });
         })
     </script>
