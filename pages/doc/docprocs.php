@@ -529,14 +529,16 @@
                         <div id="doc_notes"  class="scroll-box">
                                 <h1></h1>
                                 <?php
-                                $sql = "SELECT users.Name,notes.date,notes.notes notes FROM `notes` 
-                                INNER join users on users.username = created_by where type ='doc_notes' and apt_id =$_SESSION[apt_id] 
-                                order by notes.date;";
+                                $sql = "SELECT users.Name,notes.apt_id,notes.date,notes.notes notes FROM `notes` 
+                                INNER join users on users.username = created_by 
+                                inner join appointments on appointments.id = notes.apt_id
+                                where notes.type ='doc_notes' and appointments.patient_id = $pat_id
+                                order by apt_id DESC,notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'. $row["Name"].'| '. $row["date"];
+                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].'-'. $row["Name"].'| '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
@@ -552,14 +554,16 @@
                         <h4 class="card-title">Nurses's Notes</h4>
                         <div id="nur_notes" class="scroll-box">
                                 <?php
-                                $sql = "SELECT users.Name,notes.date,notes.notes notes FROM `notes` 
-                                INNER join users on users.username = created_by where type ='nur_notes' and apt_id =$_SESSION[apt_id] 
-                                order by notes.date;";
+                                $sql = "SELECT users.Name,notes.apt_id,notes.date,notes.notes notes FROM `notes` 
+                                INNER join users on users.username = created_by 
+                                inner join appointments on appointments.id = notes.apt_id
+                                where notes.type ='nur_notes' and appointments.patient_id = $pat_id
+                                order by apt_id DESC,notes.date;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'. $row["Name"].'| '. $row["date"];
+                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].'-' .$row["Name"].'| '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
