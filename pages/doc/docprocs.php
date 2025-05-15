@@ -83,13 +83,15 @@
       position: relative;
     }
 
-    .popup-box p {
+    .popup-box p{
       margin: 10 0 10px;
       color: black;
       overflow-y: auto;
       max-height: 300px;
     }
-
+    .popup-box h4{
+        color: black;
+    }
     .popup-close {
       position: absolute;
       top: 8px;
@@ -563,7 +565,7 @@
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].'-' .$row["Name"].'| '. $row["date"];
+                                        echo '<div class="item" data-title="'.$row["apt_id"].'-' .$row["Name"].'| '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].'-' .$row["Name"].'| '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
@@ -587,6 +589,7 @@
 <div id="popup" class="popup-overlay">
     <div class="popup-box">
       <button class="popup-close" id="closePopup">&times;</button>
+      <h4 id="popuptitle"> </h4>    
       <p id="popupContent"></p>
     </div>
   </div>
@@ -660,12 +663,15 @@
   <script>
      const popup = document.getElementById('popup');
     const popupContent = document.getElementById('popupContent');
+    const popupTitle = document.getElementById('popuptitle');
     const closeBtn = document.getElementById('closePopup');
 
     document.querySelectorAll('.item').forEach(item => {
       item.addEventListener('click', () => {
         const fullText = item.getAttribute('data-full-text');
+        const titleText = item.getAttribute('data-title');
         popupContent.textContent = fullText;
+        popupTitle.textContent = titleText;
         popup.style.display = 'flex';
       });
     });
