@@ -832,7 +832,6 @@
     document.querySelectorAll('.item').forEach(item => {
       const fullText = item.getAttribute('data-full-text');
       const words = fullText.split(' ').slice(0, WORD_LIMIT).join(' ');
-      alert(words);
       const preview = item.querySelector('.preview');
       preview.textContent = words + (fullText.split(' ').length > WORD_LIMIT ? '...' : '');
     });
