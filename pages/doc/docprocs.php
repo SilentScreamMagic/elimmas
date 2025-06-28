@@ -259,7 +259,7 @@
                         <button class="tablinks" onclick="openTab(event, 'procs')" <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Procedures</button>
                         <button class="tablinks" onclick="openTab(event, 'meds')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Medications</button>
                         <button class="tablinks" onclick="openTab(event, 'labs')"  <?php if('defaultOpen'==$ids[3]) echo 'id ="'.$ids[3].'"';?>>Labs</button>
-                        <button class="tablinks" onclick="openTab(event, 'dis_notes')" <?php if('defaultOpen'==$ids[5]) echo 'id ="'.$ids[5].'"';?>> Discharge</button>   
+                        <button class="tablinks" onclick="openTab(event, 'dis_notes')" <?php if('defaultOpen'==$ids[5]) echo 'id ="'.$ids[5].'"';?>>Discharge</button>   
                     </div>
 <div id="procs" class="tabcontent">
     <!-- Content for beds tab -->
@@ -629,6 +629,7 @@
             let notesField = document.getElementById('note');
             let submitButton = document.getElementById('submit-btn');
             let timeoutId;
+            let hasChanges = false;
             let cursor = document.getElementById("cursor");
             let sessionSet ="<?php echo isset($_SESSION["notes"])?>";
             if (sessionSet ==1){
@@ -638,17 +639,25 @@
                     length = notesField.value.length;
                 }
                 notesField.setSelectionRange(length, length);
-            }
-
-            // Detect changes in the textarea
+            }  
             notesField.addEventListener('input', function() {
-                clearTimeout(timeoutId); // Clear the previous timer
+                hasChanges=true;
+                clearTimeout(timeoutId); 
                 timeoutId = setTimeout(function() {
                     cursor.value = notesField.selectionStart;
-                    submitButton.click(); // Trigger submit button click
-                }, 5000); // Wait for 5 seconds of inactivity
+                    submitButton.click(); 
+                    hasChanges = false;
+                }, 5000); 
+
             });
-        })
+            document.querySelectorAll('.tablinks').forEach(button => {
+  button.addEventListener('click', () => {
+    if(hasChanges){
+        submitButton.click();
+        clearTimeout(timeoutId);
+    }
+  });
+        })});
     </script>
 <script>
     const WORD_LIMIT = 5;
