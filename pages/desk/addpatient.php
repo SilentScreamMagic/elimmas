@@ -75,19 +75,19 @@ input.invalid {
             <div class="form-group row">
             <label class="col-sm-3 col-form-label" class="col-sm-3 col-form-label" for="FName">First Name:</label>
               <div class="col-sm-9">
-                <input class="form-control" class="form-control" type="text" id="FName" name="FName" required value=<?php if(isset($_POST["edit"])) echo $pat["FName"] ?> > 
+                <input class="form-control" class="form-control" type="text" id="FName" name="FName" required value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat['FName'])."'" ?> required> 
               </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="LName">Last Name:</label>
             <div class="col-sm-9">
-              <input class="form-control" type="text" id="LName" name="LName" required value=<?php if(isset($_POST["edit"])) echo $pat["LName"] ?> >
+              <input class="form-control" type="text" id="LName" name="LName" required value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["LName"])."'" ?> required>
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-3 col-form-label" for="DOB">Date of Birth:</label>
             <div class="col-sm-9">
-              <input class="form-control" type="date" id="DOB" name="DOB" required value=<?php if(isset($_POST["edit"])) echo $pat["DOB"] ?> required>
+              <input class="form-control" type="date" id="DOB" name="DOB" required value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["DOB"])."'" ?> required>
             </div>
           </div>
           <div class="form-group row">
@@ -115,25 +115,25 @@ input.invalid {
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="address">Address:</label>
               <div class="col-sm-9">
-                <textarea class="form-control" id="address" name="address" rows="4" cols="50" value= required><?php if(isset($_POST["edit"])) echo $pat["address"] ?></textarea>
+                <textarea class="form-control" id="address" name="address" rows="4" cols="50" value= required><?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["address"])."'" ?></textarea>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="patient_phone">Patient's Phone:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="tel" id="patient_phone" name="patient_phone" required value=<?php if(isset($_POST["edit"])) echo $pat["patient_phone"] ?> >
+                <input class="form-control" type="tel" id="patient_phone" name="patient_phone" required value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["patient_phone"])."'" ?> >
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="patient_email">Patient's Email:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="email" id="patient_email"  name="patient_email" value=<?php if(isset($_POST["edit"])) echo $pat["patient_email"] ?>>
+                <input class="form-control" type="email" id="patient_email"  name="patient_email" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["patient_email"])."'" ?>>
               </div>
             </div> 
             <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="employment">Employment:</label>
                 <div class="col-sm-9">
-                  <input class="form-control" type="text" id="employment" name="employment" value=<?php if(isset($_POST["edit"])) echo $pat["employment"] ?>>
+                  <input class="form-control" type="text" id="employment" name="employment" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["employment"])."'" ?>>
                 </div>
               </div>
           </div>
@@ -142,25 +142,25 @@ input.invalid {
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="emergency_fname">Emergency's First Name:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="text" id="emergency_fname" name="emergency_fname" value=<?php if(isset($_POST["edit"])) echo $pat["emergency_fname"] ?>>
+                <input class="form-control" type="text" id="emergency_fname" name="emergency_fname" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["emergency_fname"])."'" ?>>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="emergency_lname">Emergency's Last Name:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="text" id="emergency_lname" name="emergency_lname" value=<?php if(isset($_POST["edit"])) echo $pat["emergency_lname"] ?> >
+                <input class="form-control" type="text" id="emergency_lname" name="emergency_lname" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["emergency_lname"])."'" ?> >
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="emergency_phone">Emergency's Phone:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="tel" id="emergency_phone" name="emergency_phone" value=<?php if(isset($_POST["edit"])) echo $pat["emergency_phone"] ?>>
+                <input class="form-control" type="tel" id="emergency_phone" name="emergency_phone" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["emergency_phone"])."'" ?>>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-3 col-form-label" for="emergency_email">Emergency's Email:</label>
               <div class="col-sm-9">
-                <input class="form-control" type="email" id="emergency_email" name="emergency_email" value=<?php if(isset($_POST["edit"])) echo $pat["emergency_email"] ?>>
+                <input class="form-control" type="email" id="emergency_email" name="emergency_email" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["emergency_email"])."'" ?>>
               </div>
             </div>
           </div >
@@ -169,13 +169,13 @@ input.invalid {
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="referred_by">Referred By:</label>
                 <div class="col-sm-9">
-                  <input class="form-control" type="text" id="referred_by" name="referred_by" value=<?php if(isset($_POST["edit"])) echo $pat["referred_by"] ?>>
+                  <input class="form-control" type="text" id="referred_by" name="referred_by" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars($pat["referred_by"])."'" ?>>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="special_codes">Special Codes:</label>
                 <div class="col-sm-9">
-                  <input class="form-control" type="text" id="special_codes" name="special_codes" value=<?php if(isset($_POST["edit"])) echo $pat["referred_by"] ?>>
+                  <input class="form-control" type="text" id="special_codes" name="special_codes" value=<?php if(isset($_POST["edit"])) echo "'".htmlspecialchars( $pat["special_codes"])."'" ?>>
                   <input type="hidden" name="id" value =<?php if(isset($_POST["edit"])) echo $_POST["edit"] ?>>
                 </div>    
               </div>

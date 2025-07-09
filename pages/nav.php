@@ -26,7 +26,8 @@
     $nav =[["../phar/dashboard.php","Dashboard"],
     ["../phar/pharmacy.php","Inventory"],
     ["../phar/medtransaction.php","Transaction History"],
-    ["../phar/indispense.php","Dispense Inhouse"]];
+    ["../phar/indispense.php","Dispense Inhouse"],
+    ["../phar/managestock.php","Add or Edit Mediations"]];
     $files = scandir("../phar");
     $files = array_diff($files, array('.', '..'));
       if(!in_array(basename($_SERVER['PHP_SELF']),$files)){

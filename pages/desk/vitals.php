@@ -31,6 +31,25 @@ $id ="unchanged";
   
     <?php include '../nav.php';
     include "../conn.php";
+    
+
+// Now you can access the data
+    $id = $_GET['id'] ?? null;
+    $column = (int)$_GET['column'] ?? null;
+    $value = $_GET['value'] ?? null;
+    $columns = ['body_temp', 'pulse_rate', 'respiration_rate', 'bp', 'oxygen_sat', 'weight'];
+    $col=$columns[$column-2]; 
+    if ($id && $column && $value !== null) {
+      if($column-2 == 3){
+        $bp = explode("/",$value);
+        $sql = "UPDATE `patients_vits` SET systolic_bp = $bp[0], dystolic_bp =$bp[1] where `p_vit_id`='$id'";
+        $conn->query($sql);
+      }else{
+        $sql = "UPDATE `patients_vits` SET $col = $value where `p_vit_id`='$id'";
+    $conn->query($sql);
+      }
+    
+}
     if (isset($_POST["bloodPress"])){
       $bp = explode("/",$_POST["bloodPress"]);
 
@@ -135,7 +154,7 @@ $id ="unchanged";
                                 $result = $conn->query($sql); 
                                 ?>
                                 <div class='table-responsive'>
-                                    <table class ='table'>
+                                    <table id="editable-table" class ='table'>
                                     <thead>
                                         <tr>
                                             <th>Date</th><th>Patient Name</th><th>Body Temperature</th><th>Pulse Rate</th><th>Respiration Rate</th><th>Blood Pressure</th><th>Oxygen Saturation</th><th>Weight</th>
@@ -145,7 +164,7 @@ $id ="unchanged";
                                         <?php
                                             if ($result->num_rows > 0) {
                                               while($row = $result->fetch_assoc()) {
-                                                  echo "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["body_temp"]."</td><td>".$row["pulse_rate"]."</td><td>".$row["respiration_rate"]."</td><td>".$row["systolic_bp"]."/".$row["dystolic_bp"]."</td><td>".$row["oxygen_sat"]."</td><td>".$row["weight"]."</td></tr>";
+                                                  echo "<tr data-id = '$row[p_vit_id]'><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["body_temp"]."</td><td>".$row["pulse_rate"]."</td><td>".$row["respiration_rate"]."</td><td>".$row["systolic_bp"]."/".$row["dystolic_bp"]."</td><td>".$row["oxygen_sat"]."</td><td>".$row["weight"]."</td></tr>";
                                               }
                                             }
                                         ?>
@@ -164,4 +183,54 @@ $id ="unchanged";
         </div>
          <script src="../../assets/vendors/select2/select2.min.js"></script>
         <script src="../../assets/js/select2.js"></script>
+        <script>
+  const table = document.getElementById("editable-table");
+  const changes = new Set();
+  // Make cell editable on click
+  table.addEventListener("click", function (e) {
+    const target = e.target;
+   
+    console.log("Parent row:", target.parentElement.rowIndex - 1);
+    console.log("Row dataset:", target.parentElement.dataset);
+    if (target.tagName === "TD" && !target.querySelector("input")) {
+      const colIndex = target.cellIndex;
+
+      if (colIndex < 2) return;
+      const originalValue = target.textContent;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = originalValue;
+      target.textContent = '';
+      target.appendChild(input);
+      input.focus();
+
+      input.addEventListener("blur", () => {
+        const newValue = input.value.trim();
+        const row = target.parentElement; // Adjust for header
+        const rowId = row.dataset.id;
+        const col = target.cellIndex;
+
+        target.textContent = newValue;
+         console.log(newValue != originalValue);
+        if (newValue != originalValue) {
+          // Send POST request with change
+          const params = new URLSearchParams({id:rowId,column:col,value: newValue}).toString();
+          window.location.href = `${window.location.pathname}?${params}`;
+        } else {
+          target.textContent = originalValue;
+        }
+      });
+
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+        if (e.key === "Escape") {
+          target.textContent = originalValue;
+        }
+      });
+    }
+  });
+
+ 
+</script>
    
