@@ -34,22 +34,25 @@ $id ="unchanged";
     
 
 // Now you can access the data
-    $id = $_GET['id'] ?? null;
-    $column = (int)$_GET['column'] ?? null;
-    $value = $_GET['value'] ?? null;
-    $columns = ['body_temp', 'pulse_rate', 'respiration_rate', 'bp', 'oxygen_sat', 'weight'];
-    $col=$columns[$column-2]; 
-    if ($id && $column && $value !== null) {
-      if($column-2 == 3){
-        $bp = explode("/",$value);
-        $sql = "UPDATE `patients_vits` SET systolic_bp = $bp[0], dystolic_bp =$bp[1] where `p_vit_id`='$id'";
-        $conn->query($sql);
-      }else{
-        $sql = "UPDATE `patients_vits` SET $col = $value where `p_vit_id`='$id'";
-    $conn->query($sql);
-      }
+     if (isset($_GET["id"])){
+      $id = $_GET['id'] ?? null;
+      $column = (int)$_GET['column'] ?? null;
+      $value = $_GET['value'] ?? null;
+      $columns = ['body_temp', 'pulse_rate', 'respiration_rate', 'bp', 'oxygen_sat', 'weight'];
+      $col=$columns[$column-2]; 
+      if ($id && $column && $value !== null) {
+        if($column-2 == 3){
+          $bp = explode("/",$value);
+          $sql = "UPDATE `patients_vits` SET systolic_bp = $bp[0], dystolic_bp =$bp[1] where `p_vit_id`='$id'";
+          $conn->query($sql);
+        }else{
+          $sql = "UPDATE `patients_vits` SET $col = $value where `p_vit_id`='$id'";
+      $conn->query($sql);
+        }
     
 }
+    }
+    
     if (isset($_POST["bloodPress"])){
       $bp = explode("/",$_POST["bloodPress"]);
 
