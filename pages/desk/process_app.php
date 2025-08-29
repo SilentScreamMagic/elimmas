@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sql = "INSERT INTO appointments (patient_id, doc_id, date, time, type)
             VALUES (?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisss", $patient_id, $doctor_id, $date, $time, $type);
+    $stmt->bind_param("issss", $patient_id, $doctor_id, $date, $time, $type);
     
     if ($stmt->execute()) {
         // get the inserted appointment id
