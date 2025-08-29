@@ -10,11 +10,20 @@ if(isset($_GET["id"])){
 }
  
 
- $sql = "SELECT patient_id, concat(patient.FName,' ', patient.LName)'Patient Name',appointments.*, users.Name FROM `appointments`
- inner join patient on patient.pat_id = appointments.patient_id
- INNER join users on users.username = appointments.doc_id
- WHERE patient_id = $pat_id;";
- $result = $conn->query($sql);
+ $sql = "SELECT patient_id,
+               CONCAT(patient.FName,' ', patient.LName) AS `Patient Name`,
+               appointments.*,
+               users.Name
+        FROM appointments
+        INNER JOIN patient ON patient.pat_id = appointments.patient_id
+        INNER JOIN users   ON users.username = appointments.doc_id
+        WHERE patient_id = ?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $pat_id); // patient_id is integer
+$stmt->execute();
+$result = $stmt->get_result();
+
  ?>
  <!DOCTYPE html>
 <html lang='en'>

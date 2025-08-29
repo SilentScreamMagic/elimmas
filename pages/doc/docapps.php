@@ -7,10 +7,19 @@ $date = date("Y-m-d");
 if (isset($_POST["appt_date"])){
     $date = date("Y-m-d",strtotime($_POST["appt_date"]));
 }
-if (isset($_POST["apt_id"])){
-  $sql = "update appointments set check_out = now() where id =".$_POST["apt_id"];
-  $result = $conn->query($sql);
+if (isset($_POST["apt_id"])) {
+    $sql = "UPDATE appointments SET check_out = NOW() WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+
+    // bind the parameter (i = integer)
+    $stmt->bind_param("i", $_POST["apt_id"]);
+
+    // execute the statement
+    $stmt->execute();
+
+    $stmt->close();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang='en'>

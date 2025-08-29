@@ -4,8 +4,14 @@
  //include "../table.html";
  if (isset($_POST["id"])){
     $pat_id = $_POST["id"];
-    $sql = "SELECT * FROM patient where pat_id = $_POST[id]";
-    $result = $conn->query($sql);
+    $sql = "SELECT * FROM patient WHERE pat_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_POST["id"]); // "i" = integer
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $patient = $result->fetch_assoc();
+    $stmt->close();
+
 }
 
 ?>

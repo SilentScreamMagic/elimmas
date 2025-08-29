@@ -53,12 +53,16 @@ input.invalid {
     <?php 
     include "../conn.php";
     include '../nav.php';
-    if (isset($_POST["edit"])){
-      $sql = "select * from patient where pat_id = $_POST[edit]";
-      $result=$conn->query($sql);
+    if (isset($_POST["edit"])) {
+      $sql = "SELECT * FROM patient WHERE pat_id = ?";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("i", $_POST["edit"]); // "i" = integer
+      $stmt->execute();
+      $result = $stmt->get_result();
       $pat = $result->fetch_assoc();
-    
-    }
+      $stmt->close();
+  }
+
       ?>
   <div class='main-panel'>
         <div class='content-wrapper'>

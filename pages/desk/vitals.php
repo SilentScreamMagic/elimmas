@@ -59,9 +59,29 @@ $id ="unchanged";
     }
     
     if (isset($_POST["btemp"])) {
-        $sql = "INSERT INTO `patients_vits`( `date`, `apt_id`, `created_by`, `body_temp`, `pulse_rate`, `respiration_rate`, `systolic_bp`, `dystolic_bp`, `oxygen_sat`, `weight`) 
-        VALUES (now(),$_POST[apt_id],'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$bp[0]','$bp[1]','$_POST[oxysat]','$_POST[weight]')";
-        $result = $conn->query($sql);
+        if (isset($_POST["apt_id"])) {
+    $sql = "INSERT INTO patients_vits 
+            (date, apt_id, created_by, body_temp, pulse_rate, respiration_rate, systolic_bp, dystolic_bp, oxygen_sat, weight) 
+            VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "isddddddd", 
+        $_POST["apt_id"],           // i = integer
+        $_SESSION["user"][0],       // s = string (if numeric user_id, use "i" instead of "s")
+        $_POST["btemp"],            // d = double/float
+        $_POST["pulRate"],          // d
+        $_POST["respRate"],         // d
+        $bp[0],                     // d (systolic)
+        $bp[1],                     // d (diastolic)
+        $_POST["oxysat"],           // d
+        $_POST["weight"]            // d
+    );
+
+    $stmt->execute();
+    $stmt->close();
+}
+
     }
 
     $sql ="SELECT id, concat(patient.FName,' ', patient.LName)'Patient Name' from appointments
@@ -147,14 +167,29 @@ $id ="unchanged";
                   <div class='card-body'>
                   <h4 class="card-title">Today's Vitals</h4>
                   <?php 
-                                $sql = "SELECT concat(patient.FName,' ', patient.LName)'Patient Name',patients_vits.* FROM `patients_vits` 
-                            INNER JOIN appointments on appointments.id = patients_vits.apt_id
-                            INNER JOIN patient on appointments.patient_id = patient.pat_id
-                            inner JOIN users on users.username = patients_vits.created_by
-                            where  cast(patients_vits.date as date)= '".date("Y-m-d")."' and deleted = 0 and users.user_type = 'Front Desk'
-                            GROUP by apt_id
-                            order by date;";
-                                $result = $conn->query($sql); 
+                               if (isset($_POST["btemp"])) {
+    $sql = "INSERT INTO patients_vits 
+            (date, apt_id, created_by, body_temp, pulse_rate, respiration_rate, systolic_bp, dystolic_bp, oxygen_sat, weight) 
+            VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "isddddddd", 
+        $_POST["apt_id"],            // i = integer
+        $_SESSION["user"][0],        // s = string (if it's numeric user_id, switch to i)
+        $_POST["btemp"],             // d = double/float
+        $_POST["pulRate"],           // d
+        $_POST["respRate"],          // d
+        $bp[0],                      // d (systolic)
+        $bp[1],                      // d (diastolic)
+        $_POST["oxysat"],            // d
+        $_POST["weight"]             // d
+    );
+    
+    $stmt->execute();
+    $stmt->close();
+}
+ 
                                 ?>
                                 <div class='table-responsive'>
                                     <table id="editable-table" class ='table'>

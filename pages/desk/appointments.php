@@ -32,20 +32,42 @@
     if (isset($_POST["appt_date"])){
         $date = date("Y-m-d",strtotime($_POST["appt_date"]));
     }
-    if (isset($_POST['checkin_id'])){
-        $sql = "update appointments set check_in = now() where id =".$_POST["checkin_id"];
-        $result = $conn->query($sql);
-        if(isset($_POST["bed"])){
-            $sql = "INSERT INTO `patients_beds` ( `bed_id`, `apt_id`, `start_date`,created_by) 
-                    VALUES ( $_POST[bed],$_POST[checkin_id], now(),'".$_SESSION["user"][0]."')";
-            $conn->query($sql);
-            $sql = "update beds set status = 'occupied' where bed_id = $_POST[bed]";
-        }
+    if (isset($_POST['checkin_id'])) {
+    // Update appointment check-in
+    $sql = "UPDATE appointments SET check_in = NOW() WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_POST["checkin_id"]);
+    $stmt->execute();
+    $stmt->close();
+
+    // If a bed is assigned
+    if (isset($_POST["bed"])) {
+        // Insert into patients_beds
+        $sql = "INSERT INTO patients_beds (bed_id, apt_id, start_date, created_by) 
+                VALUES (?, ?, NOW(), ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iis", $_POST["bed"], $_POST["checkin_id"], $_SESSION["user"][0]);
+        $stmt->execute();
+        $stmt->close();
+
+        // Update bed status
+        $sql = "UPDATE beds SET status = 'occupied' WHERE bed_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $_POST["bed"]);
+        $stmt->execute();
+        $stmt->close();
     }
-    if (isset($_POST['checkout_id'])){
-      $sql = "update appointments set check_out = now() where id =".$_POST["checkout_id"];
-      $result = $conn->query($sql);
-    }
+}
+
+if (isset($_POST['checkout_id'])) {
+    // Update appointment check-out
+    $sql = "UPDATE appointments SET check_out = NOW() WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_POST["checkout_id"]);
+    $stmt->execute();
+    $stmt->close();
+}
+
     $sql = "SELECT room_id, bed_id,status FROM `beds` 
         where status = 'clean'
         order by beds.bed_id;";
@@ -56,12 +78,23 @@
             $rooms[$row["room_id"]][] = $row["bed_id"];
         }
     }
-    $sql = "SELECT pr.pat_id ,appointments.id,concat(pr.Fname,' ',pr.LName) as 'Patient Name',appointments.date,appointments.time,appointments.type, appointments.check_in
-    FROM patient pr 
-    join appointments on pr.pat_id = appointments.patient_id
-    where appointments.date = '$date' and check_out is null;";
-    
-    $result = $conn->query($sql);?>
+    $sql = "SELECT pr.pat_id,
+               appointments.id,
+               CONCAT(pr.Fname,' ',pr.LName) AS `Patient Name`,
+               appointments.date,
+               appointments.time,
+               appointments.type,
+               appointments.check_in
+        FROM patient pr
+        JOIN appointments ON pr.pat_id = appointments.patient_id
+        WHERE appointments.date = ? 
+          AND check_out IS NULL";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $date); // "s" = string
+$stmt->execute();
+$result = $stmt->get_result();
+?>
     
     
   <div class='main-panel'>

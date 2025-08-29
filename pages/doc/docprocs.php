@@ -149,49 +149,93 @@
     
     
     
-    if (isset($_POST["proc_id"])){
-        $sql = "insert into patients_proc(apt_id,proc_id,date ,created_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["proc_id"].",now() ,'".$_SESSION["user"][0]."')";
-        $result = $conn->query($sql);
-        $ids = ["","defaultOpen","","","",""];
+    if (isset($_POST["proc_id"])) {
+    $sql = "INSERT INTO patients_proc (apt_id, proc_id, date, created_by) 
+            VALUES (?, ?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iis", $_SESSION['apt_id'], $_POST["proc_id"], $_SESSION["user"][0]);
+    $stmt->execute();
+    $stmt->close();
+
+    $ids = ["","defaultOpen","","","",""];
+}
+
+// Insert into patients_meds
+if (isset($_POST["med"])) {
+    $sql = "INSERT INTO patients_meds 
+            (apt_id, med_id, per_dose, per_day, num_days, date, created_by, ad_by) 
+            VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iiiiiss", 
+        $_SESSION['apt_id'], 
+        $_POST["med"], 
+        $_POST["per_dose"], 
+        $_POST["per_day"], 
+        $_POST["num_days"], 
+        $_SESSION["user"][0], 
+        $_SESSION["user"][0]
+    );
+    $stmt->execute();
+    $stmt->close();
+
+    $ids = ["","","defaultOpen","","",""];
+}
+
+// Insert into patients_labs
+if (isset($_POST["labs"])) {
+    $sql = "INSERT INTO patients_labs (apt_id, lab_id, date, created_by) 
+            VALUES (?, ?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iis", $_SESSION['apt_id'], $_POST["labs"], $_SESSION["user"][0]);
+    $stmt->execute();
+    $stmt->close();
+
+    $ids = ["","","","defaultOpen","",""];
+}
+
+// Notes
+if (isset($_POST["button"])) {
+    if ($_POST["button"] == "Submit") {
+        $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
+                VALUES ('doc_notes', ?, ?, NOW(), ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iss", $_SESSION['apt_id'], $_POST["notes"], $_SESSION["user"][0]);
+        $stmt->execute();
+        $stmt->close();
+
+        unset($_SESSION["notes"], $_SESSION["ndate"]);
+        $ids = ["","","","","defaultOpen",""];
+    } else {
+        $_SESSION["notes"] = $_POST["notes"];
+        $_SESSION["ndate"] = date("d/m/y h:i:s");
     }
- 
-    if (isset($_POST["med"])){
-        $sql = "insert into patients_meds(apt_id,med_id,per_dose,per_day,num_days,date ,created_by,ad_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["med"].",".$_POST["per_dose"].",".$_POST["per_day"].",".$_POST["num_days"].",now() ,'".$_SESSION["user"][0]."','".$_SESSION["user"][0]."')";
-        $result = $conn->query($sql);
-        $ids = ["","","defaultOpen","","",""];
-    }
-    if (isset($_POST["labs"])){
-        $sql = "insert into patients_labs(apt_id,lab_id,date ,created_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["labs"].",now() ,'".$_SESSION["user"][0]."')";
-        $result = $conn->query($sql);
-        
-        $ids = ["","","","defaultOpen","",""];
-    }
-    if(isset($_POST["button"])){
-         if ($_POST["button"]=="Submit"){
-            $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('doc_notes',$_SESSION[apt_id],'$_POST[notes]',now() ,'".$_SESSION["user"][0]."')";
-            $result = $conn->query($sql);
-            unset($_SESSION["notes"]);
-            unset($_SESSION["ndate"]);
-            $ids = ["","","","","defaultOpen",""];
-        }else{
-            $_SESSION["notes"] = $_POST["notes"];
-            $_SESSION["ndate"]=date("d/m/y h:i:s");
-        }
-    }
-   if(isset($_SESSION["notes"])){
+}
+
+// Keep session notes
+if (isset($_SESSION["notes"])) {
     $notes = $_SESSION["notes"];
     $ndate = $_SESSION["ndate"];
-   }
-    if (isset($_POST["dis_notes"])){
-        $sql = "DELETE FROM `notes` WHERE $_SESSION[apt_id] and type = 'dis_notes';";
-        $result = $conn->query($sql);
-        $sql = "INSERT INTO `notes`( `type`,`apt_id`, `notes`, `date`,created_by) VALUES ('dis_notes',$_SESSION[apt_id],'$_POST[dis_notes]',now() ,'".$_SESSION["user"][0]."')";
-         $result = $conn->query($sql);
-         $ids = ["","","","","","defaultOpen"];
-     } 
+}
+
+// Discharge notes
+if (isset($_POST["dis_notes"])) {
+    // Delete old discharge notes
+    $sql = "DELETE FROM notes WHERE apt_id = ? AND type = 'dis_notes'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $_SESSION["apt_id"]);
+    $stmt->execute();
+    $stmt->close();
+
+    // Insert new discharge notes
+    $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
+            VALUES ('dis_notes', ?, ?, NOW(), ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("iss", $_SESSION["apt_id"], $_POST["dis_notes"], $_SESSION["user"][0]);
+    $stmt->execute();
+    $stmt->close();
+
+    $ids = ["","","","","","defaultOpen"];
+}
      if (isset($_POST["deltable"])){
         $sql = "UPDATE $_POST[deltable] SET `deleted`=1 WHERE $_POST[idtype] = $_POST[delid]";
         $result = $conn->query($sql);
