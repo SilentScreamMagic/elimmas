@@ -132,20 +132,33 @@ where check_in is not null and check_out is null and appointments.type = 'In-Pat
                         <div class="d-flex d-sm-block d-md-flex align-items-center">
                           <?php 
                           $sql ="SELECT 
-                                (tasks.total_meds + tasks.total_meals) AS total_tasks,
-                                tasks.total_meds,
-                                tasks.total_meals 
-                            FROM (
-                                SELECT
-                                    (SELECT COUNT(*) FROM patients_meds pm
-                                    JOIN appointments a ON pm.apt_id = a.id
-                                    WHERE pm.time_ad IS NULL AND a.check_out IS NULL) AS total_meds,
+                                      (tasks.total_meds + tasks.total_meals) AS total_tasks,
+                                      tasks.total_meds,
+                                      tasks.total_meals 
+                                  FROM (
+                                      SELECT
+                                          -- meds count
+                                          (SELECT COUNT(*) 
+                                          FROM (
+                                              SELECT pm.med_id
+                                              FROM patients_meds pm
+                                              JOIN appointments a ON pm.apt_id = a.id
+                                              LEFT JOIN patients_meds_count pmc ON pmc.p_med_id = pm.p_med_id
+                                              WHERE a.check_out IS NULL
+                                              GROUP BY pm.med_id, pm.per_day, pm.num_days
+                                              HAVING (pm.per_day*pm.num_days) != COUNT(pmc.med_count_id)
+                                          ) meds
+                                          ) AS total_meds,
 
-                                    (SELECT COUNT(*) FROM patients_meals pml
-                                    JOIN appointments a ON pml.apt_id = a.id
-                                    WHERE pml.served IS NULL AND a.check_out IS NULL) AS total_meals
-                            ) AS tasks
-                            LIMIT 1;";
+                                          -- meals count
+                                          (SELECT COUNT(*) 
+                                          FROM patients_meals pml
+                                          JOIN appointments a ON pml.apt_id = a.id
+                                          WHERE pml.served IS NULL 
+                                            AND a.check_out IS NULL
+                                          ) AS total_meals
+                                  ) AS tasks
+                                  LIMIT 1;";
                             $task = $conn->query($sql)->fetch_assoc();
                           ?>
 

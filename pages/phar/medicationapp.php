@@ -54,42 +54,21 @@
                     <h4 class='card-title'><?php echo $_SESSION["pname"]?></h4>
                     <div class='table-responsive'>
                     <?php 
-                                $sql = "SELECT *
-                        FROM (
-                            SELECT pm.med_id, pm.apt_id,pm.date,m.med_name,pm.per_dose,pm.per_day,
-                                SUM(pm.num_days) AS 'num_days',
-                                SUM(pm.num_months) AS 'num_months',
-                                SUM(meds_requested.requested) AS 'Meds Requested',
-                                -1 * COALESCE(meds_provided.provided, 0) AS 'Meds Provided',
-                                (SUM(meds_requested.requested) + COALESCE(meds_provided.provided, 0)) AS 'Difference' 
-                            FROM  
-                                patients_meds pm
-                            JOIN 
-                                medication m ON m.med_id = pm.med_id 
-                            JOIN 
-                                appointments a ON a.id = pm.apt_id
-                            JOIN 
-                                patient p ON p.pat_id = a.patient_id
-                            LEFT JOIN 
-                                (SELECT med_id, apt_id, per_dose * per_day * num_days AS requested FROM patients_meds 
-                                where deleted =0 GROUP BY med_id, apt_id ) AS meds_requested 
-                                ON pm.med_id = meds_requested.med_id AND pm.apt_id = meds_requested.apt_id
-                            LEFT JOIN 
-                                (SELECT med_id, apt_id, SUM(quantity) AS provided FROM medstock 
-                                where deleted =0 GROUP BY med_id, apt_id  ) AS meds_provided 
-                                ON pm.med_id = meds_provided.med_id AND pm.apt_id = meds_provided.apt_id
-                            WHERE 
-                                pm.time_ad IS NULL AND pm.apt_id = $_SESSION[id] and deleted =0
-                            GROUP BY 
-                                med_id, apt_id
-                        ) AS subquery
-                        WHERE 
-                            Difference != 0
-                        ORDER BY 
-                            date;";
+                                $sql = "SELECT 
+ab.`Patient Name`,ab.apt_id,ab.date,ab.med_id,ab.med_name ,ab.`per_dose`,ab.`per_day`,ab.`num_days`,ab.`num_months`,COALESCE((ab.`given`),0) 'Meds Provided', ab.`requested` 'Meds Requested',(ab.`requested` -COALESCE((ab.`given`),0)) 'Difference'
+from (SELECT patients_meds.apt_id,patients_meds.date,medication.med_name,concat(patient.FName,' ',patient.LName) 'Patient Name',patients_meds.med_id,sum(`per_dose`*`per_day`*`num_days`) 'requested' , `per_dose`,`per_day`,`num_days`,`num_months`,
+sum(medstock.quantity )*-1 'given'
+FROM `patients_meds` 
+INNER JOIN appointments on appointments.id = patients_meds.apt_id
+INNER JOIN patient on patient.pat_id = appointments.patient_id
+INNER join medication on patients_meds.med_id = medication.med_id 
+LEFT join medstock on medstock.apt_id = patients_meds.apt_id AND medstock.med_id = patients_meds.med_id 
+      where appointments.check_out is null
+group by patients_meds.apt_id,patients_meds.med_id) as ab
+where ab.`requested` > COALESCE((ab.`given`),0);";
                                 $result = $conn->query($sql);
                                 ?>
-                        <table class ='table'>
+                        <table class ='table' style="display:inline-block; width:600px;">
                         <thead>
                             <tr>
                             <th>Date</th><th>Medication</th><th>Per Dose</th><th>Per Day</th><th>Number of Days</th><th>Quantity</th><th>Refill for(Months)</th><th>Meds Requested</th><th>Meds Provided</th><th>Remainder</th><th>Dispense</th><th></th>

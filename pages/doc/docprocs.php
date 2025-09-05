@@ -257,7 +257,7 @@ if (isset($_POST["dis_notes"])) {
     $meds = [];
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
-           $meds[$row["med_id"]] = $row["med_name"];
+           $meds[$row["med_id"]] = [$row["med_name"],$row["in_stock"]];
         }
     }
     $sql = "SELECT * FROM labs";
@@ -370,7 +370,7 @@ if (isset($_POST["dis_notes"])) {
                 <option value="" disabled selected>Select a Medication...</option>
                 <?php 
                     foreach ($meds as $mid => $det): ?>
-                        <option value="<?php echo $mid; ?>"><?php echo $det; ?></option>
+                        <option value=<?php echo "'".$mid."' ".(!$det[1]? 'disabled': "") ?> ><?php echo $det[0]; ?></option>
                     <?php 
                     endforeach;?>
                 </select>

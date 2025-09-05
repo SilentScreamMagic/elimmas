@@ -35,11 +35,15 @@ include "../searchbar2.php";
       VALUES ('".$_POST["med_name"]."', ".$_POST["price"].")";
       $conn->query($sql);
     }
-    if(isset($_POST["med_id"])){
+    if(isset($_POST["price"])){
       $sql = "UPDATE `medication` SET `price`= ".$_POST["price"]." WHERE `med_id`=".$_POST["med_id"].";";
       $conn->query($sql);
     }
-      $sql = "SELECT medication.med_id,med_name , medication.price	 AS 'Price'
+    if(isset($_POST["stock"])){
+      $sql = "UPDATE `medication` SET `in_stock`= ".$_POST["stock"]." WHERE `med_id`=".$_POST["med_id"].";";
+      $conn->query($sql);
+    }
+      $sql = "SELECT medication.med_id,med_name , medication.price AS 'Price',in_stock	 
 FROM medication
 GROUP BY med_id;";
 $result = $conn->query($sql);
@@ -72,6 +76,15 @@ $result = $conn->query($sql);
                                     
                                     <input type='integer' name='price' value=".$row["Price"].">
                                     <input type='submit' value='Change Price'>
+                                    
+                                </form>
+                                </td>
+                                 <td>
+                                <form action='' method='post'>
+                                    <input type='hidden' name='med_id' value=".$row['med_id'].">
+                                    <input type='radio' name='stock' value= 0 ". (!$row['in_stock'] ? 'checked': "").">
+                                    <input type='radio' name='stock' value= 1 ". ($row['in_stock'] ? "checked" : "")." >
+                                    <input type='submit' value='Change Status'>
                                     
                                 </form>
                             </td>

@@ -39,11 +39,17 @@ require_once "../conn.php";
                     <h4 class='card-title'>Medication Requests</h4>
                     <?php
                     $date = date("Y-m-d");
-                        $sql = "SELECT apt_id,concat(Fname,' ',LName) 'Patient Name',COUNT(DISTINCT med_id)'Requests Pending' FROM `patients_meds` 
-                        inner join appointments on patients_meds.apt_id = appointments.id
-                        INNER join patient on appointments.patient_id =patient.pat_id
-                        where patients_meds.time_ad is null
-                        GROUP by apt_id;";
+                        $sql = "SELECT 
+ab.`Patient Name`,ab.apt_id ,COUNT(ab.med_id) 'Requests Pending'
+from (SELECT patients_meds.apt_id,concat(patient.FName,' ',patient.LName) 'Patient Name',patients_meds.med_id,sum(`per_dose`*`per_day`*`num_days`) 'requested' , 
+sum(medstock.quantity) 'given'
+FROM `patients_meds` 
+INNER JOIN appointments on appointments.id = patients_meds.apt_id
+INNER JOIN patient on patient.pat_id = appointments.patient_id
+LEFT join medstock on medstock.apt_id = patients_meds.apt_id AND medstock.med_id = patients_meds.med_id 
+      where appointments.check_out is null
+group by patients_meds.apt_id,patients_meds.med_id) as ab
+where ab.`requested` > COALESCE((ab.`given`*-1),0);";
                         $result = $conn->query($sql);
                         ?>
                     <div class='table-responsive'>

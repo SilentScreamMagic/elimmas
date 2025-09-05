@@ -4,14 +4,7 @@
      //include "../table.html";
     include "../tabs.html";
     include "../accordian.php";
-    if(isset($_POST["meal_id"])){
-        $sql= "update patients_meals set served =now() where p_meal_id =".$_POST["meal_id"];
-        $result = $conn->query($sql);
-    }
-    if(isset($_POST["med_id"])){
-        $sql= "update patients_meds set time_ad =now() where p_med_id =".$_POST["med_id"];
-        $result = $conn->query($sql);
-    }
+    
 ?>
 <!DOCTYPE html>
 <html lang='en'>
@@ -35,7 +28,16 @@
   <body>
   <div class='container-scroller'>
   
-    <?php include '../nav.php';?>
+    <?php include '../nav.php';
+    if(isset($_POST["meal_id"])){
+        $sql= "update patients_meals set served =now() where p_meal_id =".$_POST["meal_id"];
+        $result = $conn->query($sql);
+    }
+    if(isset($_POST["med_id"])){
+        $sql= "INSERT INTO `patients_meds_count` (`p_med_id`, `created_by`, `time_ad`) VALUES ( '$_POST[med_id]', '".$_SESSION["user"][0]."', now())";
+        $result = $conn->query($sql);
+    }
+    ?>
   <div class='main-panel'>
         <div class='content-wrapper'>
             <div class='row '>
@@ -70,11 +72,7 @@
     <table class='table'>
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Patient Name</th>
-                <th>Ward</th>
-                <th>Meal</th>
-                <th>Served</th>
+                <th>Patients</th>
             </tr>
         </thead>
         <tbody>
@@ -93,7 +91,6 @@
                       <tr id='panel_$name' class='panel' style='display: none;'>";
                 foreach ($meal as $key => $dets) {
                     $string = "<td>".$dets[1]."</td>
-                               <td> Ward: ".$dets[2]." Bed: ".$dets[3]."</td>
                                <td>".$dets[4]."</td>
                                <td>
                                    <form action='' method='post'>
@@ -132,14 +129,14 @@
                             <table class ='table'>
                             <thead>
                                 <tr>
-                                    <th>Date</th><th>Patient Name</th><th>Ward</th><th>Meal</th><th>Served</th>
+                                    <th>Date</th><th>Patient Name</th><th>Meal</th><th>Served</th>
                                 </tr>
                             </thead>
                             <tbody>
                              <?php
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                        $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td> Ward: ".$row["room_id"]." Bed ".$row["bed_id"] ."</td><td>".$row["meal_name"]."</td>
+                                        $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["meal_name"]."</td>
                                         <td> ".$row["served"]."</td></tr>";
                                     echo $string;
                                     }
@@ -157,29 +154,32 @@
 
                         </div>
                         <?php 
-                        $sql = "SELECT concat(patient.FName,' ',patient.LName) 'Patient Name',beds.room_id,beds.bed_id, `p_med_id`,per_dose,per_day,num_days,num_months, medication.med_name, patients_meds.`date`, patients_meds.`apt_id`, time_ad FROM `patients_meds`
+                        $sql = "SELECT concat(patient.FName,' ',patient.LName) 'Patient Name',beds.room_id,beds.bed_id, patients_meds.`p_med_id`,per_dose,per_day,num_days,num_months, medication.med_name, cast(patients_meds.`date` as date)'date', patients_meds.`apt_id`, COUNT(med_count_id) 'a_given',Sum(cast(patients_meds_count.time_ad as date) = cast(now() as date)) 'a_given_today',max(patients_meds_count.time_ad) 'last_ad'  FROM `patients_meds`
                         INNER JOIN medication on patients_meds.med_id = medication.med_id
                         INNER JOIN appointments on appointments.id = patients_meds.apt_id
                         INNER JOIN patient on patient.pat_id = appointments.patient_id
                         left join (SELECT * from patients_beds WHERE end_date is null) pb
                         on appointments.id = pb.apt_id 
                         LEFT JOIN beds on pb.bed_id =  beds.bed_id
-                        where time_ad is null and check_out is null;";
+                        left JOIN patients_meds_count on patients_meds_count.p_med_id = patients_meds.p_med_id 
+                        where check_out is null
+                        GROUP by patients_meds.med_id
+                        HAVING (per_day * num_days) != a_given;";
                         $result = $conn->query($sql);
                         ?>
                         <div class='table-responsive'>
-                            <table class ='table'>
+                            <table class ='table' style="display:inline-block; width:600px;">
                             <thead>
                                 <tr>
-                                    <th>Date</th><th>Patient Name</th><th>Ward</th><th>Medications</th><th>Per Dose</th><th>Per Day</th><th>Number of Days</th><th>Quantity</th><th>Refill for(Months)</th><th>Administered</th>
+                                    <th>Date</th><th>Patient Name</th><th>Medications</th><th>Per Dose</th><th>Per Day</th><th>Number of Days</th><th>Quantity(Dose)</th><th>Doses(Total)</th><th>Doses(Today)</th><th>Last Given</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                     if ($result->num_rows > 0) {
                                         while($row = $result->fetch_assoc()) {
-                                            $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td> Ward: ".$row["room_id"]." Bed ".$row["bed_id"]."</td><td>".$row["med_name"]."</td>
-                                            <td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["per_dose"]*$row["per_day"]*$row["num_days"]."</td><td>".$row["num_months"]."</td><td>
+                                            $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["med_name"]."</td>
+                                            <td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["per_day"]*$row["num_days"]."</td><td>".$row["a_given"]."</td><td>".$row["a_given_today"]."</td><td>".$row["last_ad"]."</td><td>
                                             <form action='' method='post'>
                                             <input type='hidden' name='med_id' value=".$row['p_med_id'].">
                                             <input type='submit' value='Served!'>
@@ -202,20 +202,22 @@
 
                         </div>
                     <?php 
-                        $sql = "SELECT concat(patient.FName,' ',patient.LName) 'Patient Name',beds.room_id,beds.bed_id, 
-                        `p_med_id`,per_dose,per_day,num_days,num_months, medication.med_name, patients_meds.`date`, patients_meds.`apt_id`, time_ad FROM `patients_meds`
+                        $sql = "SELECT concat(patient.FName,' ',patient.LName) 'Patient Name',beds.room_id,beds.bed_id, patients_meds.`p_med_id`,per_dose,per_day,num_days,num_months, medication.med_name, cast(patients_meds.`date` as date)'date', patients_meds.`apt_id`, COUNT(med_count_id) 'a_given',Sum(cast(patients_meds_count.time_ad as date) = cast(now() as date)) 'a_given_today',max(patients_meds_count.time_ad) 'last_ad'  FROM `patients_meds`
                         INNER JOIN medication on patients_meds.med_id = medication.med_id
                         INNER JOIN appointments on appointments.id = patients_meds.apt_id
                         INNER JOIN patient on patient.pat_id = appointments.patient_id
                         left join (SELECT * from patients_beds WHERE end_date is null) pb
                         on appointments.id = pb.apt_id 
                         LEFT JOIN beds on pb.bed_id =  beds.bed_id
-                        where time_ad is not null and check_out is null;";?>
+                        left JOIN patients_meds_count on patients_meds_count.p_med_id = patients_meds.p_med_id 
+                        where check_out is null
+                        GROUP by patients_meds.med_id
+                        HAVING (per_day * num_days) = a_given;";?>
                         <div class='table-responsive'>
-                            <table class ='table'>
+                            <table class ='table' style="display:inline-block; width:600px;">
                             <thead>
                                 <tr>
-                                    <th>Date</th><th>Patient Name</th><th>Ward</th><th>Medications</th><th>Per Dose</th><th>Per Day</th><th>Number of Days</th><th>Quantity</th><th>Refill for(Months)</th><th>Administered</th>
+                                    <th>Date</th><th>Patient Name</th><th>Medications</th><th>Per Dose</th><th>Per Day</th><th>Number of Days</th><th>Quantity(Dose)</th><th>Doses(Total)</th><th>Doses(Today)</th><th>Last Given</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -223,9 +225,9 @@
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
-                                        $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td> Ward: ".$row["room_id"]." Bed ".$row["bed_id"]."</td><td>".$row["med_name"]."</td>
-                                        <td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["per_dose"]*$row["per_day"]*$row["num_days"]."</td><td>".$row["num_months"]."</td><td>".$row["time_ad"]."</td></tr>";
-                                    echo $string;
+                                        $string = "<tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["med_name"]."</td>
+                                            <td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td><td>".$row["per_day"]*$row["num_days"]."</td><td>".$row["a_given"]."</td><td>".$row["a_given_today"]."</td><td>".$row["last_ad"]."</td>";
+                                            echo $string;
                                     }
                                     
                                 }
@@ -245,12 +247,7 @@
           </div>
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
-          <footer class='footer'>
-            <div class='d-sm-flex justify-content-center justify-content-sm-between'>
-              <span class='text-muted d-block text-center text-sm-left d-sm-inline-block'>Copyright © bootstrapdash.com 2020</span>
-              <span class='float-none float-sm-right d-block mt-1 mt-sm-0 text-center'> Free <a href='https://www.bootstrapdash.com/bootstrap-admin-template/' target='_blank'>Bootstrap admin templates</a> from Bootstrapdash.com</span>
-            </div>
-          </footer>
+        
           <!-- partial -->
         </div>
 
