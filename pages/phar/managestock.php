@@ -82,7 +82,9 @@ $result = $conn->query($sql);
                                  <td>
                                 <form action='' method='post'>
                                     <input type='hidden' name='med_id' value=".$row['med_id'].">
+                                    <label>Out of Stock</label>
                                     <input type='radio' name='stock' value= 0 ". (!$row['in_stock'] ? 'checked': "").">
+                                    <label>In Stock</label>
                                     <input type='radio' name='stock' value= 1 ". ($row['in_stock'] ? "checked" : "")." >
                                     <input type='submit' value='Change Status'>
                                     
