@@ -63,7 +63,7 @@ INNER JOIN appointments on appointments.id = patients_meds.apt_id
 INNER JOIN patient on patient.pat_id = appointments.patient_id
 INNER join medication on patients_meds.med_id = medication.med_id 
 LEFT join medstock on medstock.apt_id = patients_meds.apt_id AND medstock.med_id = patients_meds.med_id 
-      where appointments.check_out is null
+      where Cast(patients_meds.`date` as date) = cast(now() as date)
 group by patients_meds.apt_id,patients_meds.med_id) as ab
 where ab.`requested` > COALESCE((ab.`given`),0);";
                                 $result = $conn->query($sql);
