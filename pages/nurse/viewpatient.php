@@ -180,8 +180,13 @@
         $ids = ["","defaultOpen","","","","",""];
     }
     if (isset($_POST["nur_notes"])){
-        $sql ="INSERT INTO `notes`( `type`, `apt_id`, `notes`, `date`,created_by) VALUES ('nur_notes',".$_SESSION['apt_id'].",'".$_POST['nur_notes']."',now(),'".$_SESSION["user"][0]."')";
-         $result = $conn->query($sql);
+        $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
+                VALUES ('nur_notes', ?, ?, NOW(), ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iss", $_SESSION['apt_id'], $_POST["nur_notes"], $_SESSION["user"][0]);
+        $stmt->execute();
+        $stmt->close();
+        
          
          $ids = ["","","defaultOpen","","","",""];
      }
