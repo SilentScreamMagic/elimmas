@@ -16,7 +16,7 @@ include "../conn.php";
     <link rel='stylesheet' href='../../assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css'>
     
     <link rel='stylesheet' href='../../assets/vendors/css/vendor.bundle.base.css'>
-    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+    <link rel="shortcut icon" href="../../elimmas-icon.png" />
    
   </head>
   <body>

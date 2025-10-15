@@ -85,14 +85,14 @@
     <!-- Layout styles -->
     <link rel="stylesheet" href="../../assets/css/style.css">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+    <link rel="shortcut icon" href="../../elimmas-icon.png" />
 </head>
 <body>
   
   <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
-      <a class="sidebar-brand brand-logo" href=<?php $nav[0]?>><img src="../../assets/images/logo.svg" alt="logo" /></a>
-      <a class="sidebar-brand brand-logo-mini" href=<?php $nav[0]?>><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
+      <a class="sidebar-brand brand-logo" href=<?php $nav[0]?>><img src="../../Elimmas Logo.png" alt="logo" /></a>
+      <a class="sidebar-brand brand-logo-mini" href=<?php $nav[0]?>><img src="../../elimmas_mini.png" alt="logo" /></a>
     </div>
     <ul class="nav">
       <li class="nav-item profile">
@@ -162,7 +162,7 @@
         <!-- partial:../../partials/_navbar.html -->
         <nav class="navbar p-0 fixed-top d-flex flex-row">
           <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-            <a class="navbar-brand brand-logo-mini" href=<?php $nav[0]?>><img src="../../assets/images/logo-mini.svg" alt="logo" /></a>
+            <a style="transform: scale(0.2);" href=<?php $nav[0]?>><img src="../../elimmas_mini.png" alt="logo" /></a>
           </div>
           <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
             <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">

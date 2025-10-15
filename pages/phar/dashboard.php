@@ -24,7 +24,6 @@ require_once "../conn.php";
     <!-- Layout styles -->
     <link rel='stylesheet' href='../../assets/css/style.css'>
     <!-- End layout styles -->
-    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
   </head>
   <body>
   <div class='container-scroller'>
