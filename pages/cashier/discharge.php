@@ -105,8 +105,8 @@ if ($result_wards->num_rows > 0) {
                     <th>Ward</th>
                     <th>Number Of Beds</th>
                     <th>Stay Duration (days)</th>
-                    <th>Unit Price ($)</th>
-                    <th>Cost ($)</th>
+                    <th>Unit Price (GHC)</th>
+                    <th>Cost (GHC)</th>
                 </tr>
             </thead>
             <tbody>";
@@ -131,7 +131,7 @@ if ($result_labs->num_rows > 0) {
                 <th>Lab Name</th>
                 <th>Count</th>
                 <th>Unit Price</th>
-                <th>Cost ($)</th>
+                <th>Cost (GHC)</th>
             </tr>
         </thead>
         <tbody>";
@@ -157,8 +157,8 @@ if ($result_meds->num_rows > 0) {
                     <th>Date</th>
                     <th>Medication Name</th>
                     <th>Quantity</th>
-                    <th>Unit Price ($)</th>
-                    <th>Total Cost ($)</th>
+                    <th>Unit Price (GHC)</th>
+                    <th>Total Cost (GHC)</th>
                 </tr>
             </thead>
             <tbody>";
@@ -184,8 +184,8 @@ if ($result_meals->num_rows > 0) {
                     <th>Date</th>
                     <th>Meal Type</th>
                     <th>Meal Date</th>
-                    <th>Unit Price ($)</th>
-                    <th>Cost ($)</th>
+                    <th>Unit Price (GHC)</th>
+                    <th>Cost (GHC)</th>
                 </tr>
             </thead>
             <tbody>";
@@ -210,8 +210,8 @@ if ($result_proc->num_rows > 0) {
                     <th>Procedure Date</th>
                     <th>Procedure Name</th>
                     <th>Count</th>
-                    <th>Unit Price ($)</th>
-                    <th>Cost ($)</th>
+                    <th>Unit Price (GHC)</th>
+                    <th>Cost (GHC)</th>
                 </tr>
             </thead>
             <tbody>";
@@ -237,8 +237,8 @@ if ($result_con->num_rows > 0) {
                     <th>Date</th>
                     <th>Consumable</th>
                     <th>Count</th>
-                    <th>Unit Price ($)</th>
-                    <th>Cost ($)</th>
+                    <th>Unit Price (GHC)</th>
+                    <th>Cost (GHC)</th>
                 </tr>
             </thead>
             <tbody>";
@@ -258,7 +258,7 @@ $html .= "
             <thead>
                 <tr>
                     <th>Category</th>
-                    <th>Total ($)</th>
+                    <th>Total (GHC)</th>
                 </tr>
             </thead>
             <tbody>";
