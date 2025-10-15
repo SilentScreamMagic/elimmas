@@ -6,6 +6,11 @@ use Dompdf\Options;
 
 // Fetching the data from the database
 $apt_id = $_POST['id'];
+$logoPath = str_replace('\\', '/', realpath(__DIR__ . '/../../Elimmas Logo.png'));
+$type = pathinfo($logoPath, PATHINFO_EXTENSION);
+$data = file_get_contents($logoPath);
+$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
 
 
 
@@ -67,7 +72,8 @@ $sql_con = "SELECT cast(date as date) date,consumables.con_name,consumables.pric
     order by date;";
 $result_con = $conn->query($sql_con);
 $options = new Options();
-$options->set('isRemoteEnabled', true);
+$options->set('chroot', __DIR__ . '/../../'); // allow DOMPDF to access images folder
+$options->set('isRemoteEnabled', true);   // enable file:// and http:// sources
 $dompdf = new Dompdf($options);
 // Initialize the HTML variable
 $html = "<!DOCTYPE html>
@@ -89,6 +95,12 @@ $html = "<!DOCTYPE html>
     </style>
 </head>
 <body>
+
+<div style='text-align:left; margin-bottom:20px;'>
+  <img src=$base64 width='150'>
+</div>
+
+
     <h1>$pname</h1>
     <h2>".date("jS F Y")."</h2>";
     
