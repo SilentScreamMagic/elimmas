@@ -19,7 +19,7 @@
     <!-- Layout styles -->
     <link rel='stylesheet' href='../../assets/css/style.css'>
     <!-- End layout styles -->
-    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+    <link rel="shortcut icon" href="../../elimmas-icon.png" />
     <style>
         .scroll-box {
       width: 300px;
@@ -78,7 +78,7 @@
       background: white;
       padding: 20px;
       border-radius: 8px;
-      max-width: 400px;
+      
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       position: relative;
     }
@@ -104,6 +104,14 @@
     #popupContent {
     white-space: pre-wrap; /* Preserves line breaks and spacing */
     }
+    .popup-content, 
+.popup-content table, 
+.popup-content th, 
+.popup-content td {
+  color: #000 !important;                /* make text black */
+  background-color: #fff !important;    /* white background for cells */
+}
+
     </style>
   </head>
   <body>
@@ -499,7 +507,7 @@ if (isset($_POST["dis_notes"])) {
     <div>
         <h3>Notes</h3>
     <form action= "" method="post">
-        <textarea autofocus id="note" name="notes" cols="70" rows="10"><?php echo $notes?></textarea><br><br>
+        <textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php echo $notes?></textarea><br><br>
         <?php if($ndate !=""){
             echo "Last Saved $ndate";
         }  ?><br>
@@ -524,7 +532,7 @@ if (isset($_POST["dis_notes"])) {
         $dis_notes = $result->fetch_assoc();?>
             <form action= "" method="post">
                 <input type="hidden" name="apt_id" value = <?php echo $_SESSION['apt_id']?>>
-                <textarea name="dis_notes" cols="70" rows="10"><?php  echo $dis_notes["notes"];?></textarea>
+                <textarea style="max-width: 100%; " name="dis_notes" cols="70" rows="10"><?php  echo $dis_notes["notes"];?></textarea>
                 <input type="submit" value="Submit"><br><br>
         </form>
     </div>        
@@ -538,14 +546,16 @@ if (isset($_POST["dis_notes"])) {
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
                       <div class="card-body">
-                        <h4 class="card-title">Vitals</h4>
+                        <h4 class="item card-title" data-type="table" data-title="Vitals" data-table-id="vitalsTable">Vitals</h4>
+                           
                             <?php
                             $sql = "SELECT patients_vits.* FROM `patients_vits` 
-                            where apt_id = $_SESSION[apt_id] and date = (SELECT MAX(date) from patients_vits WHERE apt_id =$_SESSION[apt_id]) and deleted = 0 order by date;";
+                            where apt_id = $_SESSION[apt_id]  and deleted = 0 order by date DESC;";
                             $result = $conn->query($sql);
                             $vitals = [];
 
                             if ($row = $result->fetch_assoc()) {
+                                $vitals[] = $row; 
                                 echo "<div class='patient-card'>";
                                     echo "<h4>$row[date]</h4>";
                                     echo "<div class='patient-info'>";
@@ -558,10 +568,7 @@ if (isset($_POST["dis_notes"])) {
                                     echo "</div>";
                                     echo "</div>";
                                 while($row = $result->fetch_assoc()) {
-                                    $vitals[$row["date"]][$row["vit_id"]] =$row["measure"];
-                                }
-                                foreach($vitals as $date=> $dets){
-                                    
+                                    $vitals[] =$row;
                                 }
                             }
                         ?>
@@ -584,7 +591,7 @@ if (isset($_POST["dis_notes"])) {
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].'-'. $row["Name"].'| '. $row["date"];
+                                        echo '<div class="item" data-type= "text" data-title="'.$row["apt_id"].' - '. $row["Name"].' | '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].' - '. $row["Name"].' | '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
@@ -609,7 +616,7 @@ if (isset($_POST["dis_notes"])) {
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-title="'.$row["apt_id"].'-' .$row["Name"].'| '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].'-' .$row["Name"].'| '. $row["date"];
+                                        echo '<div class="item" data-title="'.$row["apt_id"].' - ' .$row["Name"].' | '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].' -' .$row["Name"].' | '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
@@ -630,11 +637,42 @@ if (isset($_POST["dis_notes"])) {
          
           <!-- partial -->
 </div>
+<div id="vitalsTable" style="display:none; color: #000000; ">
+  <table style="width:100%; border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Body Temp (°C)</th>
+        <th>Pulse Rate (bpm)</th>
+        <th>Respiration Rate (bpm)</th>
+        <th>Blood Pressure (mmHg)</th>
+        <th>Oxygen Saturation (%)</th>
+        <th>Weight (kg)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($vitals as $v): ?>
+        <tr>
+          <td><?= htmlspecialchars($v['date']) ?></td>
+          <td><?= htmlspecialchars($v['body_temp']) ?></td>
+          <td><?= htmlspecialchars($v['pulse_rate']) ?></td>
+          <td><?= htmlspecialchars($v['respiration_rate']) ?></td>
+          <td><?= htmlspecialchars($v['systolic_bp']) . '/' . htmlspecialchars($v['dystolic_bp']) ?></td>
+          <td><?= htmlspecialchars($v['oxygen_sat']) ?></td>
+          <td><?= htmlspecialchars($v['weight']) ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+</div>
+
+
+</table>
 <div id="popup" class="popup-overlay">
     <div class="popup-box">
       <button class="popup-close" id="closePopup">&times;</button>
-      <h4 id="popuptitle"> </h4>    
-      <p id="popupContent"></p>
+      <h4 id="popupTitle"> </h4> 
+      <div id="popupContent" style="max-height: 300px; overflow-y: auto;"></div>
     </div>
   </div>
 <script src="../../assets/vendors/select2/select2.min.js"></script>
@@ -663,7 +701,6 @@ if (isset($_POST["dis_notes"])) {
 <script>
        window.addEventListener("load",(event) =>{
             let notesField = document.getElementById('note');
-            console.log(notesField.innerHTML);
             notesField.focus();
            
             
@@ -707,38 +744,57 @@ if (isset($_POST["dis_notes"])) {
     const WORD_LIMIT = 5;
     document.querySelectorAll('.item').forEach(item => {
       const fullText = item.getAttribute('data-full-text');
-      const words = fullText.split(' ').slice(0, WORD_LIMIT).join(' ');
-      const preview = item.querySelector('.preview');
-      preview.textContent = words + (fullText.split(' ').length > WORD_LIMIT ? '...' : '');
+      if(fullText){
+        const words = fullText.split(' ').slice(0, WORD_LIMIT).join(' ');
+        const preview = item.querySelector('.preview');
+        preview.textContent = words + (fullText.split(' ').length > WORD_LIMIT ? '...' : '');
+      }
+      
     });
   </script>
   
   <script>
-     const popup = document.getElementById('popup');
+    const popup = document.getElementById('popup');
     const popupContent = document.getElementById('popupContent');
-    const popupTitle = document.getElementById('popuptitle');
+    const popupTitle = document.getElementById('popupTitle');
     const closeBtn = document.getElementById('closePopup');
 
     document.querySelectorAll('.item').forEach(item => {
-      item.addEventListener('click', () => {
-        const fullText = item.getAttribute('data-full-text');
+    item.addEventListener('click', () => {
+        const type = item.getAttribute('data-type');
         const titleText = item.getAttribute('data-title');
-        popupContent.textContent = fullText;
         popupTitle.textContent = titleText;
+
+        // Clear previous content
+        popupContent.innerHTML = '';
+
+        if (type === 'text') {
+            const fullText = item.getAttribute('data-full-text');
+            popupContent.innerHTML = "<p>"+fullText+"</p>";
+            
+        } else if (type === 'table') {
+            const tableId = item.getAttribute('data-table-id');
+            const table = document.getElementById(tableId);
+            if (table) {
+                // Clone the table and show it inside the popup
+                const clone = table.cloneNode(true);
+                clone.style.display = 'table';
+                popupContent.appendChild(clone);
+            }
+        }
+
         popup.style.display = 'flex';
-      });
+    });
     });
 
     closeBtn.addEventListener('click', () => {
-      popup.style.display = 'none';
+    popup.style.display = 'none';
     });
 
     popup.addEventListener('click', (e) => {
-      if (e.target === popup) {
-        popup.style.display = 'none';
-      }
+    if (e.target === popup) popup.style.display = 'none';
     });
-  </script>
+</script>
 
 
 

@@ -42,7 +42,7 @@ $result = $stmt->get_result();
     <!-- Layout styles -->
     <link rel='stylesheet' href='../../assets/css/style.css'>
     <!-- End layout styles -->
-    <link rel='shortcut icon' href='../../assets/images/favicon.png' />
+    <link rel="shortcut icon" href="../../elimmas-icon.png" />
   </head>
   <body>
   <div class='container-scroller'>
