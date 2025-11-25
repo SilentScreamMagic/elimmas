@@ -4,10 +4,10 @@ require_once "../conn.php";
 //include "../table.html";
 $date = date("Y-m-d");
 
-if (isset($_POST["appt_date"])){
-    $date = date("Y-m-d",strtotime($_POST["appt_date"]));
+if (isset($_GET["appt_date"])){
+    $date = date("Y-m-d",strtotime($_GET["appt_date"]));
 }
-if (isset($_POST["apt_id"])) {
+if (isset($_POST["end"])) {
     $sql = "UPDATE appointments SET check_out = NOW() WHERE id = ?";
     $stmt = $conn->prepare($sql);
 
@@ -18,6 +18,7 @@ if (isset($_POST["apt_id"])) {
     $stmt->execute();
 
     $stmt->close();
+    header("Location: $_SERVER[REQUEST_URI]"); 
 }
 
 ?>
@@ -52,7 +53,7 @@ if (isset($_POST["apt_id"])) {
                   <div class='card-body'>
                     <h3 class='card-title'>Appointments</h3>
                     <h5><?php echo $date; ?></h5>
-                    <form action= "" method="post">
+                    <form action= "" method="get">
                     <label for="appt_date" >Date:</label>
                     <input type="date" id="appt_date" name="appt_date">
                     <input type="submit" value="Submit">
@@ -79,7 +80,7 @@ if (isset($_POST["apt_id"])) {
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo"<tr><td>".$row["Patient Name"]."</td><td>".$row["Doctor"]."</td><td>".$row["date"]."</td><td>".$row["time"]."</td><td>".$row["check_in"]."</td>
-                                        <td><form action='docprocs.php' method='post'>
+                                        <td><form action='docprocs.php' method='get'>
                                             <input type='hidden' name='id' value=".$row['id'].">
                                             <input type='submit' value='View Patient'>
                                         </form></td></tr>";

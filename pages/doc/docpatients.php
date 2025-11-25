@@ -77,7 +77,7 @@ include "../tabs.html";
                                             $bed = "N/A";
                                         }
                                         $string = "<tbody><tr><td>".$row["date"]."</td><td>".$row["Patient Name"]."</td><td>".$row["type"]."</td><td>".$row["check_in"]."</td><td>".$room."</td><td>".$bed."</td>";
-                                    $string = $string . "<td><form action='docapthistory.php' method='post'>
+                                    $string = $string . "<td><form action='docapthistory.php' method='get'>
                                         <input type='hidden' name='id' value=".$row['pat_id'].">
                                         <input type='submit' value='View Appointment History'>
                                     </form></td>
@@ -113,7 +113,7 @@ include "../tabs.html";
                             if ($result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
                                     $string = "<tr><td>".$row["registration_date"]."</td><td>".$row["Patient Name"]."</td>";
-                                $string = $string . "<td><form action='docapthistory.php' method='post'>
+                                $string = $string . "<td><form action='docapthistory.php' method='get'>
                                     <input type='hidden' name='id' value=".$row['pat_id'].">
                                     <input type='submit' value='View Appointment History'>
                                 </form></td>

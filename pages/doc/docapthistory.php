@@ -2,14 +2,13 @@
  include "../conn.php";
  //include "../nav.php";
  //include "../table.html";
- if (isset($_POST["id"])){
-    $pat_id = $_POST["id"];
+ if (isset($_GET["id"])){
+    $pat_id = $_GET["id"];
     $sql = "SELECT * FROM patient WHERE pat_id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $_POST["id"]); // "i" = integer
+    $stmt->bind_param("i", $pat_id); // "i" = integer
     $stmt->execute();
     $result = $stmt->get_result();
-    $patient = $result->fetch_assoc();
     $stmt->close();
 
 }
@@ -47,6 +46,7 @@
                   <div class='card-body'>
                   
                   <?php
+                  
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
             echo "<h4 class='card-title'>$row[FName] $row[LName]</h4>";
@@ -135,7 +135,7 @@
                                 while($row = $result->fetch_assoc()) {
                                         echo "<tr><td>".$row["Name"]."</td><td>".$row["date"]."</td><td>".$row["time"]."</td><td>".$row["type"].
                                         "</td><td>".$row["check_in"]."</td><td>".$row["check_out"]."</td><td>".$row["resuscitation_status"]."</td><td>".$row["diet"]."</td><td> 
-                                        <form action='docprocs.php' method='post'>
+                                        <form action='docprocs.php' method='get'>
                                         <input type='hidden' name='id' value=".$row["id"].">
                                         <input type='submit' value='View Appointment Details'>
                                     </form></td></tr>";

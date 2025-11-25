@@ -118,8 +118,9 @@
   <div class='container-scroller'>
   
     <?php 
-    include '../nav.php';
     include "../conn.php";
+    include '../nav.php';
+    
     //include "../nav.php";
     //include "../table.html";
     include "../tabs.html";
@@ -127,129 +128,22 @@
     
     $notes = "";
     $ndate = "";
-    $ids=["","","","","defaultOpen",""];
-    if (isset($_POST["id"])){
-        $_SESSION["apt_id"] = $_POST["id"];
-        
+  
+    if (isset($_GET["id"])){
+        $apt_id = $_GET["id"];
+        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", appointments.type, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+        where id = '.$apt_id;
+        $result = $conn->query($sql)->fetch_assoc();
+        $pat_id=$result["pat_id"];
+        $pname = $result["Patient Name"];
+        $checkout = $result["check_out"];
+        $type = $result["type"];
+        $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
+        $today = date("d-m-Y");
+        $diff = date_diff(date_create($dateOfBirth), date_create($today));
+        $age = $diff->format("%y");
+    
     }
-    if (isset($_POST["apt_id"])){
-        if($_POST["type"]=="In-Patient"){
-            $sql = "update appointments set type = 'Consultation' where id =$_POST[apt_id]";
-            $result = $conn->query($sql);
-        }else{
-            $sql = "update appointments set type = 'In-Patient' where id =$_POST[apt_id]";
-            $result = $conn->query($sql);
-        }
-        
-      }
-    
-    $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", appointments.type, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
-    where id = '.$_SESSION["apt_id"];
-    $result = $conn->query($sql)->fetch_assoc();
-    $pat_id=$result["pat_id"];
-    $pname = $result["Patient Name"];
-    $checkout = $result["check_out"];
-    $type = $result["type"];
-    $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
-    $today = date("d-m-Y");
-    $diff = date_diff(date_create($dateOfBirth), date_create($today));
-    $age = $diff->format("%y");
-    
-    
-    
-    if (isset($_POST["proc_id"])) {
-    $sql = "INSERT INTO patients_proc (apt_id, proc_id, date, created_by) 
-            VALUES (?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $_SESSION['apt_id'], $_POST["proc_id"], $_SESSION["user"][0]);
-    $stmt->execute();
-    $stmt->close();
-
-    $ids = ["","defaultOpen","","","",""];
-}
-
-// Insert into patients_meds
-if (isset($_POST["med"])) {
-    $sql = "INSERT INTO patients_meds 
-            (apt_id, med_id, per_dose, per_day, num_days, date, created_by, ad_by) 
-            VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiiiiss", 
-        $_SESSION['apt_id'], 
-        $_POST["med"], 
-        $_POST["per_dose"], 
-        $_POST["per_day"], 
-        $_POST["num_days"], 
-        $_SESSION["user"][0], 
-        $_SESSION["user"][0]
-    );
-    $stmt->execute();
-    $stmt->close();
-
-    $ids = ["","","defaultOpen","","",""];
-}
-
-// Insert into patients_labs
-if (isset($_POST["labs"])) {
-    $sql = "INSERT INTO patients_labs (apt_id, lab_id, date, created_by) 
-            VALUES (?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $_SESSION['apt_id'], $_POST["labs"], $_SESSION["user"][0]);
-    $stmt->execute();
-    $stmt->close();
-
-    $ids = ["","","","defaultOpen","",""];
-}
-
-// Notes
-if (isset($_POST["button"])) {
-    if ($_POST["button"] == "Submit") {
-        $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
-                VALUES ('doc_notes', ?, ?, NOW(), ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iss", $_SESSION['apt_id'], $_POST["notes"], $_SESSION["user"][0]);
-        $stmt->execute();
-        $stmt->close();
-
-        unset($_SESSION["notes"], $_SESSION["ndate"]);
-        $ids = ["","","","","defaultOpen",""];
-    } else {
-        $_SESSION["notes"] = $_POST["notes"];
-        $_SESSION["ndate"] = date("d/m/y h:i:s");
-    }
-}
-
-// Keep session notes
-if (isset($_SESSION["notes"])) {
-    $notes = $_SESSION["notes"];
-    $ndate = $_SESSION["ndate"];
-}
-
-// Discharge notes
-if (isset($_POST["dis_notes"])) {
-    // Delete old discharge notes
-    $sql = "DELETE FROM notes WHERE apt_id = ? AND type = 'dis_notes'";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $_SESSION["apt_id"]);
-    $stmt->execute();
-    $stmt->close();
-
-    // Insert new discharge notes
-    $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
-            VALUES ('dis_notes', ?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $_SESSION["apt_id"], $_POST["dis_notes"], $_SESSION["user"][0]);
-    $stmt->execute();
-    $stmt->close();
-
-    $ids = ["","","","","","defaultOpen"];
-}
-     if (isset($_POST["deltable"])){
-        $sql = "UPDATE $_POST[deltable] SET `deleted`=1 WHERE $_POST[idtype] = $_POST[delid]";
-        $result = $conn->query($sql);
-    
-     } 
-   
     $sql = "SELECT * FROM `procedures`;";
     $result = $conn->query($sql);
     $proc = [];
@@ -276,8 +170,9 @@ if (isset($_POST["dis_notes"])) {
            $labs[$row["lab_id"]] = $row["lab_name"];
         }
     }
-  
-
+    
+    
+    
     ?>
     <div class='main-panel'>
         <div class='content-wrapper'>
@@ -292,31 +187,31 @@ if (isset($_POST["dis_notes"])) {
                     <?php 
                         if($checkout==null){
                             echo "<form action='docapps.php' method='post'>
-                                <input type='hidden' name='apt_id' value= $_SESSION[apt_id]>
+                                <input type='hidden' name='end' value= $apt_id>
                                 <input type='submit' value='End Appointment'>
                             </form>";
                         }
                         
                     ?>
                     <?php 
-                            echo "<form action='docprocs.php' method='post'>
-                                <input type='hidden' name='apt_id' value= $_SESSION[apt_id]>
+                            echo "<form action='rec_apt.php' method='post'>
+                                <input type='hidden' name='apt_type' value= $apt_id>
                                 <input type='hidden' name='type' value= '$type'>
                                 <input type='submit' value='Current Appointment type: $type'>
                             </form>";
                         
                     ?>
                     <div class="tab">
-                        <button class="tablinks" onclick="openTab(event, 'notes')" <?php if('defaultOpen'==$ids[4]) echo 'id ="'.$ids[4].'"';?>>Notes</button>
-                        <button class="tablinks" onclick="openTab(event, 'procs')" <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Procedures</button>
-                        <button class="tablinks" onclick="openTab(event, 'meds')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Medications</button>
-                        <button class="tablinks" onclick="openTab(event, 'labs')"  <?php if('defaultOpen'==$ids[3]) echo 'id ="'.$ids[3].'"';?>>Labs</button>
-                        <button class="tablinks" onclick="openTab(event, 'dis_notes')" <?php if('defaultOpen'==$ids[5]) echo 'id ="'.$ids[5].'"';?>>Discharge</button>   
+                        <button class="tablinks" onclick="openTab(event, 'notes')" id ="tabnotes" ><a href="#notes">Notes</a></button>
+                        <button class="tablinks" onclick="openTab(event, 'procs')" id ="tabprocs" ><a href="#procs">Procedures</a></button>
+                        <button class="tablinks" onclick="openTab(event, 'meds')"  id ="tabmeds"><a href="#meds">Medications</a></button>
+                        <button class="tablinks" onclick="openTab(event, 'labs')"  id ="tablabs"><a href="#labs">Labs</a></button>
+                        <button class="tablinks" onclick="openTab(event, 'dis_notes')" id ="tabdis_notes"><a href="#dis_notes">Discharge</a></button> 
                     </div>
 <div id="procs" class="tabcontent">
     <!-- Content for beds tab -->
      <h4 class='card-title'>Procedures</h4>
-    <form action= "" method="post">
+    <form action="rec_apt.php?tab=procs" method="post">
         <div class="form-group row">
         <label class="col-sm-3 col-form-label" for="proc_id">Procedure Name:</label>
         <div class="col-sm-9">
@@ -329,6 +224,7 @@ if (isset($_POST["dis_notes"])) {
                     endforeach;?>
                 </select>
             </div>
+        <input type='hidden' name='proc_apt' value= '<?= $apt_id?>'>
         <input type="submit" value="Submit"><br><br>
         </div>
     </form> 
@@ -337,7 +233,7 @@ if (isset($_POST["dis_notes"])) {
                      <?php 
     $sql = "SELECT p_proc_id, patients_proc.date,procedures.Prod_Name, procedures.Price FROM procedures 
     JOIN patients_proc on patients_proc.proc_id = procedures.prod_id
-    where patients_proc.apt_id =".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+    where patients_proc.apt_id =".$apt_id." and deleted = 0 order by date;";
     $result = $conn->query($sql);?>
                         <table class ='table'>
                         <thead>
@@ -349,10 +245,11 @@ if (isset($_POST["dis_notes"])) {
                         <?php
                         if ($result->num_rows > 0) {
                             while($row = $result->fetch_assoc()) {
-                                echo "<tr><td><form action='' method='post'>
+                                echo "<tr><td><form action='rec_apt.php?tab=procs' method='post'>
                                                 <input type='hidden' name='delid' value=".$row['p_proc_id'].">
                                                 <input type='hidden' name='deltable' value= 'patients_proc'>
                                                 <input type='hidden' name='idtype' value= 'p_proc_id'>
+                                                <input type='hidden' name='del_apt' value= '$apt_id'>
                                                 <input type='submit' value='Delete'>
                                             </form></td><td>".$row["date"]."</td><td>".$row["Prod_Name"]."</td></tr>";
                             }
@@ -370,7 +267,7 @@ if (isset($_POST["dis_notes"])) {
 <div id="meds" class="tabcontent">
     <!-- Content for rooms tab -->
     <h4 class='card-title'>Medications</h4>
-    <form action= "" method="post">
+    <form action="rec_apt.php?tab=meds" method="post">
     <div class="form-group row">
         <label class="col-sm-3 col-form-label" for="med">Medication:</label>
         <div class="col-sm-9">
@@ -409,12 +306,13 @@ if (isset($_POST["dis_notes"])) {
                     </div>
                 </div>
             </div>
-        </div>          
+        </div> 
+        <input type='hidden' name='med_apt' value= '<?= $apt_id?>'>         
         <input type="submit" value="Submit"><br><br>    
     </form>
     <?php 
         $sql = "SELECT p_med_id,patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days FROM `patients_meds` 
-        join medication on medication.med_id = patients_meds.med_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+        join medication on medication.med_id = patients_meds.med_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
         $result = $conn->query($sql);?>
         
                     <div class='table-responsive'>
@@ -429,10 +327,11 @@ if (isset($_POST["dis_notes"])) {
                         <?php
                             if ($result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
-                                    echo "<tr><td><form action='' method='post'>
+                                    echo "<tr><td><form action='rec_apt.php?tab=meds' method='post'>
                                                 <input type='hidden' name='delid' value=".$row['p_med_id'].">
                                                 <input type='hidden' name='deltable' value= 'patients_meds'>
                                                 <input type='hidden' name='idtype' value= 'p_med_id'>
+                                                <input type='hidden' name='del_apt' value= '$apt_id'>
                                                 <input type='submit' value='Delete'>
                                             </form></td>
                                     <td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td></tr>";
@@ -449,7 +348,7 @@ if (isset($_POST["dis_notes"])) {
     <!-- Content for rooms tab -->
     <h3>Labs</h3>
     
-    <form action= "" method="post">
+    <form action="rec_apt.php?tab=labs" method="post">
     <div class="form-group row">
         <label class="col-sm-3 col-form-label" for="lab">Labs:</label>
         <div class="col-sm-9">
@@ -462,13 +361,14 @@ if (isset($_POST["dis_notes"])) {
                 endforeach;?>
             </select>
         </div>    
+        <input type='hidden' name='lab_apt' value= '<?= $apt_id?>'>
         <input type="submit" value="Submit"><br><br>
         </div>
     </form>
     
     <?php 
         $sql = "SELECT p_lab_id,date,labs.lab_name,lab_results,lab_date FROM `patients_labs` 
-        join labs on labs.lab_id = patients_labs.lab_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+        join labs on labs.lab_id = patients_labs.lab_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
         $result = $conn->query($sql);?>
         
                     <div class='table-responsive'>
@@ -483,10 +383,11 @@ if (isset($_POST["dis_notes"])) {
                         <?php
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                echo "<tr><td><form action='' method='post'>
+                echo "<tr><td><form action='rec_apt.php?tab=labs' method='post'>
                                                 <input type='hidden' name='delid' value=".$row['p_lab_id'].">
                                                 <input type='hidden' name='deltable' value= 'patients_labs'>
                                                 <input type='hidden' name='idtype' value= 'p_lab_id'>
+                                                <input type='hidden' name='del_apt' value= '$apt_id'>
                                                 <input type='submit' value='Delete'>
                                             </form></td><td>".$row["date"]."</td><td>".$row["lab_name"]."</td>";
                 if ($row["lab_results"]!= null){
@@ -506,13 +407,12 @@ if (isset($_POST["dis_notes"])) {
         <!-- Content for rooms tab -->
     <div>
         <h3>Notes</h3>
-    <form action= "" method="post">
-        <textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php echo $notes?></textarea><br><br>
-        <?php if($ndate !=""){
-            echo "Last Saved $ndate";
-        }  ?><br>
-        <input name = "button" type="submit" value="Submit"><br><br>
+    <form action="rec_apt.php?tab=notes" method="post">
+        <textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php //echo $notes?></textarea><br><br>
+        <span id="lastsaved"></span><br>
+        <input name = "save_notes" id="save_notes" type="submit" value="Submit"><br><br>
         <input name = "cursor" id="cursor" type="hidden" value="0">
+        <input type='hidden' name='notes_apt' value= '<?= $apt_id?>'>
         <input name = "button" id="submit-btn" type="submit" style="display: none;" value="Autosave">
     </form>
     </div>     
@@ -527,11 +427,11 @@ if (isset($_POST["dis_notes"])) {
         <div>
             <h3>Discharge Notes</h3>
             <?php
-        $sql = "SELECT GROUP_CONCAT(notes SEPARATOR ' ')'notes' FROM `notes` WHERE apt_id =".$_SESSION["apt_id"] ." and type = 'dis_notes' and deleted = 0;";
+        $sql = "SELECT GROUP_CONCAT(notes SEPARATOR ' ')'notes' FROM `notes` WHERE apt_id =".$apt_id ." and type = 'dis_notes' and deleted = 0;";
         $result = $conn->query($sql);
         $dis_notes = $result->fetch_assoc();?>
-            <form action= "" method="post">
-                <input type="hidden" name="apt_id" value = <?php echo $_SESSION['apt_id']?>>
+            <form action="rec_apt.php?tab=dis_notes" method="post">
+                <input type="hidden" name="disnotes_apt" value = <?php echo $apt_id?>>
                 <textarea style="max-width: 100%; " name="dis_notes" cols="70" rows="10"><?php  echo $dis_notes["notes"];?></textarea>
                 <input type="submit" value="Submit"><br><br>
         </form>
@@ -550,7 +450,7 @@ if (isset($_POST["dis_notes"])) {
                            
                             <?php
                             $sql = "SELECT patients_vits.* FROM `patients_vits` 
-                            where apt_id = $_SESSION[apt_id]  and deleted = 0 order by date DESC;";
+                            where apt_id = $apt_id  and deleted = 0 order by date DESC;";
                             $result = $conn->query($sql);
                             $vitals = [];
 
@@ -702,42 +602,72 @@ if (isset($_POST["dis_notes"])) {
        window.addEventListener("load",(event) =>{
             let notesField = document.getElementById('note');
             notesField.focus();
+            if(localStorage.getItem("notes")){
+                    
+                     let notesField = document.getElementById('note');
+                     let lastsaved = document.getElementById('lastsaved');
+                     let stored_notes = JSON.parse(localStorage.getItem("notes"));
+
+                    //console.log(time.toLocaleString());
+
+                     notesField.value = stored_notes["note"];
+                     let time =new Date(stored_notes["time"]);
+                     lastsaved.innerHTML=time.toLocaleString();
+
+
+            }
+            
            
             
         })
         
         document.addEventListener('DOMContentLoaded', function() {
+            const urlHash = window.location.hash;
+            console.log(urlHash);
+            if(urlHash){
+                document.getElementById("tab"+urlHash.substring(1)).click();
+            }else{
+                document.getElementById("tabnotes").click();
+            }
+
+
+
             let notesField = document.getElementById('note');
-            let submitButton = document.getElementById('submit-btn');
+            let submitButton = document.getElementById('save_notes');
             let timeoutId;
             let hasChanges = false;
-            let cursor = document.getElementById("cursor");
-            let sessionSet ="<?php echo isset($_SESSION["notes"])?>";
-            if (sessionSet ==1){
-                notesField.focus();
-                let length = "<?php echo $_POST["cursor"] ?? 0 ?>";
-                if (length == 0){
-                    length = notesField.value.length;
-                }
-                notesField.setSelectionRange(length, length);
-            }  
             notesField.addEventListener('input', function() {
                 hasChanges=true;
+                let lastsaved = document.getElementById('lastsaved'); 
+                    let time; 
+                    //console.log(time.toLocaleString());
+
                 clearTimeout(timeoutId); 
                 timeoutId = setTimeout(function() {
                     cursor.value = notesField.selectionStart;
-                    submitButton.click(); 
+                    //submitButton.click(); 
+                    time = new Date(Date.now());
+                    lastsaved.innerHTML=time.toLocaleString();
+                    let note_dict = JSON.stringify({"note": notesField.value,"time":time});
+                    localStorage.setItem("notes",note_dict);
+                    
                     hasChanges = false;
                 }, 5000); 
 
             });
+            submitButton.addEventListener('click',function(){
+                localStorage.removeItem("notes");
+            });
             document.querySelectorAll('.tablinks').forEach(button => {
-  button.addEventListener('click', () => {
-    if(hasChanges){
-        submitButton.click();
-        clearTimeout(timeoutId);
-    }
-  });
+            button.addEventListener('click', () => {
+                if(hasChanges){
+                    time = new Date(Date.now());
+                    lastsaved.innerHTML=time.toLocaleString();
+                    let note_dict = JSON.stringify({"note": notesField.value,"time":time});
+                    localStorage.setItem("notes",note_dict);
+                    clearTimeout(timeoutId);
+                }
+            });
         })});
     </script>
 <script>
