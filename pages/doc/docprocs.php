@@ -607,11 +607,11 @@
        window.addEventListener("load",(event) =>{
             let notesField = document.getElementById('note');
             notesField.focus();
-            if(localStorage.getItem("notes")){
+            if(localStorage.getItem(<?= $apt_id?>)){
                     
                      let notesField = document.getElementById('note');
                      let lastsaved = document.getElementById('lastsaved');
-                     let stored_notes = JSON.parse(localStorage.getItem("notes"));
+                     let stored_notes = JSON.parse(localStorage.getItem(<?= $apt_id?>));
 
                     //console.log(time.toLocaleString());
 
@@ -654,14 +654,14 @@
                     time = new Date(Date.now());
                     lastsaved.innerHTML=time.toLocaleString();
                     let note_dict = JSON.stringify({"note": notesField.value,"time":time});
-                    localStorage.setItem("notes",note_dict);
+                    localStorage.setItem(<?= $apt_id?>,note_dict);
                     
                     hasChanges = false;
                 }, 20000); 
 
             });
             submitButton.addEventListener('click',function(){
-                localStorage.removeItem("notes");
+                localStorage.removeItem(<?= $apt_id?>);
             });
             document.querySelectorAll('.tablinks').forEach(button => {
             button.addEventListener('click', () => {
@@ -669,7 +669,7 @@
                     time = new Date(Date.now());
                     lastsaved.innerHTML=time.toLocaleString();
                     let note_dict = JSON.stringify({"note": notesField.value,"time":time});
-                    localStorage.setItem("notes",note_dict);
+                    localStorage.setItem(<?= $apt_id?>,note_dict);
                     clearTimeout(timeoutId);
                 }
             });
