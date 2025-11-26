@@ -12,7 +12,7 @@ if (isset($_POST["end"])) {
     $stmt = $conn->prepare($sql);
 
     // bind the parameter (i = integer)
-    $stmt->bind_param("i", $_POST["apt_id"]);
+    $stmt->bind_param("i", $_POST["end"]);
 
     // execute the statement
     $stmt->execute();

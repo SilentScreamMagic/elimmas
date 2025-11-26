@@ -141,7 +141,12 @@
         $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
         $today = date("d-m-Y");
         $diff = date_diff(date_create($dateOfBirth), date_create($today));
-        $age = $diff->format("%y");
+        $age = "";
+        $age = $diff->format("%y") !=0 ?  $diff->format("%y")." years ": "";
+        if($diff->format("%y") <3 ){
+            $age.= $diff->format("%m") !=0 ?  $diff->format("%m")." months ": "";
+            $age.= $diff->format("%d") !=0 ?  $diff->format("%d"). " days ": "";
+        }
     
     }
     $sql = "SELECT * FROM `procedures`;";
@@ -202,11 +207,11 @@
                         
                     ?>
                     <div class="tab">
-                        <button class="tablinks" onclick="openTab(event, 'notes')" id ="tabnotes" ><a href="#notes">Notes</a></button>
-                        <button class="tablinks" onclick="openTab(event, 'procs')" id ="tabprocs" ><a href="#procs">Procedures</a></button>
-                        <button class="tablinks" onclick="openTab(event, 'meds')"  id ="tabmeds"><a href="#meds">Medications</a></button>
-                        <button class="tablinks" onclick="openTab(event, 'labs')"  id ="tablabs"><a href="#labs">Labs</a></button>
-                        <button class="tablinks" onclick="openTab(event, 'dis_notes')" id ="tabdis_notes"><a href="#dis_notes">Discharge</a></button> 
+                        <a href="#notes"><button class="tablinks" onclick="openTab(event, 'notes')" id ="tabnotes" >Notes</button></a>
+                        <a href="#procs"><button class="tablinks" onclick="openTab(event, 'procs')" id ="tabprocs" >Procedures</button></a>
+                        <a href="#meds"><button class="tablinks" onclick="openTab(event, 'meds')"  id ="tabmeds">Medications</button></a>
+                        <a href="#labs"><button class="tablinks" onclick="openTab(event, 'labs')"  id ="tablabs">Labs</button></a>
+                        <a href="#dis_notes"><button class="tablinks" onclick="openTab(event, 'dis_notes')" id ="tabdis_notes">Discharge</button></a> 
                     </div>
 <div id="procs" class="tabcontent">
     <!-- Content for beds tab -->
@@ -652,7 +657,7 @@
                     localStorage.setItem("notes",note_dict);
                     
                     hasChanges = false;
-                }, 5000); 
+                }, 20000); 
 
             });
             submitButton.addEventListener('click',function(){
