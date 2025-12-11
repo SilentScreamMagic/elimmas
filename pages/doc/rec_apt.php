@@ -20,12 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (isset($_POST["proc_id"])) {
         $apt_id =$_POST["proc_apt"];
-    $sql = "INSERT INTO patients_proc (apt_id, proc_id, date, created_by) 
-            VALUES (?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $_POST["proc_apt"], $_POST["proc_id"], $_SESSION["user"][0]);
-    $stmt->execute();
-    $stmt->close();
+        
+    
+    foreach ($_POST["proc_id"] as $proc_id) {
+        $sql = "INSERT INTO patients_proc (apt_id, proc_id, date, created_by) 
+        VALUES (?, ?, NOW(), ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iis", $_POST["proc_apt"], $proc_id, $_SESSION["user"][0]);
+        $stmt->execute();
+        $stmt->close();
+    }
+    
 
 
 }
@@ -33,20 +38,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Insert into patients_meds
 if (isset($_POST["med"])) {
     $apt_id =$_POST["med_apt"];
-    $sql = "INSERT INTO patients_meds 
-            (apt_id, med_id, per_dose, per_day, num_days, date, created_by, ad_by) 
-            VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iiiiiss", 
-        $_POST["med_apt"], 
-        $_POST["med"], 
-        $_POST["per_dose"], 
-        $_POST["per_day"], 
-        $_POST["num_days"], 
-        $_SESSION["user"][0], 
-        $_SESSION["user"][0]
-    );
-    $stmt->execute();
+    for ($i=0; $i < count($_POST["med"]); $i++) { 
+        $sql = "INSERT INTO patients_meds 
+                (apt_id, med_id, per_dose, per_day, num_days, date, created_by, ad_by) 
+                VALUES (?, ?, ?, ?, ?, NOW(), ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iiiiiss", 
+            $_POST["med_apt"], 
+            $_POST["med"][$i], 
+            $_POST["per_dose"][$i], 
+            $_POST["per_day"][$i], 
+            $_POST["num_days"][$i], 
+            $_SESSION["user"][0], 
+            $_SESSION["user"][0]
+        );
+        $stmt->execute();
+    }
     $stmt->close();
 
    
@@ -55,11 +62,13 @@ if (isset($_POST["med"])) {
 // Insert into patients_labs
 if (isset($_POST["labs"])) {
     $apt_id =$_POST["lab_apt"];
-    $sql = "INSERT INTO patients_labs (apt_id, lab_id, date, created_by) 
+    foreach ($_POST["labs"] as $lab) {
+        $sql = "INSERT INTO patients_labs (apt_id, lab_id, date, created_by) 
             VALUES (?, ?, NOW(), ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $_POST['lab_apt'], $_POST["labs"], $_SESSION["user"][0]);
-    $stmt->execute();
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iis", $_POST['lab_apt'], $lab, $_SESSION["user"][0]);
+        $stmt->execute();
+    }
     $stmt->close();
 
 }
@@ -77,6 +86,17 @@ if (isset($_POST["save_notes"])) {
 
     
     $apt_id =$_POST["notes_apt"];
+}
+if (isset($_POST["diag"])) {
+        $sql = "UPDATE `appointments` SET `diagnosis`=? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("si", $_POST["diag"], $_POST["diag_apt"]);
+        $stmt->execute();
+        $stmt->close();
+
+
+    
+    $apt_id =$_POST["diag_apt"];
 }
 
 // Keep session notes

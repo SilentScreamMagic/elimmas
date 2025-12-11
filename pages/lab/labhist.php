@@ -4,8 +4,8 @@ require_once "../conn.php";
 //include "../table.html";
 $date = date("Y-m-d");
 
-if (isset($_POST["appt_date"])){
-    $date = date("Y-m-d",strtotime($_POST["appt_date"]));
+if (isset($_GET["appt_date"])){
+    $date = date("Y-m-d",strtotime($_GET["appt_date"]));
 }
 ?>
 <!DOCTYPE html>
@@ -39,7 +39,7 @@ if (isset($_POST["appt_date"])){
                   <div class='card-body'>
                     <h3 class='card-title'>Lab History</h3>
                     <h5><?php echo $date; ?></h5>
-                    <form action= "" method="post">
+                    <form action= "" method="get">
                     <label for="appt_date" >Date:</label>
                     <input type="date" id="appt_date" name="appt_date">
                     <input type="submit" value="Submit">
@@ -74,14 +74,14 @@ ORDER by patients_labs.date;";
                                   $string = "<tbody><tr><td>".$row["date"]."</td><td>".$row["Patient Name"]." (Age: ".$age.")"."</td><td>".$row["lab_name"]."</td><td>".$row["Doctor"]."</td>";
                                   if (is_null($row["lab_results"])) {
                                       $string =$string ."
-                                      <td><form action='labs.php' method='post' enctype='multipart/form-data'>
+                                      <td><form action='lab_upload.php' method='post' enctype='multipart/form-data'>
                                        <input type='hidden' name='id' value=".$row['p_lab_id'].">
                                       <input type='file' name='fileToUpload' id='fileToUpload' required>
                                       <input type='submit' value='Upload File' name='submit'>
                                       </form></td></tr>
                                       ";
                                   }else{
-                                      $string = $string."<td>".$row["lab_results"]."</td><td><td><a href='../open_pdf.php?file=../uploads/$row[lab_results]' target='_blank'>Open PDF</a></td><tr>";
+                                      $string = $string."<td>".$row["lab_results"]."</td><td><td><a href='../open_pdf.php?file=../files/$row[lab_results]' target='_blank'>Open PDF</a></td><tr>";
 
                                   }
                                   echo $string;

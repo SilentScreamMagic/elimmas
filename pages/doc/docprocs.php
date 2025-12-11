@@ -113,6 +113,7 @@
 }
 
     </style>
+    
   </head>
   <body>
   <div class='container-scroller'>
@@ -131,13 +132,14 @@
   
     if (isset($_GET["id"])){
         $apt_id = $_GET["id"];
-        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", appointments.type, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", appointments.type,appointments.diagnosis, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
         where id = '.$apt_id;
         $result = $conn->query($sql)->fetch_assoc();
         $pat_id=$result["pat_id"];
         $pname = $result["Patient Name"];
         $checkout = $result["check_out"];
         $type = $result["type"];
+        $diag = $result["diagnosis"];
         $dateOfBirth = date("d-m-Y", strtotime($result["DOB"]));
         $today = date("d-m-Y");
         $diff = date_diff(date_create($dateOfBirth), date_create($today));
@@ -189,6 +191,7 @@
                 <div class="card">
                 <div class='card-body'>
                     <h4 class='card-title'><?php echo $pname. " (Age: " .$age.")"?></h4>
+                    
                     <?php 
                         if($checkout==null){
                             echo "<form action='docapps.php' method='post'>
@@ -213,66 +216,85 @@
                         <a href="#labs"><button class="tablinks" onclick="openTab(event, 'labs')"  id ="tablabs">Labs</button></a>
                         <a href="#dis_notes"><button class="tablinks" onclick="openTab(event, 'dis_notes')" id ="tabdis_notes">Discharge</button></a> 
                     </div>
-<div id="procs" class="tabcontent">
-    <!-- Content for beds tab -->
-     <h4 class='card-title'>Procedures</h4>
-    <form action="rec_apt.php?tab=procs" method="post">
-        <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="proc_id">Procedure Name:</label>
-        <div class="col-sm-9">
-            <select class="js-example-basic-single" style="width:80%" name="proc_id" id="proc_id">
-                <option value="" disabled selected>Select a Procedure...</option>
-                <?php 
-                    foreach ($proc as $pid => $det): ?>
-                        <option value="<?php echo $pid; ?>"><?php echo $det; ?></option>
-                    <?php 
-                    endforeach;?>
-                </select>
-            </div>
-        <input type='hidden' name='proc_apt' value= '<?= $apt_id?>'>
-        <input type="submit" value="Submit"><br><br>
-        </div>
-    </form> 
+                    <div id="procs" class="tabcontent">
+                        <!-- Content for beds tab -->
+                        <h4 class='card-title'>Procedures</h4>
+                         <div class="table-actions">
+                            <button type="button" class="add-btn" onclick="addVitalsRow('procs_table',proc_row)">+ Add Entry</button>
+                        </div>
+
+                      <!--  <form action="rec_apt.php?tab=procs" method="post">
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="proc_id">Procedure Name:</label>
+                            <div class="col-sm-9">
+                                <select class="js-example-basic-single" style="width:80%" name="proc_id" id="proc_id">
+                                    <option value="" disabled>Select a Procedure...</option>
+                                    <?php 
+                                        foreach ($proc as $pid => $det): ?>
+                                            <option value="<?php echo $pid; ?>"><?php echo $det; ?></option>
+                                        <?php 
+                                        endforeach;?>
+                                    </select>
+                                </div>
+                            <input type='hidden' name='proc_apt' value= '<?= $apt_id?>'>
+                            <input type="submit" value="Submit"><br><br>
+                            </div>
+                        </form> -->
     
-                    <div class='table-responsive'>
-                     <?php 
-    $sql = "SELECT p_proc_id, patients_proc.date,procedures.Prod_Name, procedures.Price FROM procedures 
-    JOIN patients_proc on patients_proc.proc_id = procedures.prod_id
-    where patients_proc.apt_id =".$apt_id." and deleted = 0 order by date;";
-    $result = $conn->query($sql);?>
-                        <table class ='table'>
-                        <thead>
-                            <tr>
-                            <th></th><th>Date</th><th>Procedure</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php
-                        if ($result->num_rows > 0) {
-                            while($row = $result->fetch_assoc()) {
-                                echo "<tr><td><form action='rec_apt.php?tab=procs' method='post'>
-                                                <input type='hidden' name='delid' value=".$row['p_proc_id'].">
-                                                <input type='hidden' name='deltable' value= 'patients_proc'>
-                                                <input type='hidden' name='idtype' value= 'p_proc_id'>
-                                                <input type='hidden' name='del_apt' value= '$apt_id'>
-                                                <input type='submit' value='Delete'>
-                                            </form></td><td>".$row["date"]."</td><td>".$row["Prod_Name"]."</td></tr>";
-                            }
+                        <div class='table-responsive'>
+                        <?php 
+                            $sql = "SELECT p_proc_id, patients_proc.date,procedures.Prod_Name, procedures.Price FROM procedures 
+                            JOIN patients_proc on patients_proc.proc_id = procedures.prod_id
+                            where patients_proc.apt_id =".$apt_id." and deleted = 0 order by date;";
+                            $result = $conn->query($sql);?>
+                            <form action="rec_apt.php?tab=procs" method="post">
+                                <input type='hidden' name='proc_apt' value= '<?= $apt_id?>'>
+                                <table id="procs_table"  class ='table'>
+                                <thead>
+                                    <tr>
+                                    <th></th><th>Date</th><th>Procedure</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                if ($result->num_rows > 0) {
+                                    while($row = $result->fetch_assoc()) {
+                                        echo "<tr><td>    
+                                                    <button type='button' onclick=deleteRow('proc',$row[p_proc_id],'patients_proc','p_proc_id','$apt_id')>Delete</button>
+                                                    </td><td>".$row["date"]."</td><td>".$row["Prod_Name"]."</td></tr>";
+                                    }
+                                    
+                                }
+                                ?>
+                                <tr id="og_row"><td></td><td id="select-td" colspan="2">
+                                    
+                                    <select class="js-example-basic-single" style="width:80%" name="proc_id[]" id="proc_id">
+                                    <option value="" disabled selected>Select a Procedure...</option>
+                                    <?php 
+                                        foreach ($proc as $pid => $det): ?>
+                                            <option value="<?php echo $pid; ?>"><?php echo $det; ?></option>
+                                        <?php 
+                                        endforeach;?>
+                                    </select>
+                                    
+                                </td><td></td></tr>
+                                
+                                </tbody>
+                            </table>
+                            <input type="submit" value="Submit"><br><br>
+                            </form>
                             
-                        }
-                    
-                        ?>
-                        </tbody>
-                        </table>
+                        </div>
+                        
                     </div>
-   
-    
-</div>
 
 <div id="meds" class="tabcontent">
     <!-- Content for rooms tab -->
     <h4 class='card-title'>Medications</h4>
-    <form action="rec_apt.php?tab=meds" method="post">
+    <div class="table-actions">
+        <button type="button" class="add-btn" onclick="addVitalsRow('meds_table',med_row)">+ Add Entry</button>
+    </div>
+    <!--<form action="rec_apt.php?tab=meds" method="post">
     <div class="form-group row">
         <label class="col-sm-3 col-form-label" for="med">Medication:</label>
         <div class="col-sm-9">
@@ -311,18 +333,18 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
         <input type='hidden' name='med_apt' value= '<?= $apt_id?>'>         
         <input type="submit" value="Submit"><br><br>    
-    </form>
+    </form>-->
     <?php 
         $sql = "SELECT p_med_id,patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days FROM `patients_meds` 
         join medication on medication.med_id = patients_meds.med_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
         $result = $conn->query($sql);?>
         
                     <div class='table-responsive'>
-                    
-                        <table class ='table'>
+                        <form action="rec_apt.php?tab=meds" method="post">
+                        <table id="meds_table" class ='table'>
                         <thead>
                             <tr>
                             <th></th><th>Date</th><th>Medication Name</th><th>Per Dose</th><th>Per Day</th><th>Number Of Days</th>
@@ -343,8 +365,25 @@
                                 }   
                             }
                         ?>
+                        <tr id="og_row"><td></td><td id="select-td" colspan="2">
+                                    <input type='hidden' name='med_apt' value= '<?= $apt_id?>'>
+                                    <select class="js-example-basic-single" style="width:80%" name="med[]" id="med">
+                                        <option value="" disabled selected>Select a Medication...</option>
+                                        <?php 
+                                            foreach ($meds as $mid => $det): ?>
+                                                <option value=<?php echo "'".$mid."' ".(!$det[1]? 'disabled': "") ?> ><?php echo $det[0]; ?></option>
+                                            <?php 
+                                            endforeach;?>
+                                        </select></td>
+                                    <td><input type="number" name="per_dose[]" id = "med_count" class="form-control" required></td>
+                                    <td><input type="number" name="per_day[]" id = "per_day" class="form-control" required></td>
+                                    <td><input type="number" name="num_days[]" id = "num_days" class="form-control" required></td>
+                                </tr>
                         </tbody>
                         </table>
+                        <input type='hidden' name='med_apt' value= '<?= $apt_id?>'>         
+                        <input type="submit" value="Submit"><br><br>    
+                                    </form>
                     </div>
     
 </div>
@@ -352,24 +391,10 @@
 <div id="labs" class="tabcontent">
     <!-- Content for rooms tab -->
     <h3>Labs</h3>
+    <div class="table-actions">
+        <button type="button" class="add-btn" onclick="addVitalsRow('labs_table',lab_row)">+ Add Entry</button>
+    </div>
     
-    <form action="rec_apt.php?tab=labs" method="post">
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="lab">Labs:</label>
-        <div class="col-sm-9">
-            <select class="js-example-basic-single" style="width:80%" name="labs" id="lab">
-                <option value="" disabled selected>Select a Lab...</option>
-                <?php 
-                foreach ($labs as $lid => $det): ?>
-                    <option value="<?php echo $lid; ?>"><?php echo $det; ?></option>
-                <?php 
-                endforeach;?>
-            </select>
-        </div>    
-        <input type='hidden' name='lab_apt' value= '<?= $apt_id?>'>
-        <input type="submit" value="Submit"><br><br>
-        </div>
-    </form>
     
     <?php 
         $sql = "SELECT p_lab_id,date,labs.lab_name,lab_results,lab_date FROM `patients_labs` 
@@ -377,8 +402,8 @@
         $result = $conn->query($sql);?>
         
                     <div class='table-responsive'>
-                    
-                        <table class ='table'>
+                    <form action="rec_apt.php?tab=labs" method="post">
+                        <table id="labs_table" class ='table'>
                         <thead>
                             <tr>
                             <th></th><th>Date</th><th>Labs Name</th><th></th>
@@ -396,22 +421,57 @@
                                                 <input type='submit' value='Delete'>
                                             </form></td><td>".$row["date"]."</td><td>".$row["lab_name"]."</td>";
                 if ($row["lab_results"]!= null){
-                      echo "<td><a href='../open_pdf.php?file=./uploads/$row[lab_results]' target='_blank'>Open PDF</a></td></tr>";  
+                      echo "<td><a href='../open_pdf.php?file=../files/$row[lab_results]' target='_blank'>Open PDF</a></td></tr>";  
                 }
             }
             
         }
     ?>
-                        </tbody>
-                        </table>
-                    </div>
+    <tr id="og_row"><td></td><td id="select-td" colspan="2">
+                                    
+                <select class="js-example-basic-single" style="width:80%" name="labs[]" id="labs">
+                <option value="" disabled selected>Select a Labs...</option>
+                <?php 
+                    foreach ($labs as $lid => $det): ?>
+                        <option value="<?php echo $lid; ?>"><?php echo $det; ?></option>
+                    <?php 
+                    endforeach;?>
+                </select>
+                
+            </td><td></td></tr>
+    </tbody>
+    </table>
+    <input type='hidden' name='lab_apt' value= '<?= $apt_id?>'>
+    <input type="submit" value="Submit"><br><br>
+    </form>
+</div>
     
 </div>
 <div id="notes" class="tabcontent">
     <div class ="contain">
-        <!-- Content for rooms tab -->
-    <div>
         <h3>Notes</h3>
+        <div class="icd-search-container">
+            <?php 
+            if($diag){
+                echo "Diagnosis: $diag";
+
+            }else{
+                echo "<form action='./rec_apt.php?tab=notes' method='post'>
+                <label for='icdSearchSelect'>Diagnosis: </label>
+                <select class='js-example-basic-single' id='icdSearchSelect'  name='diag'>
+                    <option value='' disabled selected>Search ICD-10 code or term (e.g., A15.0 or Tuberculosis)</option>
+                </select>
+                <input type='hidden' name='diag_apt' value= '$apt_id'>
+                <input type='submit' value='Record Diagnosis'>
+            </form >";
+            }
+            
+            ?>
+            
+                
+            </div>
+        <div>
+        
     <form action="rec_apt.php?tab=notes" method="post">
         <textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php //echo $notes?></textarea><br><br>
         <span id="lastsaved"></span><br>
@@ -496,7 +556,7 @@
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-type= "text" data-title="'.$row["apt_id"].' - '. $row["Name"].' | '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].' - '. $row["Name"].' | '. $row["date"];
+                                        echo '<div class="item" data-type="text" data-id="'.$row["apt_id"].'" data-title="'.$row["apt_id"].' - '. $row["Name"].' | '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].' - '. $row["Name"].' | '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
@@ -521,7 +581,7 @@
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
                                         echo '<div class="text-box">';
-                                        echo '<div class="item" data-title="'.$row["apt_id"].' - ' .$row["Name"].' | '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].' -' .$row["Name"].' | '. $row["date"];
+                                        echo '<div class="item"  data-apt="'.$row["apt_id"].'" data-title="'.$row["apt_id"].' - ' .$row["Name"].' | '. $row["date"].'" data-full-text="'.htmlspecialchars($row["notes"]).'">'.$row["apt_id"].' -' .$row["Name"].' | '. $row["date"];
                                         echo '<div class="preview"></div></div></div>';
                                     }
                                 }
@@ -575,6 +635,7 @@
 </table>
 <div id="popup" class="popup-overlay">
     <div class="popup-box">
+      <button id="apt-btn" >Open Appointment</button>
       <button class="popup-close" id="closePopup">&times;</button>
       <h4 id="popupTitle"> </h4> 
       <div id="popupContent" style="max-height: 300px; overflow-y: auto;"></div>
@@ -628,7 +689,6 @@
         
         document.addEventListener('DOMContentLoaded', function() {
             const urlHash = window.location.hash;
-            console.log(urlHash);
             if(urlHash){
                 document.getElementById("tab"+urlHash.substring(1)).click();
             }else{
@@ -687,27 +747,75 @@
       
     });
   </script>
+  <script>
+    let selectCount = 1;
+    let proc_row;
+    let med_row;
+    let lab_row;
+    window.addEventListener('DOMContentLoaded', (event) =>{
+       proc_row = document.querySelector("#procs_table tbody #og_row").cloneNode(true);
+       med_row = document.querySelector("#meds_table tbody #og_row").cloneNode(true);
+       lab_row = document.querySelector("#labs_table tbody #og_row").cloneNode(true);
+    });
+
+
+    function addVitalsRow(table,df_row) {
+        if(selectCount >= 5){
+            document.querySelector(".add-btn").style="display:none";
+        }
+      const tbody = document.querySelector(`#${table} tbody`);
+      //const template_row =tbody.querySelector("#og_row");
+      //const row = document.createElement('tr');
+      const row = df_row.cloneNode(true);
+      row.removeAttribute("id")
+      const select = row.querySelector("select");
+      console.log(row);
+      select.removeAttribute("id");
+      select.removeAttribute("data-select2-id");
+      select.removeAttribute("tabindex");
+      select.removeAttribute("aria-hidden");
+      select.id="new-select-"+selectCount;
+      select.removeAttribute("class");
+      select.class="js-example-basic-single";
+      row.querySelector("span").remove()
+
+
+      tbody.appendChild(row);
+      // scroll to newly added row
+      row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+    $("#new-select-"+selectCount).select2();
+    selectCount++;
+    }
+
+    // simple form submit handler (prevents default for demo)
   
+  </script>
   <script>
     const popup = document.getElementById('popup');
     const popupContent = document.getElementById('popupContent');
     const popupTitle = document.getElementById('popupTitle');
     const closeBtn = document.getElementById('closePopup');
+    const aptBtn = document.getElementById('apt-btn');
 
     document.querySelectorAll('.item').forEach(item => {
     item.addEventListener('click', () => {
         const type = item.getAttribute('data-type');
         const titleText = item.getAttribute('data-title');
         popupTitle.textContent = titleText;
-
+        aptBtn.addEventListener('click',()=>{
+                window.open(`./docprocs.php?id=${item.getAttribute('data-id')}`,"_blank")
+            });
         // Clear previous content
         popupContent.innerHTML = '';
 
         if (type === 'text') {
+            
             const fullText = item.getAttribute('data-full-text');
             popupContent.innerHTML = "<p>"+fullText+"</p>";
             
         } else if (type === 'table') {
+            aptBtn.style="display:none";
             const tableId = item.getAttribute('data-table-id');
             const table = document.getElementById(tableId);
             if (table) {
@@ -729,10 +837,34 @@
     popup.addEventListener('click', (e) => {
     if (e.target === popup) popup.style.display = 'none';
     });
+
+    async function deleteRow(tab,id, table ,idtype,aptId) {
+        if (!confirm('Delete this row?')) return;
+
+  const formData = new URLSearchParams();
+  formData.append('delid', id);
+  formData.append('deltable', table);
+  formData.append('idtype', idtype);
+  formData.append('del_apt', aptId);
+
+  const response = await fetch('rec_apt.php?tab='+tab, {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: formData
+  });
+
+  // If the server returned success → remove row
+  if (response.ok) {
+    location.reload();
+  } else {
+    alert('Delete failed');
+  }
+}
+      
 </script>
 
 
-
+<script src="../ICD10.js"></script>
 </body>
 </html>
 <?php
