@@ -82,8 +82,6 @@ if (isset($_POST["save_notes"])) {
         $stmt->execute();
         $stmt->close();
 
-        unset($_SESSION["notes"], $_SESSION["ndate"]);
-
     
     $apt_id =$_POST["notes_apt"];
 }
