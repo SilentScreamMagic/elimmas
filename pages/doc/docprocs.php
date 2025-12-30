@@ -2,6 +2,9 @@
 <!DOCTYPE html>
 <html lang='en'>
   <head>
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    
     <!-- Required meta tags -->
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
@@ -58,7 +61,29 @@
     .item:hover .preview {
       display: block;
     }
-    
+    /* Darken the icons (the lines and shapes) */
+.ql-toolbar .ql-stroke {
+    stroke: #000 !important;
+    stroke-width: 2px; /* Makes them slightly thicker/bolder */
+}
+
+/* Darken the filled-in parts of icons */
+.ql-toolbar .ql-fill {
+    fill: #000 !important;
+}
+
+/* Darken the text labels (like 'Normal', 'Heading 1') */
+.ql-toolbar .ql-picker-label, 
+.ql-toolbar .ql-picker-item {
+    color: #000 !important;
+    font-weight: bold;
+}
+
+/* Darken the toolbar background slightly to make it pop */
+.ql-toolbar {
+    background-color: #f8f8f8;
+    border-bottom: none !important;
+}
   </style>
  <style>
     .popup-overlay {
@@ -210,7 +235,7 @@
                         
                     ?>
                     <div class="tab">
-                        <a href="#notes"><button class="tablinks" onclick="openTab(event, 'notes')" id ="tabnotes" >Notes</button></a>
+                        <a href="#notes"><button class="tablinks" onclick="openTab(event, 'notestab')" id ="tabnotes" >Notes</button></a>
                         <a href="#procs"><button class="tablinks" onclick="openTab(event, 'procs')" id ="tabprocs" >Procedures</button></a>
                         <a href="#meds"><button class="tablinks" onclick="openTab(event, 'meds')"  id ="tabmeds">Medications</button></a>
                         <a href="#labs"><button class="tablinks" onclick="openTab(event, 'labs')"  id ="tablabs">Labs</button></a>
@@ -294,49 +319,6 @@
     <div class="table-actions">
         <button type="button" class="add-btn" onclick="addVitalsRow('meds_table',med_row)">+ Add Entry</button>
     </div>
-    <!--<form action="rec_apt.php?tab=meds" method="post">
-    <div class="form-group row">
-        <label class="col-sm-3 col-form-label" for="med">Medication:</label>
-        <div class="col-sm-9">
-            <select class="js-example-basic-single" style="width:80%" name="med" id="med">
-                <option value="" disabled selected>Select a Medication...</option>
-                <?php 
-                    foreach ($meds as $mid => $det): ?>
-                        <option value=<?php echo "'".$mid."' ".(!$det[1]? 'disabled': "") ?> ><?php echo $det[0]; ?></option>
-                    <?php 
-                    endforeach;?>
-                </select>
-            </div>
-        </div>          
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="med_count">Per Dose:</label>
-                    <div class="col-sm-9">
-                    <input type="number" name="per_dose" id = "med_count" class="form-control" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label" for="per_day">Per Day:</label>
-                    <div class="col-sm-9">
-                    <input type="number" name="per_day" id = "per_day" class="form-control" required>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="num_days">No. Of Days:</label>
-                    <div class="col-sm-9">
-                    <input type="number" name="num_days" id = "num_days" class="form-control" required>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <input type='hidden' name='med_apt' value= '<?= $apt_id?>'>         
-        <input type="submit" value="Submit"><br><br>    
-    </form>-->
     <?php 
         $sql = "SELECT p_med_id,patients_meds.date,medication.med_name,medication.price,per_dose,per_day,num_days FROM `patients_meds` 
         join medication on medication.med_id = patients_meds.med_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
@@ -347,7 +329,7 @@
                         <table id="meds_table" class ='table'>
                         <thead>
                             <tr>
-                            <th></th><th>Date</th><th>Medication Name</th><th>Per Dose</th><th>Per Day</th><th>Number Of Days</th>
+                            <th></th><th>Date</th><th>Medication Name</th><th>Dosage</th><th>Dose Frequency</th><th>Number Of Days</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -447,7 +429,7 @@
 </div>
     
 </div>
-<div id="notes" class="tabcontent">
+<div id="notestab" class="tabcontent">
     <div class ="contain">
         <h3>Notes</h3>
         <div class="icd-search-container">
@@ -472,14 +454,17 @@
             </div>
         <div>
         
-    <form action="rec_apt.php?tab=notes" method="post">
-        <textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php //echo $notes?></textarea><br><br>
+    <form id="notesForm" action="rec_apt.php?tab=notes" method="post">
+        <!--<textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php //echo $notes?></textarea><br><br>-->
+         <div autofocus id="note">
+            <p >Patient Notes</p>
+        </div>
+        <input type="hidden" name="notes" id="notes">
         <span id="lastsaved"></span><br>
         <input name = "save_notes" id="save_notes" type="submit" value="Submit"><br><br>
-        <input name = "cursor" id="cursor" type="hidden" value="0">
         <input type='hidden' name='notes_apt' value= '<?= $apt_id?>'>
-        <input name = "button" id="submit-btn" type="submit" style="display: none;" value="Autosave">
     </form>
+   
     </div>     
     
   
@@ -667,6 +652,7 @@
 <script>
        window.addEventListener("load",(event) =>{
             let notesField = document.getElementById('note');
+            console.log(notesField);
             notesField.focus();
             if(localStorage.getItem(<?= $apt_id?>)){
                     
@@ -709,7 +695,7 @@
 
                 clearTimeout(timeoutId); 
                 timeoutId = setTimeout(function() {
-                    cursor.value = notesField.selectionStart;
+                    //cursor.value = notesField.selectionStart;
                     //submitButton.click(); 
                     time = new Date(Date.now());
                     lastsaved.innerHTML=time.toLocaleString();
@@ -863,7 +849,37 @@
       
 </script>
 
+<script>
+        var quill = new Quill('#note', {
+            theme: 'snow',
+            modules: {
+    // 1. Enable the table module
+    table: true, 
+    toolbar: [
+        [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['clean']
+    ]
+  }
+});
+var form = document.querySelector('#notesForm');
+var hiddenInput = document.querySelector('#notes');
 
+form.onsubmit = function() {
+  // 1. Get the HTML from the editor
+  var html = quill.root.innerHTML;
+  //html = html.replace(/^<p>/, '').replace(/<\/p>$/, '');
+  // 2. Put that HTML into the hidden input
+  hiddenInput.value = html;
+  alert(hiddenInput.value);
+  return true;
+};
+
+// 3. Add a helper to make the table button actually insert a table
+const table = quill.getModule('table');
+    </script>
 <script src="../ICD10.js"></script>
 </body>
 </html>
