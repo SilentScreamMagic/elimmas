@@ -85,57 +85,57 @@
     border-bottom: none !important;
 }
   </style>
- <style>
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
+    <style>
+        .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        }
 
-    .popup-box {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      position: relative;
-    }
+        .popup-box {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        position: relative;
+        }
 
-    .popup-box p{
-      margin: 10 0 10px;
-      color: black;
-      overflow-y: auto;
-      max-height: 300px;
-    }
-    .popup-box h4{
+        .popup-box p{
+        margin: 10 0 10px;
         color: black;
-    }
-    .popup-close {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      font-size: 18px;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-    #popupContent {
-    white-space: pre-wrap; /* Preserves line breaks and spacing */
-    }
-    .popup-content, 
-.popup-content table, 
-.popup-content th, 
-.popup-content td {
-  color: #000 !important;                /* make text black */
-  background-color: #fff !important;    /* white background for cells */
-}
+        overflow-y: auto;
+        max-height: 300px;
+        }
+        .popup-box h4{
+            color: black;
+        }
+        .popup-close {
+        position: absolute;
+        top: 8px;
+        right: 12px;
+        font-size: 18px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        }
+        #popupContent {
+        white-space: pre-wrap; /* Preserves line breaks and spacing */
+        }
+        .popup-content, 
+        .popup-content table, 
+        .popup-content th, 
+        .popup-content td {
+        color: #000 !important;                /* make text black */
+        background-color: #fff !important;    /* white background for cells */
+        }
 
     </style>
     
@@ -336,13 +336,9 @@
                         <?php
                             if ($result->num_rows > 0) {
                                 while($row = $result->fetch_assoc()) {
-                                    echo "<tr><td><form action='rec_apt.php?tab=meds' method='post'>
-                                                <input type='hidden' name='delid' value=".$row['p_med_id'].">
-                                                <input type='hidden' name='deltable' value= 'patients_meds'>
-                                                <input type='hidden' name='idtype' value= 'p_med_id'>
-                                                <input type='hidden' name='del_apt' value= '$apt_id'>
-                                                <input type='submit' value='Delete'>
-                                            </form></td>
+                                    echo "<tr><td> 
+                                                    <button type='button' onclick=deleteRow('med',$row[p_med_id],'patients_meds','p_med_id','$apt_id')>Delete</button>
+                                                    </td>
                                     <td>".$row["date"]."</td><td>".$row["med_name"]."</td><td>".$row["per_dose"]."</td><td>".$row["per_day"]."</td><td>".$row["num_days"]."</td></tr>";
                                 }   
                             }
@@ -395,13 +391,9 @@
                         <?php
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                echo "<tr><td><form action='rec_apt.php?tab=labs' method='post'>
-                                                <input type='hidden' name='delid' value=".$row['p_lab_id'].">
-                                                <input type='hidden' name='deltable' value= 'patients_labs'>
-                                                <input type='hidden' name='idtype' value= 'p_lab_id'>
-                                                <input type='hidden' name='del_apt' value= '$apt_id'>
-                                                <input type='submit' value='Delete'>
-                                            </form></td><td>".$row["date"]."</td><td>".$row["lab_name"]."</td>";
+                echo "<tr><td>    
+                                                    <button type='button' onclick=deleteRow('lab',$row[p_lab_id],'patients_labs','p_lab_id','$apt_id')>Delete</button>
+                                                    </td><td>".$row["date"]."</td><td>".$row["lab_name"]."</td>";
                 if ($row["lab_results"]!= null){
                       echo "<td><a href='../open_pdf.php?file=../files/$row[lab_results]' target='_blank'>Open PDF</a></td></tr>";  
                 }
@@ -457,7 +449,7 @@
     <form id="notesForm" action="rec_apt.php?tab=notes" method="post">
         <!--<textarea style="max-width: 100%; " autofocus id="note" name="notes" cols="70" rows="10"><?php //echo $notes?></textarea><br><br>-->
          <div autofocus id="note">
-            <p >Patient Notes</p>
+            <p></p>
         </div>
         <input type="hidden" name="notes" id="notes">
         <span id="lastsaved"></span><br>
@@ -651,8 +643,8 @@
 </script>
 <script>
        window.addEventListener("load",(event) =>{
-            let notesField = document.getElementById('note');
-            console.log(notesField);
+            let notesField = document.querySelector('#note');
+            let quill = Quill.find(notesField);
             notesField.focus();
             if(localStorage.getItem(<?= $apt_id?>)){
                     
@@ -662,7 +654,8 @@
 
                     //console.log(time.toLocaleString());
 
-                     notesField.value = stored_notes["note"];
+                     //notesField.value = stored_notes["note"];
+                     quill.insertText(0, stored_notes["note"]);
                      let time =new Date(stored_notes["time"]);
                      lastsaved.innerHTML=time.toLocaleString();
 
@@ -697,9 +690,11 @@
                 timeoutId = setTimeout(function() {
                     //cursor.value = notesField.selectionStart;
                     //submitButton.click(); 
+                    let quill = Quill.find(notesField);
+                    let savedNotes = quill.getText();
                     time = new Date(Date.now());
                     lastsaved.innerHTML=time.toLocaleString();
-                    let note_dict = JSON.stringify({"note": notesField.value,"time":time});
+                    let note_dict = JSON.stringify({"note": savedNotes,"time":time});
                     localStorage.setItem(<?= $apt_id?>,note_dict);
                     
                     hasChanges = false;
@@ -712,9 +707,13 @@
             document.querySelectorAll('.tablinks').forEach(button => {
             button.addEventListener('click', () => {
                 if(hasChanges){
+                    let notesField = document.querySelector('#note');
+                    let quill = Quill.find(notesField);
+                    let savedNotes = quill.getText();
                     time = new Date(Date.now());
                     lastsaved.innerHTML=time.toLocaleString();
-                    let note_dict = JSON.stringify({"note": notesField.value,"time":time});
+                    
+                    let note_dict = JSON.stringify({"note": savedNotes,"time":time});
                     localStorage.setItem(<?= $apt_id?>,note_dict);
                     clearTimeout(timeoutId);
                 }
@@ -755,7 +754,6 @@
       const row = df_row.cloneNode(true);
       row.removeAttribute("id")
       const select = row.querySelector("select");
-      console.log(row);
       select.removeAttribute("id");
       select.removeAttribute("data-select2-id");
       select.removeAttribute("tabindex");
