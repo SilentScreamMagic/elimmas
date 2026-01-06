@@ -873,7 +873,7 @@ form.onsubmit = function() {
   //html = html.replace(/^<p>/, '').replace(/<\/p>$/, '');
   // 2. Put that HTML into the hidden input
   hiddenInput.value = html;
-  alert(hiddenInput.value);
+  
   return true;
 };
 
