@@ -1,6 +1,4 @@
-<th?php
-    
-?>
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -135,21 +133,20 @@
     include "../test.php";
     $date = date("y-m-d");
     $ids=["","","defaultOpen","","","",""];
-    if (isset($_POST["id"])){
-        $_SESSION["apt_id"] = $_POST["id"];
-        
+    if (isset($_GET["id"])){
+        $apt_id = $_GET["id"];
     }
     if(isset($_POST["date"])){
         $date = $_POST["date"];
         $ids = ["","","","","","","defaultOpen"];
     }
     $sql ='SELECT concat(patient.FName," ",patient.LName) "Patient Name"FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
-    where id = '.$_SESSION["apt_id"];
+    where id = '.$apt_id;
     $result = $conn->query($sql)->fetch_assoc();
     $pname = $result["Patient Name"];
     if (isset($_POST["bed"])){
         $sql = "insert into patients_beds (apt_id,bed_id,start_date)
-        values(".$_SESSION['apt_id'].",".$_POST["bed"].",now())";
+        values(".$apt_id.",".$_POST["bed"].",now())";
         $result = $conn->query($sql);
         $sql = "update beds set beds.status = 'occupied' where bed_id = ".$_POST["bed"];
         $result = $conn->query($sql);
@@ -159,14 +156,14 @@
     
     if (isset($_POST["cons"])){
         $sql = "insert into patients_cons(apt_id,con_id,count,date,created_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["cons"].",".$_POST["con_count"].",now(),'".$_SESSION["user"][0]."')";;
+        values(".$apt_id.",".$_POST["cons"].",".$_POST["con_count"].",now(),'".$_SESSION["user"][0]."')";;
         $result = $conn->query($sql);
         
         $ids = ["","","","","defaultOpen","",""];
     }
     if (isset($_POST["meals"])){
         $sql = "insert into patients_meals(apt_id,meal_id,date,created_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["meals"].",now(),'".$_SESSION["user"][0]."')";
+        values(".$apt_id.",".$_POST["meals"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         
         $ids = ["","","","","","defaultOpen",""];
@@ -175,7 +172,7 @@
     if (isset($_POST["btemp"])) {
         $bp = explode("/",$_POST["bloodPress"]);
         $sql = "INSERT INTO `patients_vits`( `date`, `apt_id`, `created_by`, `body_temp`, `pulse_rate`, `respiration_rate`, `systolic_bp`, `dystolic_bp`, `oxygen_sat`, `weight`) 
-        VALUES (now(),$_SESSION[apt_id],'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$bp[0]','$bp[1]','$_POST[oxysat]',0)";
+        VALUES (now(),$apt_id,'".$_SESSION["user"][0]."','$_POST[btemp]','$_POST[pulRate]','$_POST[respRate]','$bp[0]','$bp[1]','$_POST[oxysat]',0)";
         $result = $conn->query($sql);
         $ids = ["","defaultOpen","","","","",""];
     }
@@ -183,34 +180,49 @@
         $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
                 VALUES ('nur_notes', ?, ?, NOW(), ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("iss", $_SESSION['apt_id'], $_POST["nur_notes"], $_SESSION["user"][0]);
+        $stmt->bind_param("iss", $apt_id, $_POST["nur_notes"], $_SESSION["user"][0]);
         $stmt->execute();
         $stmt->close();
         
          
          $ids = ["","","defaultOpen","","","",""];
      }
+     if (isset($_POST["con_notes"])){
+        $sql = "INSERT INTO notes (type, apt_id, notes, date, created_by) 
+                VALUES ('con_notes', ?, ?, NOW(), ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("iss", $apt_id, $_POST["con_notes"], $_SESSION["user"][0]);
+        $stmt->execute();
+        $stmt->close();
+        
+     }
      if (isset($_POST["meds"])){
         $sql = "insert into patients_procmeds(apt_id,med_id,quantity,date,created_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["meds"].",".$_POST["med_count"].",now(),'".$_SESSION["user"][0]."')";
+        values(".$apt_id.",".$_POST["meds"].",".$_POST["med_count"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","","defaultOpen","","",""];
     }
     if (isset($_POST["oral_type"])){
         $sql = "insert into fluid_intake ( oral_type, apt_id,amount, iv_type, iv_amount, date,created_by) 
-        values('".$_POST["oral_type"]."',".$_SESSION['apt_id'].",".$_POST["o_amount"].",'".$_POST["iv_type"]."',".$_POST["iv_amount"].",now(),'".$_SESSION["user"][0]."')";
+        values('".$_POST["oral_type"]."',".$apt_id.",".$_POST["o_amount"].",'".$_POST["iv_type"]."',".$_POST["iv_amount"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","","","","","defaultOpen"];
     }
     if (isset($_POST["u_amount"])){
         $sql = "insert into fluid_output ( apt_id, u_amount,e_amount, d_amount, date,created_by) 
-        values(".$_SESSION['apt_id'].",".$_POST["u_amount"].",'".$_POST["e_amount"]."',".$_POST["d_amount"].",now(),'".$_SESSION["user"][0]."')";
+        values(".$apt_id.",".$_POST["u_amount"].",'".$_POST["e_amount"]."',".$_POST["d_amount"].",now(),'".$_SESSION["user"][0]."')";
         $result = $conn->query($sql);
         $ids = ["","","","","","","defaultOpen"];
     }
     if (isset($_POST["deltable"])){
         $sql = "UPDATE $_POST[deltable] SET `deleted`=1 WHERE $_POST[idtype] = $_POST[delid]";
         $result = $conn->query($sql);
+    
+     } 
+     if (isset($_POST["presmed"])){
+       $sql = "INSERT INTO `patients_meds_count`( `p_med_id`, `created_by`, `time_ad`) VALUES ('$_POST[presmed]','".$_SESSION["user"][0]."','$_POST[time_ad]')";
+        $result = $conn->query($sql);
+        $ids = ["","","","defaultOpen","","",""];
     
      } 
     $sql = "SELECT b.bed_id, r.* FROM beds b JOIN rooms r ON b.room_id = r.room_id WHERE b.status = 'clean';";
@@ -245,9 +257,67 @@
            $meds[$row["med_id"]] = $row["med_name"];
         }
     }
-   
-   //* <button class="tablinks" onclick="openTab(event, 'rooms')" <?php if('defaultOpen'==$ids[0]) echo 'id ="'.$ids[0].'"';>Wards</button>
-   ?>
+
+    $sql = "SELECT 
+    medication.med_name,
+    (patients_meds.per_day * patients_meds.num_days) AS num_dose,
+    patients_meds.p_med_id, 
+    COUNT(patients_meds_count.med_count_id) AS num_dose_given 
+    FROM `patients_meds` 
+    INNER JOIN medication ON patients_meds.med_id = medication.med_id
+    LEFT JOIN patients_meds_count ON patients_meds_count.p_med_id = patients_meds.p_med_id
+    WHERE patients_meds.apt_id =$apt_id
+    GROUP BY patients_meds.p_med_id
+    HAVING num_dose > COUNT(patients_meds_count.med_count_id);";
+    $result = $conn->query($sql);
+    $presmed = [];
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+           $presmed[$row["p_med_id"]] = $row["med_name"];
+        }
+    }
+
+   $sql = "SELECT id FROM `baby_head_ticket` WHERE apt_id = $apt_id;";
+   $result = $conn->query($sql);
+   $bht = $result->fetch_assoc();
+
+   $sql = "SELECT * FROM `patients_meds`
+    inner join medication on medication.med_id = patients_meds.med_id
+    Left JOIN patients_meds_count on patients_meds_count.p_med_id = patients_meds.p_med_id
+    where apt_id = $apt_id;";
+
+    $result = $conn->query($sql);
+    $medpres = [];
+    $adminDates = [];
+    $grid = [];
+    while ($row =$result->fetch_assoc()) {
+       $p_med_id = $row['p_med_id'];
+        $issuedDate = $row['date'];
+        
+        // Extract Admin Date and Time
+        $adDate = date('Y-m-d', strtotime($row['time_ad']));
+        $adTime = date('H:i', strtotime($row['time_ad']));
+
+        // 1. Build unique Medication Headers
+        if (!isset($medpres[$p_med_id])) {
+            $medpres[$p_med_id] = [
+                'name'   => $row['med_name'],
+                'issued' => $issuedDate,
+                'freq'   => $row['per_day'],
+                'days'   => $row['num_days']
+            ];
+        }
+
+        // 2. Track unique Administration Dates (Rows)
+        if (!in_array($adDate, $adminDates)) {
+            $adminDates[] = $adDate;
+        }
+
+        // 3. Map times to the Date/Medication intersection
+        $grid[$adDate][$p_med_id][] = $adTime;
+    }
+    sort($adminDates);
+  ?>
   <script src="../../assets/vendors/chart.js/Chart.min.js"></script>
   
   <div class='main-panel'>
@@ -258,32 +328,89 @@
                 <div class='card-body'>
                     <h4 class='card-title'><?php echo $pname?></h4>
                         <div class="tab">
-                            <button class="tablinks" onclick="openTab(event, 'notes')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Notes</button>
-                            
+                            <button class="tablinks" onclick="openTab(event, 'notes')"  <?php if('defaultOpen'==$ids[2]) echo 'id ="'.$ids[2].'"';?>>Notes</button> 
                             <button class="tablinks" onclick="openTab(event, 'consumables')"  <?php if('defaultOpen'==$ids[4]) echo 'id ="'.$ids[4].'"';?>>Consumables</button>
                             <button class="tablinks" onclick="openTab(event, 'meal')"  <?php if('defaultOpen'==$ids[5]) echo 'id ="'.$ids[5].'"';?>>Meals</button>
                             <button class="tablinks" onclick="openTab(event, 'vitals')"  <?php if('defaultOpen'==$ids[1]) echo 'id ="'.$ids[1].'"';?>>Vitals</button>
-                            <button class="tablinks" onclick="openTab(event, 'meds')"  <?php if('defaultOpen'==$ids[3]) echo 'id ="'.$ids[3].'"';?>>Procedural Medications</button>
+                            <button class="tablinks" onclick="openTab(event, 'meds')"  >Medication</button>
                             <button class="tablinks" onclick="openTab(event, 'fluid')"  <?php if('defaultOpen'==$ids[6]) echo 'id ="'.$ids[6].'"';?>>Fluids</button>
-                            <button class="tablinks" onclick=<?php echo "window.open('pregprogress.php?id=$_SESSION[apt_id]','_blank')";?>>Pregnancy Progress</button>
+                            <button class="tablinks" onclick="openTab(event, 'con_notes')"  >Continuation</button>
+                            <button class="tablinks" onclick="openTab(event, 'proc_meds')"  <?php if('defaultOpen'==$ids[3]) echo 'id ="'.$ids[3].'"';?>>Procedural Medications</button>
+                            
 
                         </div>
                         <div id="notes" class="tabcontent">
-                                <h3>Notes</h3>
-                                <form action= "" method="post">
-                                    <textarea name="nur_notes" cols="50" rows="10"></textarea>
-                                    <input type="submit" value="Submit"><br><br>
-                                </form>
-                                
-                                
+                            <h3>Notes</h3>
+                            <form action= "" method="post">
+                                <textarea name="nur_notes" cols="50" rows="10"></textarea>
+                                <input type="submit" value="Submit"><br><br>
+                            </form>                                        
+                        </div>   
+                         <div id="meds" class="tabcontent">
+                            <h3>Prescibed Medication</h3>
+                            <form action= "viewpatient.php?id=<?= $apt_id ?>" method="post">
+                                <label for="presmed">Select an Option:</label>
+                                <select class="js-example-basic-single" name="presmed" id="presmed" required>
+                                    <option value="">Select a Prescribed Medication...</option>
+                                    <?php foreach ($presmed as $mid => $dets): ?>
+                                        <option value="<?php echo $mid; ?>"><?php echo $dets; ?></option>
+                                    <?php endforeach; ?>
+                                    </select>
+                                <input type="datetime-local" name="time_ad" id="time_ad" required>
+                                <input type="submit" value="Submit"><br><br>
+                            </form>
+                            <div class="wrapper">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Administration Date</th>
+                                            <?php foreach ($medpres as $id => $info): ?>
+                                                <th>
+                                                    <strong><?php echo htmlspecialchars($info['name']); ?></strong><br>
+                                                    <small><?php echo htmlspecialchars($info['issued']); ?></small><br>
+                                                    <small><?php echo htmlspecialchars($info['freq']); ?>x Daily / <?php echo htmlspecialchars($info['days']); ?> Days</small>
+                                                </th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($adminDates as $date): ?>
+                                            <tr>
+                                                <td >
+                                                    <strong><?php echo htmlspecialchars($date); ?></strong>
+                                                </td>
+
+                                                <?php foreach ($medpres as $id => $info): ?>
+                                                    <td >
+                                                        <?php if (isset($grid[$date][$id])): ?>
+                                                            <?php foreach ($grid[$date][$id] as $time): ?>
+                                                                <div ><?php echo htmlspecialchars($time); ?></div>
+                                                            <?php endforeach; ?>
+                                                        <?php else: ?>
+                                                            <div>-</div>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>                              
+                        </div>   
+                        <div id="con_notes" class="tabcontent">
+                            <h3>Notes</h3>
+                            <form action= "" method="post">
+                                <textarea name="con_notes" cols="50" rows="10"></textarea>
+                                <input type="submit" value="Submit"><br><br>
+                            </form>  
                         </div>   
                         <div id="rooms" class="tabcontent">
                             <!-- Content for rooms tab -->
                             <h4 class='card-title'>Rooms</h4>
                             
-                            <form action= "viewpatient.php" method="post">
+                            <form action= "viewpatient.php?id=<?= $apt_id ?>" method="post">
                                 <label for="bed">Select an Option:</label>
-                                <select name="bed" id="bed" required>
+                                <select class="js-example-basic-single" name="bed" id="bed" required>
                                     <option value="">Select a accomodation...</option>
                                     <?php foreach ($wards as $bid => $dets): ?>
                                         <option value="<?php echo $bid; ?>"><?php echo "Ward ".$dets[0]." Bed ".$bid." - ".$dets[1]." in a room"; ?></option>
@@ -294,42 +421,41 @@
                             <?php 
                                 $sql = "SELECT assign_id,patients_beds.start_date,beds.bed_id ,rooms.room_id,rooms.capacity,patients_beds.start_date,patients_beds.end_date FROM `patients_beds` 
                                 JOIN beds on beds.bed_id = patients_beds.bed_id 
-                                join rooms on rooms.room_id = beds.room_id where apt_id = ".$_SESSION["apt_id"]." order by start_date;";
+                                join rooms on rooms.room_id = beds.room_id where apt_id = ".$apt_id." order by start_date;";
 
                                 $result = $conn->query($sql);
-                                ?>
-                                <div class='table-responsive'>
-                                
-                                    <table class ='table'>
-                                    <thead>
-                                        <tr>
-                                        <th></th><th>Date</th><th>Room No.</th><th>Bed No.</th><th>Start Date</th><th>End Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                            if ($result->num_rows > 0) {
-                                                while($row = $result->fetch_assoc()) {
-                                                    echo "<tr><td><form action='' method='post'>
-                                                <input type='hidden' name='delid' value=".$row['assign_id'].">
-                                                <input type='hidden' name='deltable' value= 'patients_bds'>
-                                                <input type='hidden' name='idtype' value= 'assign_id'>
-                                                <input type='submit' value='Delete'>
-                                            </form></td><td>".$row["start_date"]."</td><td>".$row["room_id"]."</td><td>".$row["bed_id"]."</td><td>".$row["start_date"]."</td><td>".$row["end_date"]."</td></tr>";
-                                                }
-                                                
+                            ?>
+                            <div class='table-responsive'>
+                            
+                                <table class ='table'>
+                                <thead>
+                                    <tr>
+                                    <th></th><th>Date</th><th>Room No.</th><th>Bed No.</th><th>Start Date</th><th>End Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                        if ($result->num_rows > 0) {
+                                            while($row = $result->fetch_assoc()) {
+                                                echo "<tr><td><form action='' method='post'>
+                                            <input type='hidden' name='delid' value=".$row['assign_id'].">
+                                            <input type='hidden' name='deltable' value= 'patients_bds'>
+                                            <input type='hidden' name='idtype' value= 'assign_id'>
+                                            <input type='submit' value='Delete'>
+                                        </form></td><td>".$row["start_date"]."</td><td>".$row["room_id"]."</td><td>".$row["bed_id"]."</td><td>".$row["start_date"]."</td><td>".$row["end_date"]."</td></tr>";
                                             }
-                                        ?>
-
-                                    </tbody>
-                                    </table>
-                                </div>
+                                            
+                                        }
+                                    ?>
+                                </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div id="consumables" class="tabcontent">
                             <!-- Content for rooms tab -->
                             <h4 class='card-title'>Consumables</h4>
                             
-                            <form action= "viewpatient.php" method="post">
+                            <form action= "viewpatient.php?id=<?= $apt_id ?>" method="post">
                             <div class="row">
                             <div class="col-sm-6">
                             <div class="form-group row">
@@ -360,10 +486,9 @@
                             </form>
                             <?php 
                                 $sql = "SELECT p_cons_id,date,consumables.con_name,consumables.type,consumables.price,patients_cons.count FROM `patients_cons` 
-                                join consumables on consumables.con_id = patients_cons.con_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+                                join consumables on consumables.con_id = patients_cons.con_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
                                 $result = $conn->query($sql);?>
                                 <div class='table-responsive'>
-                                
                                     <table class ='table'>
                                         <thead>
                                             <tr>
@@ -393,9 +518,9 @@
                         <!-- Content for rooms tab -->
                         <h4 class='card-title'>Meals</h4>
                         
-                        <form action= "viewpatient.php" method="post">
+                        <form action= "viewpatient.php?id=<?= $apt_id ?>" method="post">
                             <label for="meals">Select an Option:</label>
-                            <select name="meals" id="meals">
+                            <select class="js-example-basic-single" name="meals" id="meals">
                                 <option value="">Select a Meals...</option>
                                 <?php foreach ($meals as $mid => $dets): ?>
                                     <option value="<?php echo $mid; ?>"><?php echo $dets[0]; ?></option>
@@ -405,7 +530,7 @@
                         </form>
                         <?php 
                             $sql = "SELECT p_meal_id,date,meals.meal_name,meals.price FROM `patients_meals` 
-                            join meals on meals.meal_id = patients_meals.meal_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+                            join meals on meals.meal_id = patients_meals.meal_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
                             $result = $conn->query($sql);?>
                             <div class='table-responsive'>
                     
@@ -433,7 +558,7 @@
                                 </table>
                             </div>      
                         </div>
-                        <div id="meds" class="tabcontent">
+                        <div id="proc_meds" class="tabcontent">
                         <!-- Content for rooms tab -->
                         <h4 class='card-title'>Medications</h4>
                         <form action= "" method="post">
@@ -469,7 +594,7 @@
                         
                         <?php 
                             $sql = "SELECT p_ppmeds_id,patients_procmeds.date,medication.med_name,medication.price,patients_procmeds.quantity FROM `patients_procmeds` 
-                            join medication on medication.med_id = patients_procmeds.med_id where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+                            join medication on medication.med_id = patients_procmeds.med_id where apt_id = ".$apt_id." and deleted = 0 order by date;";
                             $result = $conn->query($sql);
                             ?>
                             <div class='table-responsive'>
@@ -501,7 +626,7 @@
                             <!-- Content for rooms tab -->
                             <h4 class='card-title'>Vitals</h4>
                             
-                            <form action= "viewpatient.php" method="post">
+                            <form action= "viewpatient.php?id=<?= $apt_id ?>" method="post">
                             <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group row">
@@ -543,7 +668,7 @@
                                 <div class="form-group row">
                                         <label class="col-sm-3 col-form-label" for="respRate">Blood Pressure</label>
                                         <div class="col-sm-9">  
-                                            <input type="text" id="bloodPress" name="bloodPress" pattern="^[0-9]+/[0-9]+$" required>
+                                            <input type="text" id="bloodPress" name="bloodPress" pattern="^[0-9]+/[0-9]+$">
                                         </div>
                                     </div>
                                 </div>
@@ -551,7 +676,7 @@
                                 <input type="submit" value="Submit"><br><br>
                             </form>
                             <?php 
-                                $sql = "SELECT * FROM `patients_vits` where apt_id = ".$_SESSION["apt_id"]." and deleted = 0 order by date;";
+                                $sql = "SELECT * FROM `patients_vits` where apt_id = ".$apt_id." and deleted = 0 order by date;";
                                 $result = $conn->query($sql); 
                                 ?>
                                 <div class='table-responsive'>
@@ -780,8 +905,8 @@
                                 <h1></h1>
                                 <?php
                                 $sql = "SELECT users.Name,notes.date,notes.notes notes FROM `notes` 
-                                INNER join users on users.username = created_by where type ='doc_notes' and apt_id =$_SESSION[apt_id] 
-                                order by notes.date;";
+                                INNER join users on users.username = created_by where type ='doc_notes' and apt_id =$apt_id 
+                                order by notes.date DESC;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
@@ -803,8 +928,8 @@
                         <div id="nur_notes" class="scroll-box">
                                 <?php
                                 $sql = "SELECT users.Name,notes.date,notes.notes notes FROM `notes` 
-                                INNER join users on users.username = created_by where type ='nur_notes' and apt_id =$_SESSION[apt_id] 
-                                order by notes.date;";
+                                INNER join users on users.username = created_by where (type ='nur_notes' or type ='con_notes') and apt_id =$apt_id 
+                                order by notes.date DESC;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
@@ -829,6 +954,25 @@
       <p id="popupContent"></p>
     </div>
   </div>
+  <div>
+        <a href='#' id='profile-dropdown' data-toggle='dropdown'><button>Baby Head Ticket</button></a>
+        <a target="_blank" href=<?php echo "./rbs_mon_chart.php?apt_id=$apt_id"?>><button>RBS Chart</button></a>
+        <div class='dropdown-menu dropdown-menu-right sidebar-dropdown preview-list' aria-labelledby='profile-dropdown'>
+            <?php 
+            foreach ( $bht as $key=>$row) {
+                
+                echo " <a target='_blank' href='./baby_head_ticket.php?id=$row'><button>Baby Head Ticket </button></a>
+                <div class='dropdown-divider'>               
+                </div>";
+            }
+                
+            
+        ?>
+        <a target="_blank" href="./baby_head_ticket.php?apt_id=<?=  $apt_id;?>" ><button>New Baby Head Ticket </button></a>
+                <div class='dropdown-divider'>               
+                
+                                  
+    </div>
 
           <script src="../../assets/vendors/select2/select2.min.js"></script>
 <script src="../../assets/js/select2.js"></script>

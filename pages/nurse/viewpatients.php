@@ -209,7 +209,7 @@ where check_in is not null and check_out is null and appointments.type = 'In-Pat
                                     <td>".$row["dis_notes"]."</td>
                                 <td> 
                                 <div>
-                                    <form action='viewpatient.php' method='post'>
+                                    <form action='viewpatient.php' method='get'>
                                         <input type='hidden' name='id' value=".$row['id'].">
                                         <input class = 'btn-info' type='submit' value='&#128065;'>
                                     </form>
@@ -217,7 +217,7 @@ where check_in is not null and check_out is null and appointments.type = 'In-Pat
                                 </td>";
                                 if($row["dis_notes"]=="Ready"){
                                     echo"<td><div>
-                                        <form action='' method='post'>
+                                        <form action='' method='get'>
                                             <input type='hidden' name='id' value=".$row['id'].">
                                             <input type='submit' value='Discharge'>
                                         </form>
