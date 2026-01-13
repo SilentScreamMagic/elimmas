@@ -157,7 +157,7 @@
   
     if (isset($_GET["id"])){
         $apt_id = $_GET["id"];
-        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name", appointments.type,appointments.diagnosis, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
+        $sql ='SELECT patient.pat_id,concat(patient.FName," ",patient.LName) "Patient Name" ,appointments.type,appointments.diagnosis, DOB,check_out FROM `appointments` inner join patient on patient.pat_id = appointments.patient_id
         where id = '.$apt_id;
         $result = $conn->query($sql)->fetch_assoc();
         $pat_id=$result["pat_id"];
@@ -218,7 +218,7 @@
                     <h4 class='card-title'><?php echo $pname. " (Age: " .$age.")"?></h4>
                     
                     <?php 
-                        if($checkout==null){
+                        if($checkout==null and $diag !=null){
                             echo "<form action='docapps.php' method='post'>
                                 <input type='hidden' name='end' value= $apt_id>
                                 <input type='submit' value='End Appointment'>
@@ -247,24 +247,6 @@
                          <div class="table-actions">
                             <button type="button" class="add-btn" onclick="addVitalsRow('procs_table',proc_row)">+ Add Entry</button>
                         </div>
-
-                      <!--  <form action="rec_apt.php?tab=procs" method="post">
-                            <div class="form-group row">
-                            <label class="col-sm-3 col-form-label" for="proc_id">Procedure Name:</label>
-                            <div class="col-sm-9">
-                                <select class="js-example-basic-single" style="width:80%" name="proc_id" id="proc_id">
-                                    <option value="" disabled>Select a Procedure...</option>
-                                    <?php 
-                                        foreach ($proc as $pid => $det): ?>
-                                            <option value="<?php echo $pid; ?>"><?php echo $det; ?></option>
-                                        <?php 
-                                        endforeach;?>
-                                    </select>
-                                </div>
-                            <input type='hidden' name='proc_apt' value= '<?= $apt_id?>'>
-                            <input type="submit" value="Submit"><br><br>
-                            </div>
-                        </form> -->
     
                         <div class='table-responsive'>
                         <?php 
@@ -528,7 +510,7 @@
                                 INNER join users on users.username = created_by 
                                 inner join appointments on appointments.id = notes.apt_id
                                 where notes.type ='doc_notes' and appointments.patient_id = $pat_id
-                                order by apt_id DESC,notes.date;";
+                                order by notes.date DESC;";
                                 $result = $conn->query($sql);
                                 if ($result->num_rows > 0) {
                                     while($row = $result->fetch_assoc()) {
